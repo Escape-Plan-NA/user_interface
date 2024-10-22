@@ -1,31 +1,32 @@
-/* App.css or Lobby.css */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-.lobby-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: var(--background-color); /* Ensure this matches your theme */
-  }
-  
-  .lobby-container h2 {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  .lobby-container button {
-    padding: 10px 20px;
-    font-size: 1.2rem;
-    background-color: var(--button-bg);
-    color: var(--button-text-color);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .lobby-container button:hover {
-    background-color: var(--link-color); /* Lighter tone on hover */
-  }
-  
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.character-selection button {
+  margin: 10px;
+}
+
+.option-img {
+  width: 100px;
+  margin: 10px;
+  cursor: pointer;
+}
+
+.modal-actions button {
+  margin-top: 20px;
+}
