@@ -19,7 +19,22 @@ const GamePlay = () => {
   const thiefImage = import.meta.env.VITE_THIEF_IMAGE;
   const isFirstRender = useRef(true);
   const [playerName, setPlayerName] = useState('');
+  const [profilePicture, setProfilePicture] = useState(''); // State for profile picture
   let gameWon = false; // Prevent multiple win triggers
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/users/getUser'); // Fetch user data
+        setPlayerName(response.data.user.name); // Set the player name in state
+        setProfilePicture(response.data.user.profilePicture); // Set the profile picture in state
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData(); // Call the fetch function
+  }, []);
 
   useEffect(() => {
     // Log a welcome message when the player enters the gameplay page
@@ -294,7 +309,7 @@ const GamePlay = () => {
   useEffect(() => {
     const fetchPlayerName = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/getName`); // Fetch player name
+        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/getUser`); // Fetch player name
         setPlayerName(response.data.name); // Set the player name in state
       } catch (error) {
         console.error("Error fetching player name:", error);
@@ -304,39 +319,54 @@ const GamePlay = () => {
     fetchPlayerName(); // Call the fetch function
   }, []);
 
-
   return (
     <>
-    <div className="player-name-display"><h2>Welcome {playerName}</h2>
+  <div className="container">
+    <div className="player-name-display">
+      <h2>Welcome {playerName}</h2>
+      <div className="profile-box">
+        <img src={profilePicture} alt="Player Profile" className="player-profile-pic" />
       </div>
-    <div className="gameplay-container">
-      
-      <GameHeader
-        role={role}
-        timeLeft={timeLeft}
-        turn={turn}
-        turnTimeLeft={turnTimeLeft}
-      />
-
-      <GameBoard
-        grid={grid}
-        farmerPosition={farmerPosition}
-        thiefPosition={thiefPosition}
-        thiefImage={thiefImage}
-      />
-
-      <Scoreboard
-        farmerScore={scores.farmer}
-        thiefScore={scores.thief}
-      />
-
-      {gameOverMessage && <div className="game-over-message">{gameOverMessage}</div>}
-      <div>{playerName}</div>
-
-      <button onClick={refreshGame}>Refresh Game</button>
     </div>
-    </>
+    
+    <div className="gameplay-container">
+      <div className="game-board">
+        <GameHeader
+          role={role}
+          timeLeft={timeLeft}
+          turn={turn}
+          turnTimeLeft={turnTimeLeft}
+        />
+        
+        <GameBoard
+          grid={grid}
+          farmerPosition={farmerPosition}
+          thiefPosition={thiefPosition}
+          thiefImage={thiefImage}
+        />
+      </div>
+      
+      <div className="scoreboard-container">
+        <Scoreboard
+          farmerScore={scores.farmer}
+          thiefScore={scores.thief}
+        />
+        <div className="move-history">
+          <h3>Move History</h3>
+          {/* Placeholder for move history content */}
+          <div className="move-history-content">No moves made yet!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {gameOverMessage && <div className="game-over-message">{gameOverMessage}</div>}
+  
+  <button onClick={refreshGame}>Refresh Game</button>
+</>
+
   );
+  
 };
 
 export default GamePlay;
