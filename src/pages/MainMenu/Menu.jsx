@@ -8,9 +8,9 @@ const Menu = () => {
 
   return (
     <div className="menu-container">
-    <h1>ESCAPE PLAN</h1>
-      <button id="start-button" onClick={() => navigate('/lobby')}>Start</button>
-      <button id="profile-button" onClick={() => navigate('/profile')}>Profile</button>
+      <h1>ESCAPE PLAN</h1>
+      <button id="start-button" onClick={() => navigate('/lobby')}>Multiplayer</button>
+      <button id="start-button" onClick={() => navigate('/singledevice')}>Singleplayer</button> 
       <button id="settings" onClick={() => navigate('/setting')}>Settings</button>
     </div>
   );
