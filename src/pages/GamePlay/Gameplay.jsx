@@ -292,49 +292,49 @@ const GamePlay = () => {
   }, []);
 
   return (
-    <>
-  <div className="container">
-    <div className="player-name-display">
-    <p>Player: {playerName || "Guest"}</p> {/* Show the player name */}
-      <div className="profile-box">
-        <img src={profilePicture} alt="Player Profile" className="player-profile-pic" />
+    <div className="container">
+      <div className="player-name-display">
+        <p>Player: {playerName || "Guest"}</p> {/* Show the player name */}
+        <div className="profile-box">
+          <img src={profilePicture} alt="Player Profile" className="player-profile-pic" />
+        </div>
+
+        {!gameOverMessage ? (
+          <div className="gameplay-container">
+            <GameHeader
+              role={role}
+              timeLeft={timeLeft}
+              turn={turn}
+              turnTimeLeft={turnTimeLeft}
+            />
+
+            <GameBoard
+              grid={grid}
+              farmerPosition={farmerPosition}
+              thiefPosition={thiefPosition}
+              thiefImage={thiefImage}
+            />
+
+            <Scoreboard
+              farmerScore={scores.farmer}
+              thiefScore={scores.thief}
+            />
+
+            <button onClick={refreshGame}>Refresh Game</button>
+          </div>
+        ) : (
+          <div className="game-over-container">
+            <h2>{gameOverMessage}</h2>
+            <Scoreboard
+              farmerScore={scores.farmer}
+              thiefScore={scores.thief}
+            />
+          </div>
+        )}
       </div>
-
-      {!gameOverMessage ? (
-        <div className="gameplay-container">
-          <GameHeader
-            role={role}
-            timeLeft={timeLeft}
-            turn={turn}
-            turnTimeLeft={turnTimeLeft}
-          />
-
-          <GameBoard
-            grid={grid}
-            farmerPosition={farmerPosition}
-            thiefPosition={thiefPosition}
-            thiefImage={thiefImage}
-          />
-
-          <Scoreboard
-            farmerScore={scores.farmer}
-            thiefScore={scores.thief}
-          />
-
-          <button onClick={refreshGame}>Refresh Game</button>
-        </div>
-      ) : (
-        <div className="game-over-container">
-          <h2>{gameOverMessage}</h2>
-          <Scoreboard
-            farmerScore={scores.farmer}
-            thiefScore={scores.thief}
-          />
-        </div>
-      )}
-    </>
+    </div>
   );
-  
 };
 
 export default GamePlay;
+
