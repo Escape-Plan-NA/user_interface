@@ -5,3 +5,13 @@
 .player-name-display{
     padding: 10px;
 }
+
+.overall-timer {
+    font-size: 1.5em; /* Default styling */
+  }
+  
+  .timer-warning {
+    color: red;
+    font-weight: bold;
+  }
+  
