@@ -323,7 +323,7 @@ const GamePlay = () => {
     <>
   <div className="container">
     <div className="player-name-display">
-      <h2>Welcome {playerName}</h2>
+    <p>Player: {playerName || "Guest"}</p> {/* Show the player name */}
       <div className="profile-box">
         <img src={profilePicture} alt="Player Profile" className="player-profile-pic" />
       </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './Lobby.css'; // Local CSS file for this component
@@ -20,18 +20,51 @@ const Lobby = () => {
 
   const navigate = useNavigate();
 
+  // Function to handle clearing user data on page reload or game restart
+  const handlePageReloadOrRestart = async () => {
+    try {
+      await axios.post('http://localhost:3000/users/removeUser');
+      console.log('User data cleared from server');
+    } catch (error) {
+      console.error('Error clearing user data from the server:', error);
+    }
+  };
+
+  // Call the function to clear user data when the component unmounts (i.e., when reloading the page)
+  useEffect(() => {
+    window.addEventListener('beforeunload', handlePageReloadOrRestart);
+    return () => {
+      window.removeEventListener('beforeunload', handlePageReloadOrRestart);
+    };
+  }, []);
+
   // Function to open the customization modal
   const handleCustomize = (e) => {
     e.preventDefault();
+    if (!playerName) {
+      alert('Please enter a player name before starting the game!');
+      return; // Don't proceed if the name is missing
+    }
     setIsModalOpen(true); // Open customization modal
   };
 
   // Function to handle navigation to the game page
-  const handleStartGame = (e) => {
+  const handleStartGame = async (e) => {
     e.preventDefault();
-    // Simply navigate to the next page
-    navigate('/start');
-  };
+    if (!playerName) {
+      alert('Please enter a player name before starting the game!');
+      return; // Don't proceed if the name is missing
+    }
+
+    try {
+      const response = await axios.post('http://localhost:3000/users/setUser', { name: playerName , profilePicture});
+      console.log('User data set:', response.data);
+      navigate('/start');
+      // Navigate to the main game here
+    } catch (error) {
+      console.error('Error setting user data:', error);
+    }
+  }
 
   // Handle profile picture change on arrow click
   const handleArrowClick = (direction) => {
@@ -45,11 +78,12 @@ const Lobby = () => {
 
   // Save the game state inside the modal
   const handleSaveGameState = async () => {
+    
     const newProfilePicture = imageOptions[currentIndex];  // Set the selected picture
     setProfilePicture(newProfilePicture);  // Update profile picture in state
 
     const newUser = {
-      name: playerName,
+      name: playerName || "Guest", // If no name entered, use "Guest"
       profilePicture: newProfilePicture,
     };
 
@@ -57,7 +91,7 @@ const Lobby = () => {
       // Post the user object to the server
       await axios.post('http://localhost:3000/users/setUser', newUser);
       console.log('User data saved to server:', newUser);
-      
+
       // Close the modal after saving
       setIsModalOpen(false);
     } catch (error) {
@@ -85,8 +119,8 @@ const Lobby = () => {
 
         {/* Separate buttons for Start Game and Customize */}
         <div>
-          <button onClick={handleStartGame}>Start Game</button> {/* Just navigate to the game page */}
-          <button onClick={handleCustomize}>Customize</button> {/* Open customization modal */}
+          <button type="button" onClick={handleStartGame}>Start Game</button> {/* Just navigate to the game page */}
+          <button type="button" onClick={handleCustomize}>Customize</button> {/* Open customization modal */}
         </div>
       </form>
 
