@@ -293,8 +293,11 @@ const GamePlay = () => {
 
   return (
     <>
-      <div className="player-name-display">
-        <h2>Welcome {playerName}</h2>
+  <div className="container">
+    <div className="player-name-display">
+    <p>Player: {playerName || "Guest"}</p> {/* Show the player name */}
+      <div className="profile-box">
+        <img src={profilePicture} alt="Player Profile" className="player-profile-pic" />
       </div>
 
       {!gameOverMessage ? (
