@@ -281,8 +281,8 @@ const GamePlay = () => {
   useEffect(() => {
     const fetchPlayerName = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/getUser`);
-        setPlayerName(response.data.name);
+        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/getUser`); // Fetch player name
+        setPlayerName(response.data.user.name); // Set the player name in state
       } catch (error) {
         console.error("Error fetching player name:", error);
       }
