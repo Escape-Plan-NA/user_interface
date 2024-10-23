@@ -7,7 +7,7 @@ import './GamePlay.css';
 const BotGameplay = () => {
   const location = useLocation();
   const role = location.state?.role || 'thief'; // Default to 'thief' if role is not provided
-  const [timeLeft, setTimeLeft] = useState(20);
+  const [timeLeft, setTimeLeft] = useState(180);
   const [grid, setGrid] = useState([]);
   const [farmerPosition, setFarmerPosition] = useState(null);
   const [thiefPosition, setThiefPosition] = useState(null);
@@ -80,6 +80,7 @@ const BotGameplay = () => {
   const resetGame = () => {
     setScores({ farmer: 0, thief: 0 }); // Reset scores to zero
     setTimeLeft(180);
+    setTurnTimeLeft(10);
     initializeGame("thief"); // Start with the default starting player
   };
 
