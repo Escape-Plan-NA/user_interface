@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Scoreboard from '../../components/Scoreboard/SingleScoreboard.jsx';
 import WinModal from '../../components/WinModal/WinModal.jsx'; // Import the modal component
 import './GamePlay.css';
+import QuitGameButton from '../../components/SpecialButtons/QuitButton.jsx';
 
 const BotGameplay = () => {
   const location = useLocation();
@@ -242,6 +243,14 @@ const BotGameplay = () => {
     }
   };
 
+  //Quit Game button
+  const quitGame = () => {
+  
+    setScores({ farmer: 0, thief: 0 });
+    navigate('./');
+    
+  };
+
   // Trigger bot move when it's the bot's turn
   useEffect(() => {
     if (turn !== role && !gameEnded) {
@@ -344,6 +353,9 @@ const getWinner = () => {
         <p>Farmer (Warder): {scores.farmer}</p>
         <p>Thief (Prisoner): {scores.thief}</p>
       </div>
+      <div>
+    <QuitGameButton quitGame={quitGame} />
+    </div>
     </div>
   );
   

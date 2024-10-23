@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Scoreboard from '../../components/Scoreboard/SingleScoreboard.jsx';
 import WinModal from '../../components/WinModal/WinModal.jsx'; // Import the WinModal
 import './GamePlay.css';
+import QuitGameButton from '../../components/SpecialButtons/QuitButton.jsx';
 
 const SingleGameplay = () => {
   const { role } = useParams(); // 'farmer' or 'thief'
@@ -237,6 +238,13 @@ const getWinner = () => {
     return "It's a tie!";
   }
 };
+ // Function to reset the game state (e.g., scores or other relevant state)
+ const quitGame = () => {
+  
+  setScores({ farmer: 0, thief: 0 });
+  navigate('./');
+  
+};
 
 
 if (gameEnded) {
@@ -300,6 +308,9 @@ return (
       <h3>Scores</h3>
       <p>Farmer (Warder): {scores.farmer}</p>
       <p>Thief (Prisoner): {scores.thief}</p>
+    </div>
+    <div>
+    <QuitGameButton quitGame={quitGame} />
     </div>
   </div>
 );
