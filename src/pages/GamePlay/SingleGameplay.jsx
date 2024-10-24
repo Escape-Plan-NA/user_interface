@@ -45,7 +45,7 @@ const SingleGameplay = () => {
       const col = Math.floor(Math.random() * size);
       if (gridArray[row][col] === 'free') {
         gridArray[row][col] = 'tunnel';
-        tunnelPlaced = true;
+        tunnelPlaced = { row: row, col: col };
       }
     }
 
@@ -54,7 +54,7 @@ const SingleGameplay = () => {
     while (!thiefPos) {
       const row = Math.floor(Math.random() * size);
       const col = Math.floor(Math.random() * size);
-      if (gridArray[row][col] === 'free') {
+      if (gridArray[row][col] === 'free' && (row !== tunnelPlaced.row+1) && (row !== tunnelPlaced.row-1) && (col !== tunnelPlaced.col+1) && (col !== tunnelPlaced.col-1)) {
         thiefPos = { row, col };
       }
     }

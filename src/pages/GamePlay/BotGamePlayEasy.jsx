@@ -4,7 +4,7 @@ import Scoreboard from '../../components/Scoreboard/SingleScoreboard.jsx';
 import WinModal from '../../components/WinModal/WinModal.jsx'; // Import the modal component
 import './GamePlay.css';
 
-const BotGameplay = () => {
+const BotGamePlayEasy = () => {
   const location = useLocation();
   const role = location.state?.role || 'thief'; // Default to 'thief' if role is not provided
   const [timeLeft, setTimeLeft] = useState(180);
@@ -287,7 +287,6 @@ const getWinner = () => {
       </div>
     );
   }
-  
   return (
     <div className="gameplay-container">
       <h1>Gameplay Page</h1>
@@ -349,4 +348,4 @@ const getWinner = () => {
   
 };
 
-export default BotGameplay;
+export default BotGamePlayEasy;
