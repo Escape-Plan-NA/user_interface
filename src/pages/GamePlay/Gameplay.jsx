@@ -77,6 +77,7 @@ const GamePlay = () => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/games/start`);
       const gameData = response.data.gameData;
+      console.log(response.data);
 
       setGrid(gameData.grid.blocks || []);
       setThiefPosition(gameData.grid.thiefPosition);

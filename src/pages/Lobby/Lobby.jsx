@@ -8,6 +8,7 @@ const Lobby = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Control modal visibility
   const [profilePicture, setProfilePicture] = useState('src/assets/placeholderProfile.jpg');
   const [currentIndex, setCurrentIndex] = useState(0); // Track the current image index
+  const [userId, setUserId] = useState(''); // Track the user ID
 
   const imageOptions = [
     "src/assets/customize/cyan.jpg",
@@ -41,30 +42,42 @@ const Lobby = () => {
   // Function to open the customization modal
   const handleCustomize = (e) => {
     e.preventDefault();
-    if (!playerName) {
-      alert('Please enter a player name before starting the game!');
-      return; // Don't proceed if the name is missing
-    }
+    const finalPlayerName = playerName || "Guest"; // Use "Guest" if playerName is empty
+    setPlayerName(finalPlayerName);
+
     setIsModalOpen(true); // Open customization modal
   };
 
   // Function to handle navigation to the game page
   const handleStartGame = async (e) => {
     e.preventDefault();
-    if (!playerName) {
-      alert('Please enter a player name before starting the game!');
-      return; // Don't proceed if the name is missing
-    }
-
+    const finalPlayerName = playerName || "Guest"; // If playerName is empty, use "Guest"
+  
     try {
-      const response = await axios.post('http://localhost:3000/users/setUser', { name: playerName , profilePicture});
+      // Send the user data (name and profile picture) in a single request
+      const response = await axios.post('http://localhost:3000/users/setUser', { 
+        name: finalPlayerName, 
+        profilePicture 
+      });
       console.log('User data set:', response.data);
-      navigate('/start');
-      // Navigate to the main game here
+
+      const userId = response.data.user.userId;  // Get the generated userId
+      setUserId(userId);  // Store the userId in state
+
+      console.log('Generated User ID:', userId);
+
+      // Update the connected status using the generated userId
+      await axios.put('http://localhost:3000/games/update-user', { 
+        role: 'thief',  // Update based on the role (you can also handle farmer here)
+        userId: userId, 
+      });
+
+      // Navigate to the game after successfully updating the connection status
+      navigate('/start');  // Navigate to the main game here
     } catch (error) {
-      console.error('Error setting user data:', error);
+      console.error('Error setting user data or updating connection status:', error);
     }
-  }
+  };
 
   // Handle profile picture change on arrow click
   const handleArrowClick = (direction) => {
@@ -76,27 +89,16 @@ const Lobby = () => {
     setProfilePicture(imageOptions[currentIndex]);  // Update the profile picture as the user navigates
   };
 
-  // Save the game state inside the modal
-  const handleSaveGameState = async () => {
-    
+  // Save the game state inside the modal (without sending to server)
+  const handleSaveGameState = () => {
     const newProfilePicture = imageOptions[currentIndex];  // Set the selected picture
     setProfilePicture(newProfilePicture);  // Update profile picture in state
 
-    const newUser = {
-      name: playerName || "Guest", // If no name entered, use "Guest"
-      profilePicture: newProfilePicture,
-    };
+    // Just store the player name (or "Guest") and profile picture in the state
+    setPlayerName(playerName || "Guest");
 
-    try {
-      // Post the user object to the server
-      await axios.post('http://localhost:3000/users/setUser', newUser);
-      console.log('User data saved to server:', newUser);
-
-      // Close the modal after saving
-      setIsModalOpen(false);
-    } catch (error) {
-      console.error("Error saving user data to the server:", error);
-    }
+    // Close the modal after saving
+    setIsModalOpen(false);
   };
 
   return (
@@ -123,6 +125,9 @@ const Lobby = () => {
           <button type="button" onClick={handleCustomize}>Customize</button> {/* Open customization modal */}
         </div>
       </form>
+
+      {/* Display generated user ID */}
+      {userId && <p>Generated User ID: {userId}</p>}
 
       {/* Customization Modal */}
       {isModalOpen && (
