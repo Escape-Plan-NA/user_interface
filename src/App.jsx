@@ -10,28 +10,32 @@ import Cutscene from "./pages/CutScene/Cutscene.jsx";
 import SingleCutscene from "./pages/CutScene/SingleplayerCutscene.jsx";
 import Lobby from "./pages/Lobby/Lobby.jsx";
 import SingleplayerModeSelection from "./pages/Selection/SingleplayerModeSelection.jsx"; // Import the new page
+import { RoleProvider } from './context/RoleContext'; // Import RoleProvider
 
 const App = () => {
   return (
-    <Router>
-      <Routes>
-        {/* Route for the Menu page */}
-        <Route path="/" element={<Menu />} />
-        <Route path="/setting" element={<Setting />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/singledevice" element={<SingleplayerModeSelection />} />
-        <Route path="/friends" element={<SingleGameplay />} />
-        <Route path="/bot" element={<BotGameplay />} />
-        <Route path="/singlecutscene" element={<SingleCutscene />} />
-        <Route path="/cutscene" element={<Cutscene />} />
-        <Route path="/lobby" element={<Lobby />} />
-        <Route path="/start" element={<GamePlay />} />
-        
-        {/* Redirect all other undefined routes to the Menu page */}
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </Router>
+    <RoleProvider> {/* Wrap the Router with RoleProvider */}
+      <Router>
+        <Routes>
+          {/* Route for the Menu page */}
+          <Route path="/" element={<Menu />} />
+          <Route path="/setting" element={<Setting />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/singledevice" element={<SingleplayerModeSelection />} />
+          <Route path="/friends" element={<SingleGameplay />} />
+          <Route path="/bot" element={<BotGameplay />} />
+          <Route path="/singlecutscene" element={<SingleCutscene />} />
+          <Route path="/cutscene" element={<Cutscene />} />
+          <Route path="/lobby" element={<Lobby />} />
+          <Route path="/start" element={<GamePlay />} />
+          
+          {/* Redirect all other undefined routes to the Menu page */}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </Router>
+    </RoleProvider>
   );
 };
 
 export default App;
+

@@ -1,43 +1,27 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import GameHeader from '../../components/GameHeader/GameHeader.jsx';
 import GameBoard from '../../components/GameBoard/GameBoard.jsx';
 import Scoreboard from '../../components/Scoreboard/Scoreboard.jsx';
+import { RoleContext } from '../../context/RoleContext.jsx';
 
 const GamePlay = () => {
   const navigate = useNavigate();
-  const role = 'thief';
-  const [timeLeft, setTimeLeft] = useState(60); // 3-minute overall game timer
-  const [gameOverMessage, setGameOverMessage] = useState(null);  // State for game over message
+  const { role, playerName, profilePicture } = useContext(RoleContext);
+  const [timeLeft, setTimeLeft] = useState(60);
+  const [gameOverMessage, setGameOverMessage] = useState(null);
   const [grid, setGrid] = useState([]);
   const [farmerPosition, setFarmerPosition] = useState(null);
   const [thiefPosition, setThiefPosition] = useState(null);
   const [turn, setTurn] = useState(null);
-  const [turnTimeLeft, setTurnTimeLeft] = useState(10); // 10-second turn timer
-  const [scores, setScores] = useState({ farmer: 0, thief: 0 }); // Score tracking
+  const [turnTimeLeft, setTurnTimeLeft] = useState(10);
+  const [scores, setScores] = useState({ farmer: 0, thief: 0 });
   const thiefImage = import.meta.env.VITE_THIEF_IMAGE;
   const isFirstRender = useRef(true);
-  const [playerName, setPlayerName] = useState('');
-  const [profilePicture, setProfilePicture] = useState(''); // State for profile picture
-  let gameWon = false; // Prevent multiple win triggers
+  let gameWon = false;
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/users/getUser'); // Fetch user data
-        setPlayerName(response.data.user.name); // Set the player name in state
-        setProfilePicture(response.data.user.profilePicture); // Set the profile picture in state
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    fetchUserData(); // Call the fetch function
-  }, []);
-
-  useEffect(() => {
-    // Log a welcome message when the player enters the gameplay page
     console.log("Welcome to the game! The game has started.");
     startGame(); 
 
@@ -118,7 +102,7 @@ const GamePlay = () => {
       const updatedGameState = response.data;
 
       setTurn(updatedGameState.currentTurn);
-      setTurnTimeLeft(10); 
+      setTurnTimeLeft(10);
     } catch (error) {
       console.error("Error switching turn:", error);
     }
@@ -279,23 +263,38 @@ const GamePlay = () => {
     }, 5000);
   };
 
+  // Polling for game state
   useEffect(() => {
-    const fetchPlayerName = async () => {
+    const pollGameState = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/getUser`); // Fetch player name
-        setPlayerName(response.data.user.name); // Set the player name in state
+        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/games/game-state`);
+        const gameData = response.data;
+
+        // Update state only if the data has changed
+        if (gameData) {
+          setGrid(gameData.grid.blocks);
+          setThiefPosition(gameData.grid.thiefPosition);
+          setFarmerPosition(gameData.grid.farmerPosition);
+          setTurn(gameData.currentTurn);
+          setScores({
+            farmer: gameData.players[0].score,
+            thief: gameData.players[1].score,
+          });
+        }
       } catch (error) {
-        console.error("Error fetching player name:", error);
+        console.error("Error fetching game state:", error);
       }
     };
 
-    fetchPlayerName(); 
+    const intervalId = setInterval(pollGameState, 500); // Poll every 3 seconds
+
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
     <div className="container">
       <div className="player-name-display">
-        <p>Player: {playerName || "Guest"}</p> {/* Show the player name */}
+        <p>Player: {playerName || "Guest"}</p>
         <div className="profile-box">
           <img src={profilePicture} alt="Player Profile" className="player-profile-pic" />
         </div>
@@ -338,4 +337,3 @@ const GamePlay = () => {
 };
 
 export default GamePlay;
-
