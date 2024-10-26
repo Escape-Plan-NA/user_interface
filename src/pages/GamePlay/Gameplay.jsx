@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import GameHeader from '../../components/GameHeader/GameHeader.jsx';
 import GameBoard from '../../components/GameBoard/GameBoard.jsx';
 import Scoreboard from '../../components/Scoreboard/Scoreboard.jsx';
+import SurrenderButton from "../../components/SpecialButtons/SurrenderButton.jsx";
 
 const GamePlay = () => {
   const navigate = useNavigate();
@@ -303,6 +304,10 @@ const GamePlay = () => {
           />
 
           <button onClick={refreshGame}>Refresh Game</button>
+          <div>
+            <SurrenderButton role={role}></SurrenderButton>
+          </div>
+         
         </div>
       ) : (
         <div className="game-over-container">
