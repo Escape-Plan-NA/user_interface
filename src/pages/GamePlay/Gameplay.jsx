@@ -5,6 +5,7 @@ import GameHeader from '../../components/GameHeader/GameHeader.jsx';
 import GameBoard from '../../components/GameBoard/GameBoard.jsx';
 import Scoreboard from '../../components/Scoreboard/Scoreboard.jsx';
 
+
 const GamePlay = () => {
   const navigate = useNavigate();
   const role = 'thief';
@@ -21,9 +22,15 @@ const GamePlay = () => {
   const [playerName, setPlayerName] = useState('');
   let gameWon = false; // Prevent multiple win triggers
 
+  // Function to play sound
+  const playSound = (soundFile) => {
+    const audio = new Audio(`/assets/${soundFile}`);
+    audio.play().catch((error) => console.error("Error playing sound:", error));
+  };
+
   useEffect(() => {
     console.log("Welcome to the game! The game has started.");
-    startGame(); 
+    startGame();
 
     return async () => {
       if (isFirstRender.current) {
@@ -101,7 +108,7 @@ const GamePlay = () => {
       const updatedGameState = response.data;
 
       setTurn(updatedGameState.currentTurn);
-      setTurnTimeLeft(10); 
+      setTurnTimeLeft(10);
     } catch (error) {
       console.error("Error switching turn:", error);
     }
@@ -110,7 +117,7 @@ const GamePlay = () => {
   useEffect(() => {
     let moveInProgress = false;
     const handleKeyPress = async (e) => {
-      if (moveInProgress) return; 
+      if (moveInProgress) return;
       moveInProgress = true;
 
       if (turn !== role) {
@@ -143,7 +150,7 @@ const GamePlay = () => {
       if (newPosition.row === currentPosition.row && newPosition.col === currentPosition.col) {
         console.log("Invalid move: outside the grid boundaries.");
         moveInProgress = false;
-        return; 
+        return;
       }
 
       try {
@@ -160,6 +167,8 @@ const GamePlay = () => {
         setTurn(updatedGameState.currentTurn);
 
         setTurnTimeLeft(10);
+        // Play sound for the move action
+        playSound(role === 'farmer' ? '/farmer_move.mp3' : '/thief_move.mp3');
 
         checkWinConditions(newPosition);
 
@@ -183,18 +192,22 @@ const GamePlay = () => {
     if (turn === "thief") {
       if (currentPosition.row === farmerPosition.row && currentPosition.col === farmerPosition.col) {
         gameWon = true;
+
         alert(`Farmer catches the thief! Farmer wins! \nCurrent Scores:\nFarmer: ${scores.farmer + 1}, Thief: ${scores.thief}`);
+        playSound('/farmer_win.mp3'); // Play farmer win sound
         await updateScore('farmer');
       } else if (grid[currentPosition.row][currentPosition.col] === 'tunnel') {
         gameWon = true;
         setThiefPosition(currentPosition);
         alert(`Thief reaches the tunnel! Thief wins! \nCurrent Scores:\nFarmer: ${scores.farmer}, Thief: ${scores.thief + 1}`);
+        playSound('/thief_win.mp3');
         await updateScore('thief');
       }
     } else if (turn === "farmer") {
       if (currentPosition.row === thiefPosition.row && currentPosition.col === thiefPosition.col) {
         gameWon = true;
         alert(`Farmer catches the thief! Farmer wins! \nCurrent Scores:\nFarmer: ${scores.farmer + 1}, Thief: ${scores.thief}`);
+        playSound('/farmer_win.mp3'); // Play farmer win sound
         await updateScore('farmer');
       }
     }
@@ -211,7 +224,7 @@ const GamePlay = () => {
       });
 
       setTurn(winner);
-      await startGame(); 
+      await startGame();
       gameWon = false;
     } catch (error) {
       console.error(`Error updating score for ${winner}:`, error);
@@ -248,7 +261,7 @@ const GamePlay = () => {
     } else if (scores.thief > scores.farmer) {
       winner = 'Thief';
     } else {
-      winner = 'No one'; 
+      winner = 'No one';
     }
 
     setGameOverMessage(`Game Over, ${winner} wins!!!\nFarmer: ${scores.farmer}, Thief: ${scores.thief}`);
@@ -272,7 +285,7 @@ const GamePlay = () => {
       }
     };
 
-    fetchPlayerName(); 
+    fetchPlayerName();
   }, []);
 
   return (
