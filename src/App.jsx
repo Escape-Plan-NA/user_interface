@@ -40,7 +40,7 @@ const Layout = ({ children }) => {
   );
 };
 
-const buttonStyle = {
+const buttonStyle = { //global back button
   position: "fixed",
   top: 10,
   left: 10,

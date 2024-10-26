@@ -5,6 +5,8 @@ import GameHeader from '../../components/GameHeader/GameHeader.jsx';
 import GameBoard from '../../components/GameBoard/GameBoard.jsx';
 import Scoreboard from '../../components/Scoreboard/Scoreboard.jsx';
 import SurrenderButton from "../../components/SpecialButtons/SurrenderButton.jsx";
+import Setting from '..//Settings/Settings.jsx';
+import { FaCog } from 'react-icons/fa';
 
 const GamePlay = () => {
   const navigate = useNavigate();
@@ -307,6 +309,7 @@ const GamePlay = () => {
           <div>
             <SurrenderButton role={role}></SurrenderButton>
           </div>
+          <button onClick={()=> navigate('/setting')}> <FaCog /> </button>
          
         </div>
       ) : (
