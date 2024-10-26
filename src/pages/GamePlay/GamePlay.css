@@ -1,17 +1,20 @@
-.gameplay-container{
-    margin-top: 20px;
+.gameplay-container {
+  margin-top: 20px;
+  border: 1px solid black; 
 }
 
-.player-name-display{
-    padding: 10px;
-}
+.player-name-display {
+  padding: 10px;
+  border: 1px solid black; 
 
 .overall-timer {
-    font-size: 1.5em; /* Default styling */
-  }
-  
-  .timer-warning {
-    color: red;
-    font-weight: bold;
-  }
-  
+  font-size: 1.5em;
+  border: 1px solid black; 
+}
+
+.timer-warning {
+  color: red;
+  font-weight: bold;
+  border: 1px solid black; 
+}
+}
