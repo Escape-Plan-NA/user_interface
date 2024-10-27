@@ -291,13 +291,13 @@ const GamePlay = () => {
     let winnerSound;
     if (scores.farmer > scores.thief) {
       winner = 'Farmer';
-      winnerSound = farmerWin;
+      winnerSound = sounds.current.farmerWin;
     } else if (scores.thief > scores.farmer) {
       winner = 'Thief';
-      winnerSound = thiefWin;
+      winnerSound = sounds.current.thiefWin;
     } else {
       winner = 'No one';
-      winnerSound = tieGame;
+      winnerSound = sounds.current.tieGame;
     }
 
     setGameOverMessage(`Game Over, ${winner} wins!!!\nFarmer: ${scores.farmer}, Thief: ${scores.thief}`);
