@@ -81,7 +81,7 @@ const GamePlay = () => {
     return () => clearInterval(interval);
 }, []);
 useEffect(() => {
-  if (turnTimer <= 1) {
+  if (turnTimer <= 0) {
       switchTurns(); // Call switch turns if time runs out
   }
 }, [turnTimer]);
@@ -304,7 +304,7 @@ useEffect(() => {
     };
     
 
-    const intervalId = setInterval(pollGameState, 500); 
+    const intervalId = setInterval(pollGameState, 50); 
 
     return () => clearInterval(intervalId);
   }, []);
