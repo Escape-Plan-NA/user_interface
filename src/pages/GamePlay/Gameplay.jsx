@@ -1,10 +1,17 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+
 import GameHeader from '../../components/GameHeader/GameHeader.jsx';
 import GameBoard from '../../components/GameBoard/GameBoard.jsx';
 import Scoreboard from '../../components/Scoreboard/Scoreboard.jsx';
+import { SoundEffectContext } from "../../context/SoundEffectContext.jsx";
 
+import farmerMoveSound from '../../assets/farmer_move.mp3';
+import thiefMoveSound from '../../assets/thief_move.mp3';
+import farmerWinSound from '../../assets/farmer_win.mp3';
+import thiefWinSound from '../../assets/thief_win.mp3';
+import tieGameSound from '../../assets/tieGame.mp3';
 
 const GamePlay = () => {
   const navigate = useNavigate();
@@ -20,13 +27,33 @@ const GamePlay = () => {
   const thiefImage = import.meta.env.VITE_THIEF_IMAGE;
   const isFirstRender = useRef(true);
   const [playerName, setPlayerName] = useState('');
+  const { soundEffectsEnabled } = useContext(SoundEffectContext);
+
   let gameWon = false; // Prevent multiple win triggers
 
+
+  // Preloaded audio files
+  const sounds = useRef({
+    farmerMove: new Audio(farmerMoveSound),
+    thiefMove: new Audio(thiefMoveSound),
+    farmerWin: new Audio(farmerWinSound),
+    thiefWin: new Audio(thiefWinSound),
+    tieGame: new Audio(tieGameSound)
+  });
+
+  useEffect(() => {
+    if (soundEffectsEnabled) {
+      Object.values(sounds.current).forEach(sound => sound.load());
+    }
+  }, [soundEffectsEnabled]);
+
   // Function to play sound
-  const playSound = (soundFile) => {
-    const audio = new Audio(`/assets/${soundFile}`);
-    audio.play().catch((error) => console.error("Error playing sound:", error));
+  const playSound = (sound) => {
+    if (soundEffectsEnabled && sound) {
+      sound.play().catch(error => console.error("Error playing sound:", error));
+    }
   };
+
 
   useEffect(() => {
     console.log("Welcome to the game! The game has started.");
@@ -116,6 +143,7 @@ const GamePlay = () => {
 
   useEffect(() => {
     let moveInProgress = false;
+   
     const handleKeyPress = async (e) => {
       if (moveInProgress) return;
       moveInProgress = true;
@@ -167,8 +195,10 @@ const GamePlay = () => {
         setTurn(updatedGameState.currentTurn);
 
         setTurnTimeLeft(10);
-        // Play sound for the move action
-        playSound(role === 'farmer' ? '/farmer_move.mp3' : '/thief_move.mp3');
+        //play sound according to the move
+        playSound(role === 'farmer' ? sounds.current.farmerMove : sounds.current.thiefMove);
+
+    
 
         checkWinConditions(newPosition);
 
@@ -192,22 +222,24 @@ const GamePlay = () => {
     if (turn === "thief") {
       if (currentPosition.row === farmerPosition.row && currentPosition.col === farmerPosition.col) {
         gameWon = true;
-
+        playSound(sounds.current.farmerWin);
         alert(`Farmer catches the thief! Farmer wins! \nCurrent Scores:\nFarmer: ${scores.farmer + 1}, Thief: ${scores.thief}`);
-        playSound('/farmer_win.mp3'); // Play farmer win sound
+
         await updateScore('farmer');
       } else if (grid[currentPosition.row][currentPosition.col] === 'tunnel') {
         gameWon = true;
         setThiefPosition(currentPosition);
+        playSound(sounds.current.thiefWin);
         alert(`Thief reaches the tunnel! Thief wins! \nCurrent Scores:\nFarmer: ${scores.farmer}, Thief: ${scores.thief + 1}`);
-        playSound('/thief_win.mp3');
+
         await updateScore('thief');
       }
     } else if (turn === "farmer") {
       if (currentPosition.row === thiefPosition.row && currentPosition.col === thiefPosition.col) {
         gameWon = true;
+        playSound(sounds.current.farmerWin);
         alert(`Farmer catches the thief! Farmer wins! \nCurrent Scores:\nFarmer: ${scores.farmer + 1}, Thief: ${scores.thief}`);
-        playSound('/farmer_win.mp3'); // Play farmer win sound
+
         await updateScore('farmer');
       }
     }
@@ -256,16 +288,20 @@ const GamePlay = () => {
 
   const handleGameOver = () => {
     let winner;
+    let winnerSound;
     if (scores.farmer > scores.thief) {
       winner = 'Farmer';
+      winnerSound = farmerWin;
     } else if (scores.thief > scores.farmer) {
       winner = 'Thief';
+      winnerSound = thiefWin;
     } else {
       winner = 'No one';
+      winnerSound = tieGame;
     }
 
     setGameOverMessage(`Game Over, ${winner} wins!!!\nFarmer: ${scores.farmer}, Thief: ${scores.thief}`);
-
+    playSound(winnerSound);
     setTimeout(() => {
       try {
         navigate('/');

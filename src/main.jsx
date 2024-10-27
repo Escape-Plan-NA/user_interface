@@ -5,13 +5,15 @@ import './index.css';
 import './App.css';
 import { AudioProvider } from './context/AudioContext';
 import { ThemeProvider } from './context/ThemeContext';
-
+import { SoundEffectProvider } from './context/SoundEffectContext.jsx';
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AudioProvider> 
 
       <ThemeProvider>
+        <SoundEffectProvider>
       <App />
+      </SoundEffectProvider>
       
       </ThemeProvider>  
     </AudioProvider>
