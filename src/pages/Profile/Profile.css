@@ -1,7 +1,9 @@
 .profile-title {
   text-align: center;
   padding: 1px;
-  
+  border: 1px solid black; 
+  font-weight: bold; 
+  font-size: 1.2em; 
 }
 
 .profile-container {
@@ -9,15 +11,15 @@
   height: 80px;
   flex-wrap: wrap;
   justify-content: center;
-  /* Full height */
   align-content: center;
   align-items: center;
-  
+  border: 1px solid black;
+  padding: 10px;
+  border-radius: 8px; 
 }
 
 .profile-left {
   flex: 1;
-  /* Takes half of the width */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,117 +30,111 @@
   margin-bottom: 25px;
   margin-right: 20px;
   align-items: center;
+  border: 1px solid black;
+  background-color: #f0f0f0; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
 }
 
 .profile-right {
   flex: 2;
-  /* Takes half of the width */
   padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Center the content */
   margin-right: 50px;
   align-items: center;
- 
+  border: 1px solid black; 
+  background-color: #f9f9f9; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
 }
 
 .transparent-container {
   width: 100%;
-  /* Make the container responsive */
   max-width: 150px;
-  /* Set a maximum width for the profile image container */
   height: auto;
-  /* Allow height to adjust automatically */
   background-color: rgba(255, 255, 255, 0.5);
-  /* Semi-transparent white background */
   border: 2px solid rgba(0, 123, 255, 0.5);
-  /* Semi-transparent border */
   border-radius: 2px;
-  /* Rounded corners */
   display: flex;
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(5px);
-  /* Optional: Add blur effect to the background */
   margin-bottom: 20px;
   align-self: center;
-  /* Space below the profile picture container */
+  border: 1px solid black; 
+  padding: 8px; 
 }
 
 .profile-img {
   width: 100%;
-  /* Make image responsive */
   height: auto;
-  /* Maintain aspect ratio */
   border-radius: 20px;
   transition: transform 0.3s ease;
   border: solid 5px rgba(36, 35, 35, 0.253);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
 .profile-img:hover {
-  transform: scale(1.05); /* Subtle hover effect */
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); 
 }
 
 .image-options {
   display: flex;
   justify-content: space-between;
-  /* Space out options */
   width: 100%;
-  /* Full width for options */
   margin-top: 5px;
-  /* Space above options */
   gap: 10px;
   padding: 10px;
   margin-bottom: 10px;
-  
+  border: 1px solid black; 
+  border-radius: 6px; 
+  background-color: #ffffff; 
 }
 
 .option-img {
   width: 50px;
-  /* Fixed size for option images */
   height: 50px;
-  /* Fixed size for*/
   border-radius: 10px;
-  /* Rounded corners for the images */
   border: 2px solid #ccc;
-  /* Border around each image */
   padding: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  /* Adds a subtle shadow */
   transition: transform 0.2s ease-in-out;
-
-
+  background-color: #f7f7f7;
 }
 
 .option-img:hover {
-  transform: scale(1.1); /* Zoom in the image slightly on hover */
-  border-color: #4caf50; /* Change border color on hover */
+  transform: scale(1.1);
+  border-color: #4caf50;
   cursor: cell;
+  background-color: #e8f5e9; 
 }
 
-.submit-btn{
+.submit-btn {
   padding: 10px;
   margin-top: 20px;
   background-color: var(--primary-accent);
   transition: background-color 0.3s ease;
-}
+  color: #fff; 
+  border-radius: 4px; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); 
+
 .submit-btn:hover {
   background-color: var(--secondary-accent);
 }
 
-.enter-name-form{
+.enter-name-form {
   background-color: rgba(255, 255, 255, 0.247);
   margin-left: 20px;
   color: black;
   font-family: inherit;
   border: none;
-
-  
-
+  border: 1px solid black; 
+  padding: 5px; 
+  border-radius: 6px; 
 }
 
-.enter-info-name{
+.enter-info-name {
   background-color: "#86BBD8";
   border-radius: 40px;
   border: 1px solid transparent;
@@ -152,49 +148,37 @@
   transition: border-color 0.25s;
   margin-top: 80px;
   border: rgba(43, 42, 42, 0.158) solid;
-
 }
 
-.player-sex-button{
+.player-sex-button {
   margin-left: 15px;
   border: "#758E4F";
-
-
-
 }
 
-.enter-info{
+.enter-info {
   background-color: "#86BBD8";
   border: rgba(43, 42, 42, 0.158) solid;
- 
-  
-
-
+  border: 1px solid black; 
 }
 
-.enter-name-form{
+.enter-name-form {
   margin: 10px;
-  width: 50%; /* Make the input field responsive */
-  
-
+  width: 50%;
 }
 
-.side-by-side-button{
+.side-by-side-button {
   padding: 5px;
   margin: 2px;
-  
-  
 }
 
-.side-by-side-right-button{
+.side-by-side-right-button {
   margin-left: 5px;
 }
 
-.side-by-side-left-button{
+.side-by-side-left-button {
   margin-left: 10px;
 }
-
-
+}
 .enter-info {
   background-color: #f9f9f9;
   border-radius: 40px;
@@ -208,6 +192,5 @@
   margin: 10px;
   transition: border-color 0.25s;
   margin-top: 10px;
-
-
+  border: 1px solid black; 
 }
