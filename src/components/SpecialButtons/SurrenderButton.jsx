@@ -12,7 +12,7 @@ function SurrenderButton() {
     const [scores, setScores] = useState({ farmer: 0, thief: 0 });
     const [gameOverMessage, setGameOverMessage] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [showScoreboard, setShowScoreboard] = useState(false);
+    //const [showScoreboard, setShowScoreboard] = useState(false);
     const navigate = useNavigate();
 
     // Fetch initial game data
@@ -36,7 +36,7 @@ function SurrenderButton() {
         socket.on('surrender', (data) => {
             setGameOverMessage(data.message);
             setScores(data.updatedScores); // Update the scores from the broadcast
-            setShowScoreboard(true);
+            //setShowScoreboard(true);
             setIsModalOpen(true);
         });
 
@@ -60,12 +60,12 @@ function SurrenderButton() {
             });
 
             setGameOverMessage(`Game Over! ${winner} wins due to surrender.`);
-            setShowScoreboard(true);  // Show the scoreboard
+            //setShowScoreboard(true);  // Show the scoreboard
 
             // Automatically close the modal and navigate to home after 3 seconds
             setTimeout(() => {
                 setIsModalOpen(false);
-                setShowScoreboard(false);
+                //setShowScoreboard(false);
                 navigate('/');
             }, 3000);
         } catch (error) {
@@ -81,11 +81,10 @@ function SurrenderButton() {
             {isModalOpen && (
                 <div className="modal-overlay">
                     <div className="modal">
-                        {showScoreboard ? (
+                        {gameOverMessage ? (
                             <>
                                 <h2>{gameOverMessage}</h2>
-                                <h3>Scoreboard</h3>
-                                <Scoreboard scores={scores} />
+                                
                                 <button onClick={() => setIsModalOpen(false)}>Close</button>
                             </>
                         ) : (
