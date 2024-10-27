@@ -1,0 +1,28 @@
+
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;    /* Centers elements horizontally */
+    justify-content: center; /* Centers elements vertically */
+    background-image: url('../../assets/Main Menu BG.gif');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100vh;           /* Takes full viewport height */
+    width: 100vw;            /* Takes full viewport width */
+    position: absolute;      /* Ensures the container fills the screen */
+    top: 0;                  /* Position from the top */
+    left: 0;                 /* Position from the left */
+}
+
+.menu-container h1{
+    color: aqua;               /* Position from the left */
+}
+
+.menu-container button {
+    width: 200px;
+    margin: 10px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}

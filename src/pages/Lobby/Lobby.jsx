@@ -6,17 +6,21 @@ import './Lobby.css'; // Local CSS file for this component
 const Lobby = () => {
   const [playerName, setPlayerName] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false); // Control modal visibility
-  const [profilePicture, setProfilePicture] = useState('src/assets/placeholderProfile.jpg');
+  const [profilePicture, setProfilePicture] = useState('src/assets/Character/White/White.gif');
+  const [selectedProfilePicture, setSelectedProfilePicture] = useState('src/assets/Character/White/White.gif'); // Temporary state for selected profile picture
   const [currentIndex, setCurrentIndex] = useState(0); // Track the current image index
   const [userId, setUserId] = useState(''); // Track the user ID
 
   const imageOptions = [
-    "src/assets/customize/cyan.jpg",
-    "src/assets/customize/mario.jpg",
-    "src/assets/customize/orange.jpg",
-    "src/assets/customize/red.jpg",
-    "src/assets/customize/spiderman.jpg",
-    "src/assets/customize/squidgame.jpg",
+    "src/assets/Character/White/White.gif",
+    "src/assets/Character/Blue/Blue.gif",
+    "src/assets/Character/Cream/Cream.gif",
+    "src/assets/Character/DarkGreen/Dark Green.gif",
+    "src/assets/Character/Green/Green.gif",
+    "src/assets/Character/Pink/Pink.gif",
+    "src/assets/Character/Purple/Purple.gif",
+    "src/assets/Character/Red/Red.gif",
+    "src/assets/Character/Yellow/Yellow.gif"
   ];
 
   const navigate = useNavigate();
@@ -44,7 +48,7 @@ const Lobby = () => {
     e.preventDefault();
     const finalPlayerName = playerName || "Guest"; // Use "Guest" if playerName is empty
     setPlayerName(finalPlayerName);
-
+    setSelectedProfilePicture(profilePicture); // Set the initial profile picture in the modal
     setIsModalOpen(true); // Open customization modal
   };
 
@@ -73,28 +77,26 @@ const Lobby = () => {
       });
 
       // Navigate to the game after successfully updating the connection status
-      navigate('/start');  // Navigate to the main game here
+      navigate('/cutscene');  // Navigate to the main game here
     } catch (error) {
       console.error('Error setting user data or updating connection status:', error);
     }
   };
 
-  // Handle profile picture change on arrow click
   const handleArrowClick = (direction) => {
-    if (direction === 'left') {
-      setCurrentIndex((prevIndex) => (prevIndex === 0 ? imageOptions.length - 1 : prevIndex - 1));
-    } else {
-      setCurrentIndex((prevIndex) => (prevIndex === imageOptions.length - 1 ? 0 : prevIndex + 1));
-    }
-    setProfilePicture(imageOptions[currentIndex]);  // Update the profile picture as the user navigates
+    setCurrentIndex((prevIndex) => {
+      const newIndex = direction === 'left'
+        ? (prevIndex === 0 ? imageOptions.length - 1 : prevIndex - 1)
+        : (prevIndex === imageOptions.length - 1 ? 0 : prevIndex + 1);
+      
+      setSelectedProfilePicture(imageOptions[newIndex]);  // Update the temporary profile picture with the new index
+      return newIndex;
+    });
   };
 
   // Save the game state inside the modal (without sending to server)
   const handleSaveGameState = () => {
-    const newProfilePicture = imageOptions[currentIndex];  // Set the selected picture
-    setProfilePicture(newProfilePicture);  // Update profile picture in state
-
-    // Just store the player name (or "Guest") and profile picture in the state
+    setProfilePicture(selectedProfilePicture);  // Update profile picture in state only when the user clicks 'Save'
     setPlayerName(playerName || "Guest");
 
     // Close the modal after saving
@@ -139,7 +141,7 @@ const Lobby = () => {
             <div className="arrow-container">
               <button className="arrow left-arrow" onClick={() => handleArrowClick('left')}>&lt;</button>
               <img
-                src={imageOptions[currentIndex]}
+                src={selectedProfilePicture}
                 alt={`Option ${currentIndex + 1}`}
                 className="option-img"
               />

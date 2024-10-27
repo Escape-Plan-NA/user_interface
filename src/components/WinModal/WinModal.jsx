@@ -9,8 +9,8 @@ const WinModal = ({ message, role, scores, onClose }) => {
         <h2>{message}</h2>
         <p>{role === "farmer" ? "Farmer (Warder)" : "Thief (Prisoner)"} wins!</p>
         <p>Scores:</p>
-        <p>👨‍🌾 Farmer (Warder): {scores.farmer}</p>
-        <p>🕵️‍♂️ Thief (Prisoner): {scores.thief}</p>
+        <p>Farmer: {scores.farmer}</p>
+        <p>Thief: {scores.thief}</p>
         <button onClick={onClose}>Continue</button>
       </div>
     </div>

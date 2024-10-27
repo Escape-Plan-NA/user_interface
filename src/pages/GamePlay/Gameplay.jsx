@@ -4,11 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import GameHeader from '../../components/GameHeader/GameHeader.jsx';
 import GameBoard from '../../components/GameBoard/GameBoard.jsx';
 import Scoreboard from '../../components/Scoreboard/Scoreboard.jsx';
+import farmer from '../../assets/Character/White/White(T).gif';
+import thief from '../../assets/Character/White/White(Th).gif';
 
 const GamePlay = () => {
   const navigate = useNavigate();
   const role = 'thief';
-  const [timeLeft, setTimeLeft] = useState(60); // 3-minute overall game timer
+  const [timeLeft, setTimeLeft] = useState(15); // 3-minute overall game timer
   const [gameOverMessage, setGameOverMessage] = useState(null);  // State for game over message
   const [grid, setGrid] = useState([]);
   const [farmerPosition, setFarmerPosition] = useState(null);
@@ -16,7 +18,8 @@ const GamePlay = () => {
   const [turn, setTurn] = useState(null);
   const [turnTimeLeft, setTurnTimeLeft] = useState(10); // 10-second turn timer
   const [scores, setScores] = useState({ farmer: 0, thief: 0 }); // Score tracking
-  const thiefImage = import.meta.env.VITE_THIEF_IMAGE;
+  const thiefImage = thief;
+  const farmerImage = farmer;
   const isFirstRender = useRef(true);
   const [playerName, setPlayerName] = useState('');
   const [profilePicture, setProfilePicture] = useState(''); // State for profile picture
@@ -86,6 +89,19 @@ const GamePlay = () => {
     } catch (error) {
       console.error("Failed to start the game:", error);
     }
+  };
+
+  const handleGameOver = () => {
+    let winner;
+    if (scores.farmer > scores.thief) {
+      winner = 'Farmer';
+    } else if (scores.thief > scores.farmer) {
+      winner = 'Thief';
+    } else {
+      winner = 'No one'; 
+    }
+
+    setGameOverMessage(`Game Over, ${winner} wins!!!`);
   };
 
   useEffect(() => {
@@ -250,33 +266,12 @@ const GamePlay = () => {
         thief: resetGameData.players[1].score,
       });
 
-      setTimeLeft(60);
+      setTimeLeft(15);
       setTurnTimeLeft(10);
 
     } catch (error) {
       console.error("Error refreshing game:", error);
     }
-  };
-
-  const handleGameOver = () => {
-    let winner;
-    if (scores.farmer > scores.thief) {
-      winner = 'Farmer';
-    } else if (scores.thief > scores.farmer) {
-      winner = 'Thief';
-    } else {
-      winner = 'No one'; 
-    }
-
-    setGameOverMessage(`Game Over, ${winner} wins!!!\nFarmer: ${scores.farmer}, Thief: ${scores.thief}`);
-
-    setTimeout(() => {
-      try {
-        navigate('/');
-      } catch (error) {
-        console.error("Failed to navigate:", error);
-      }
-    }, 5000);
   };
 
   useEffect(() => {
@@ -294,42 +289,50 @@ const GamePlay = () => {
 
   return (
     <div className="container">
+      {/* Game Header positioned at the top left */}
+
+      {/* Game Board and other content */}
+      <div className="background-front"></div> {/* Front background layer */}
+
       <div className="player-name-display">
-        <p>Player: {playerName || "Guest"}</p> {/* Show the player name */}
-        <div className="profile-box">
-          <img src={profilePicture} alt="Player Profile" className="player-profile-pic" />
-        </div>
+        <p>Player: {playerName || "Guest"}</p>
 
         {!gameOverMessage ? (
-          <div className="gameplay-container">
-            <GameHeader
-              role={role}
-              timeLeft={timeLeft}
-              turn={turn}
-              turnTimeLeft={turnTimeLeft}
-            />
-
+          <>
+            <GameHeader 
+              role={role} 
+              timeLeft={timeLeft} 
+              turn={turn} 
+              turnTimeLeft={turnTimeLeft} />
+            <div className="gameboard-container">
             <GameBoard
               grid={grid}
               farmerPosition={farmerPosition}
               thiefPosition={thiefPosition}
               thiefImage={thiefImage}
+              farmerImage={farmerImage}
+              farmerName="Kiak"  // Replace with the actual farmer name
+              thiefName="Guest" // Replace with the actual thief name
             />
-
-            <Scoreboard
-              farmerScore={scores.farmer}
-              thiefScore={scores.thief}
+            <Scoreboard 
+            farmerScore={scores.farmer} 
+            thiefScore={scores.thief} 
+            farmerName="Kiak"  // Replace with the actual farmer name
+            thiefName="Guest"
             />
-
             <button onClick={refreshGame}>Refresh Game</button>
           </div>
+          </>
         ) : (
           <div className="game-over-container">
-            <h2>{gameOverMessage}</h2>
-            <Scoreboard
-              farmerScore={scores.farmer}
-              thiefScore={scores.thief}
+            <Scoreboard 
+            winMessage={gameOverMessage}
+            farmerScore={scores.farmer} 
+            thiefScore={scores.thief} 
+            farmerName="Kiak"  // Replace with the actual farmer name
+            thiefName="Guest"
             />
+          <button onClick={refreshGame}>Restart</button>
           </div>
         )}
       </div>
@@ -338,4 +341,3 @@ const GamePlay = () => {
 };
 
 export default GamePlay;
-

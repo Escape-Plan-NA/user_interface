@@ -4,7 +4,7 @@ import Menu from "./pages/MainMenu/Menu.jsx";
 import Profile from "./pages/Profile/Profile.jsx";
 import Setting from "./pages/Settings/Settings.jsx";
 import GamePlay from "./pages/GamePlay/Gameplay.jsx";
-import SingleGameplay from "./pages/GamePlay/SingleGamePlay.jsx";
+import SingleGameplay from "./pages/GamePlay/SingleGameplay.jsx";
 import BotGameplay from "./pages/GamePlay/BotGameplay.jsx";
 import Cutscene from "./pages/CutScene/Cutscene.jsx";
 import SingleCutscene from "./pages/CutScene/SingleplayerCutscene.jsx";

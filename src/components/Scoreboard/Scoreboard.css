@@ -1,10 +1,26 @@
-.scoreboard {
-  background-color: #ffffff;
+.scoreboard-normal {
+  position: fixed; /* Fixed position */
+  bottom: 20px; /* Offset from the bottom */
+  left: 20px; /* Offset from the left */
+  background-color: rgba(255, 255, 255, 0.7);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
   padding: 20px;
-  margin-top: 20px;
   text-align: center;
+  z-index: 3; /* Ensures it stays above game elements */
+}
+
+.win-message {
+  position: fixed; /* Fixed position */
+  bottom: 50%; /* Offset from the bottom */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Adjust for true centering */
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
+  padding: 20px;
+  text-align: center;
+  z-index: 3; /* Ensures it stays above game elements */
 }
 
 .scoreboard h3 {
