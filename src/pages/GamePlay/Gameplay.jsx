@@ -1,43 +1,30 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import GameHeader from '../../components/GameHeader/GameHeader.jsx';
 import GameBoard from '../../components/GameBoard/GameBoard.jsx';
 import Scoreboard from '../../components/Scoreboard/Scoreboard.jsx';
+import { RoleContext } from '../../context/RoleContext.jsx';
 
 const GamePlay = () => {
   const navigate = useNavigate();
-  const role = 'thief';
-  const [timeLeft, setTimeLeft] = useState(60); // 3-minute overall game timer
-  const [gameOverMessage, setGameOverMessage] = useState(null);  // State for game over message
+  const { role, playerName, profilePicture } = useContext(RoleContext);
+  const [timeLeft, setTimeLeft] = useState(60);
+  const [gameOverMessage, setGameOverMessage] = useState(null);
   const [grid, setGrid] = useState([]);
   const [farmerPosition, setFarmerPosition] = useState(null);
   const [thiefPosition, setThiefPosition] = useState(null);
   const [turn, setTurn] = useState(null);
-  const [turnTimeLeft, setTurnTimeLeft] = useState(10); // 10-second turn timer
-  const [scores, setScores] = useState({ farmer: 0, thief: 0 }); // Score tracking
+  const [turnTimeLeft, setTurnTimeLeft] = useState(10);
+  const [scores, setScores] = useState({ farmer: 0, thief: 0 });
+  const [gameTimer, setGameTimer] = useState(60);
+  const [turnTimer, setTurnTimer] = useState(10);
   const thiefImage = import.meta.env.VITE_THIEF_IMAGE;
   const isFirstRender = useRef(true);
-  const [playerName, setPlayerName] = useState('');
-  const [profilePicture, setProfilePicture] = useState(''); // State for profile picture
-  let gameWon = false; // Prevent multiple win triggers
+  let gameWon = false;
+  const [moveLogs, setMoveLogs] = useState([]); // Initialize moveLogs state
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/users/getUser'); // Fetch user data
-        setPlayerName(response.data.user.name); // Set the player name in state
-        setProfilePicture(response.data.user.profilePicture); // Set the profile picture in state
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    fetchUserData(); // Call the fetch function
-  }, []);
-
-  useEffect(() => {
-    // Log a welcome message when the player enters the gameplay page
     console.log("Welcome to the game! The game has started.");
     startGame(); 
 
@@ -64,6 +51,7 @@ const GamePlay = () => {
         console.error("Failed to reset game state on exit or refresh:", error);
       }
     };
+    
 
     window.addEventListener('beforeunload', handleBeforeUnload);
 
@@ -72,6 +60,31 @@ const GamePlay = () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, []);
+  useEffect(() => {
+    const fetchTimers = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/games/game-state');
+            const { gameTimer, currentTurn } = response.data;
+
+            // Assume turnTimer counts down separately; reset when the turn changes
+            setGameTimer(gameTimer);
+            setTurnTimer(turnTimer);  // Adjust as needed
+        } catch (error) {
+            console.error('Error fetching timers:', error);
+        }
+    };
+
+    // Set an interval to fetch the latest timers
+    const interval = setInterval(fetchTimers, 1000);  // Fetch every second
+
+    // Clean up on unmount
+    return () => clearInterval(interval);
+}, []);
+useEffect(() => {
+  if (turnTimer <= 0) {
+      switchTurns(); // Call switch turns if time runs out
+  }
+}, [turnTimer]);
 
   const startGame = async () => {
     try {
@@ -88,29 +101,7 @@ const GamePlay = () => {
     }
   };
 
-  useEffect(() => {
-    if (timeLeft > 0) {
-      const gameTimer = setInterval(() => {
-        setTimeLeft(prevTime => prevTime - 1);
-      }, 1000);
-
-      return () => clearInterval(gameTimer);
-    } else {
-      handleGameOver();
-    }
-  }, [timeLeft]);
-
-  useEffect(() => {
-    if (turnTimeLeft > 0) {
-      const turnTimer = setInterval(() => {
-        setTurnTimeLeft(prevTime => prevTime - 1);
-      }, 1000);
-
-      return () => clearInterval(turnTimer);
-    } else {
-      switchTurns();
-    }
-  }, [turnTimeLeft]);
+  
 
   const switchTurns = async () => {
     try {
@@ -118,7 +109,7 @@ const GamePlay = () => {
       const updatedGameState = response.data;
 
       setTurn(updatedGameState.currentTurn);
-      setTurnTimeLeft(10); 
+
     } catch (error) {
       console.error("Error switching turn:", error);
     }
@@ -176,7 +167,7 @@ const GamePlay = () => {
         setThiefPosition(updatedGameState.grid.thiefPosition);
         setTurn(updatedGameState.currentTurn);
 
-        setTurnTimeLeft(10);
+        setTurnTimer(updatedGameState.turnTimer);
 
         checkWinConditions(newPosition);
 
@@ -186,6 +177,14 @@ const GamePlay = () => {
         moveInProgress = false;
       }
     };
+    const fetchMoveLogs = async () => {
+      try {
+          const logResponse = await axios.get(`${import.meta.env.VITE_SERVER_URL}/games/move-log`);
+          console.log("Move Logs:", logResponse.data); // Log or update your state with the fetched move logs
+      } catch (error) {
+          console.error("Error fetching move logs:", error.response ? error.response.data : error.message);
+      }
+  };
 
     window.addEventListener("keydown", handleKeyPress);
 
@@ -250,9 +249,6 @@ const GamePlay = () => {
         thief: resetGameData.players[1].score,
       });
 
-      setTimeLeft(60);
-      setTurnTimeLeft(10);
-
     } catch (error) {
       console.error("Error refreshing game:", error);
     }
@@ -279,23 +275,47 @@ const GamePlay = () => {
     }, 5000);
   };
 
+  // Polling for game state
   useEffect(() => {
-    const fetchPlayerName = async () => {
+    const pollGameState = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/getUser`); // Fetch player name
-        setPlayerName(response.data.user.name); // Set the player name in state
+        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/games/game-state`);
+        const gameData = response.data;
+
+        // Update state only if the data has changed
+        if (gameData) {
+          setGrid(gameData.grid.blocks);
+          setThiefPosition(gameData.grid.thiefPosition);
+          setFarmerPosition(gameData.grid.farmerPosition);
+          setTurn(gameData.currentTurn);
+          setScores({
+            farmer: gameData.players[0].score,
+            thief: gameData.players[1].score,
+            });
+          setGameTimer(gameData.gameTimer);
+          setTurnTimer(gameData.turnTimer);
+        }
       } catch (error) {
-        console.error("Error fetching player name:", error);
+        console.error("Error fetching game state:", error);
       }
     };
+    
 
-    fetchPlayerName(); 
+    const intervalId = setInterval(pollGameState, 50); 
+
+    return () => clearInterval(intervalId);
   }, []);
+  useEffect(() => {
+    if (gameTimer <= 0) {
+      handleGameOver(); // Call handleGameOver when the timer hits 0
+    }
+  }, [gameTimer]);
+ 
 
   return (
     <div className="container">
       <div className="player-name-display">
-        <p>Player: {playerName || "Guest"}</p> {/* Show the player name */}
+        <p>Player: {playerName || "Guest"}</p>
         <div className="profile-box">
           <img src={profilePicture} alt="Player Profile" className="player-profile-pic" />
         </div>
@@ -304,9 +324,9 @@ const GamePlay = () => {
           <div className="gameplay-container">
             <GameHeader
               role={role}
-              timeLeft={timeLeft}
+              timeLeft={gameTimer}
               turn={turn}
-              turnTimeLeft={turnTimeLeft}
+              turnTimeLeft={turnTimer}
             />
 
             <GameBoard
@@ -320,7 +340,16 @@ const GamePlay = () => {
               farmerScore={scores.farmer}
               thiefScore={scores.thief}
             />
-
+             <div className="move-log-container">
+        <h2>Move Log</h2>
+        <ul className="move-log-list">
+            {moveLogs.map((log, index) => (
+                <li key={index} className="move-log-item">
+                    {log}
+                </li>
+            ))}
+        </ul>
+    </div>
             <button onClick={refreshGame}>Refresh Game</button>
           </div>
         ) : (
@@ -338,4 +367,3 @@ const GamePlay = () => {
 };
 
 export default GamePlay;
-

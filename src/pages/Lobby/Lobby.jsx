@@ -2,18 +2,22 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './Lobby.css'; // Local CSS file for this component
+import { useRole } from '../../context/RoleContext';
+import { usePlayer } from '../../context/PlayerContext';
 
 const Lobby = () => {
-  const [playerName, setPlayerName] = useState('');
+  const { playerName, setPlayerName } = usePlayer();
   const [isModalOpen, setIsModalOpen] = useState(false); // Control modal visibility
   const [profilePicture, setProfilePicture] = useState('src/assets/placeholderProfile.jpg');
   const [currentIndex, setCurrentIndex] = useState(0); // Track the current image index
   const [userId, setUserId] = useState(''); // Track the user ID
+  const { role, setRole } = useRole(); // Get role and setRole from RoleContext
 
   const imageOptions = [
     "src/assets/customize/cyan.jpg",
     "src/assets/customize/mario.jpg",
     "src/assets/customize/orange.jpg",
+    "src/assets/customize/cyan.jpg",
     "src/assets/customize/red.jpg",
     "src/assets/customize/spiderman.jpg",
     "src/assets/customize/squidgame.jpg",
@@ -24,10 +28,10 @@ const Lobby = () => {
   // Function to handle clearing user data on page reload or game restart
   const handlePageReloadOrRestart = async () => {
     try {
-      await axios.post('http://localhost:3000/users/removeUser');
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/removeUser`);
       console.log('User data cleared from server');
     } catch (error) {
-      console.error('Error clearing user data from the server:', error);
+      console.error('Error setting user data or updating connection status:', error.response || error.message);
     }
   };
 
@@ -52,12 +56,13 @@ const Lobby = () => {
   const handleStartGame = async (e) => {
     e.preventDefault();
     const finalPlayerName = playerName || "Guest"; // If playerName is empty, use "Guest"
-  
+    
     try {
-      // Send the user data (name and profile picture) in a single request
-      const response = await axios.post('http://localhost:3000/users/setUser', { 
+      // Send the user data (name, profile picture, and selected role) in a single request
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/setUser`, { 
         name: finalPlayerName, 
-        profilePicture 
+        profilePicture,
+        role // Send the selected role from context
       });
       console.log('User data set:', response.data);
 
@@ -67,8 +72,8 @@ const Lobby = () => {
       console.log('Generated User ID:', userId);
 
       // Update the connected status using the generated userId
-      await axios.put('http://localhost:3000/games/update-user', { 
-        role: 'thief',  // Update based on the role (you can also handle farmer here)
+      await axios.put(`${import.meta.env.VITE_SERVER_URL}/games/update-user`, { 
+        role,  // Use the role from context
         userId: userId, 
       });
 
@@ -101,6 +106,11 @@ const Lobby = () => {
     setIsModalOpen(false);
   };
 
+  // Function to handle role selection
+  const handleRoleSelect = (selectedRole) => {
+    setRole(selectedRole); // Update role in context
+  };
+
   return (
     <div className="lobby-container">
       {/* Display current profile picture */}
@@ -119,9 +129,16 @@ const Lobby = () => {
           required
         />
 
+        {/* Role selection */}
+        <div className="role-selection">
+          <h3>Select Your Role:</h3>
+          <button type="button" onClick={() => handleRoleSelect('thief')} className={role === 'thief' ? 'selected' : ''}>Thief</button>
+          <button type="button" onClick={() => handleRoleSelect('farmer')} className={role === 'farmer' ? 'selected' : ''}>Farmer</button>
+        </div>
+
         {/* Separate buttons for Start Game and Customize */}
         <div>
-          <button type="button" onClick={handleStartGame}>Start Game</button> {/* Just navigate to the game page */}
+          <button type="button" onClick={handleStartGame} disabled={!role}>Start Game</button> {/* Just navigate to the game page */}
           <button type="button" onClick={handleCustomize}>Customize</button> {/* Open customization modal */}
         </div>
       </form>
@@ -158,3 +175,4 @@ const Lobby = () => {
 };
 
 export default Lobby;
+
