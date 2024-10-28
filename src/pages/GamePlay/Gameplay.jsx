@@ -249,9 +249,6 @@ useEffect(() => {
         thief: resetGameData.players[1].score,
       });
 
-      setTimeLeft(60);
-      setTurnTimeLeft(10);
-
     } catch (error) {
       console.error("Error refreshing game:", error);
     }
@@ -313,11 +310,7 @@ useEffect(() => {
       handleGameOver(); // Call handleGameOver when the timer hits 0
     }
   }, [gameTimer]);
-  useEffect(() => {
-    if (turnTimer <= 0) {
-        switchTurns(); // Call switch turns if time runs out
-    }
-  }, [turnTimer]);
+ 
 
   return (
     <div className="container">
