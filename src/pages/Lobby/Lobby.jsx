@@ -3,9 +3,10 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './Lobby.css'; // Local CSS file for this component
 import { useRole } from '../../context/RoleContext';
+import { usePlayer } from '../../context/PlayerContext';
 
 const Lobby = () => {
-  const [playerName, setPlayerName] = useState('');
+  const { playerName, setPlayerName } = usePlayer();
   const [isModalOpen, setIsModalOpen] = useState(false); // Control modal visibility
   const [profilePicture, setProfilePicture] = useState('src/assets/placeholderProfile.jpg');
   const [currentIndex, setCurrentIndex] = useState(0); // Track the current image index
@@ -55,7 +56,7 @@ const Lobby = () => {
   const handleStartGame = async (e) => {
     e.preventDefault();
     const finalPlayerName = playerName || "Guest"; // If playerName is empty, use "Guest"
-  
+    
     try {
       // Send the user data (name, profile picture, and selected role) in a single request
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/setUser`, { 
