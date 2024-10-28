@@ -314,7 +314,7 @@ useEffect(() => {
     }
   }, [gameTimer]);
   useEffect(() => {
-    if (turnTimer <= 0) {
+    if (turnTimer <= 1) {
         switchTurns(); // Call switch turns if time runs out
     }
   }, [turnTimer]);
