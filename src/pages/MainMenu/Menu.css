@@ -1,0 +1,67 @@
+/* Menu.css */
+
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #3b4371, #f3904f); /* Stylish background gradient */
+    font-family: 'Pixelify Sans', sans-serif; /* Unique font for a game-like feel */
+    color: #fff;
+    text-align: center;
+  }
+  
+  .menu-container h1 {
+    font-size: 3em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #ffdf6c; /* Gold-like color for a standout title */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); /* Subtle shadow effect */
+    margin-bottom: 40px;
+  }
+  
+  button {
+    width: 200px;
+    padding: 15px 0;
+    margin: 15px 0;
+    font-size: 1.2em;
+    color: #3b4371;
+    background: #ffdf6c; /* Contrasting button color */
+    border: 2px solid #3b4371;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2); /* Button shadow */
+  }
+  
+  button:hover {
+    background: #f3904f; /* Button color changes on hover */
+    color: #fff;
+    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3); /* Larger shadow effect */
+    transform: translateY(-3px); /* Small lift on hover */
+  }
+  
+  button:active {
+    transform: translateY(1px); /* Button depresses on click */
+  }
+  
+  #start-button {
+    background: #ffdf6c;
+  }
+  
+  #settings {
+    background: #3b4371;
+    color: #ffdf6c;
+    border: 2px solid #ffdf6c;
+  }
+  
+  #settings:hover {
+    background: #ffdf6c;
+    color: #3b4371;
+    border-color: #3b4371;
+  }
+  
