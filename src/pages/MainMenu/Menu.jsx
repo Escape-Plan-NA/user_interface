@@ -5,9 +5,15 @@ import '../../index.css';
 
 const Menu = () => {
   const navigate = useNavigate();
+  const buttonContainerStyle = {
+    display: 'flex',
+    flexDirection: 'column', 
+    gap: '0.5em', 
+    alignItems: 'center' 
+  };
 
   return (
-    <div className="menu-container">
+    <div className="menu-container" style={buttonContainerStyle}>
       <h1>ESCAPE PLAN</h1>
       <button id="start-button" onClick={() => navigate('/lobby')}>Multiplayer</button>
       <button id="start-button" onClick={() => navigate('/singledevice')}>Singleplayer</button> 
