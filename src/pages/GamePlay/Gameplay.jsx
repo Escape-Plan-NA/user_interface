@@ -301,7 +301,7 @@ const GamePlay = () => {
     }
 
     setGameOverMessage(`Game Over, ${winner} wins!!!\nFarmer: ${scores.farmer}, Thief: ${scores.thief}`);
-    playSound(winnerSound);
+    playSound(sounds.current.winnerSound);
     setTimeout(() => {
       try {
         navigate('/');
