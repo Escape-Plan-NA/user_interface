@@ -1,4 +1,5 @@
 // Game.jsx
+// Game.jsx
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useWebSocket } from '../../context/WebSocketProvider';
@@ -24,9 +25,21 @@ const Game = () => {
   const [turnTimeLeft, setTurnTimeLeft] = useState(10);
   const thiefImage = "path/to/thief-image.png"; // Replace with your image path
   const [username, setUsername] = useState(name.state?.username || "Guest"); // Set default if not provided
+  const [logs, setLogs] = useState([]);
 
 
   // Initial setup and event listeners for receiving game data from the server
+  useEffect(() => {
+    // Listen for move logs from the server
+    socket.on("moveLog", (message) => {
+      setLogs((prevLogs) => [...prevLogs, message]);
+    });
+
+    // Cleanup event listener on component unmount
+    return () => {
+      socket.off("moveLog");
+    };
+  }, []);
   useEffect(() => {
     console.log(role);
     if (!socket) return;
@@ -130,6 +143,12 @@ const Game = () => {
       />
       <Scoreboard farmerScore={scores.farmer} thiefScore={scores.thief} />
       <button onClick={resetGame}>Full Reset</button>
+      <h3>Move Logs</h3>
+      <ul>
+        {logs.map((log, index) => (
+          <li key={index}>{log}</li>
+        ))}
+      </ul>
     </div>
   );
 };
