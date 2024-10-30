@@ -4,12 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Lobby = () => {
-  const { socket, isConnected } = useWebSocket();
+  const { socket, isConnected } = useWebSocket(); //socket is the connection context and isconnected is connected status
   const navigate = useNavigate();
   const [players, setPlayers] = useState({ farmer: false, thief: false });
   const [role, setRole] = useState(null);
   const [gameStarted, setGameStarted] = useState(false); // Track if game should start
   const [inProgressMessage, setInProgressMessage] = useState('');
+  const [username, setUsername]=useState(""); //get username from form
+  const [isReady, setIsReady] = useState(false); //to start the game when button click
 
   useEffect(() => {
     if (role) {
@@ -20,6 +22,7 @@ const Lobby = () => {
   useEffect(() => {
     const fetchRole = async () => {
       try {
+        console.log("Fetching role for socket id" , socket.id);
         const socketID = socket.id;  // Retrieve the current socket ID
         const response = await axios.get(`http://127.0.0.1:3000/api/get-role/${socketID}`);
         const assignedRole = response.data.role;
@@ -99,24 +102,40 @@ const Lobby = () => {
   useEffect(() => {
     if (gameStarted && role) {
       console.log("Navigating to game with role:", role);
-      navigate('/game', { state: { role } });
+      navigate('/game', { state: { username, role } });
     }
   }, [gameStarted, role, navigate]);
 
   const handleStartGame = () => {
     console.log("Start Game button clicked");
+    // Check if username is entered
+  if (!username.trim()) {
+    console.error("No username provided. Please enter a username.");
+    alert("Please enter a username.");
+    return;
+  }
+
     if (!role) {
       console.error("No role assigned yet. Cannot start the game.");
       return;
     }
-    socket.emit('playerReady');
-    console.log(`Emitted 'playerReady' event for role: ${role}`);
+    socket.emit('playerReady', {userId: socket.id, username});
+    console.log(`Emitted 'playerReady' event for ${username} role: ${role}`);
   };
 
   return (
     <div>
       <h2>Game Lobby</h2>
       {inProgressMessage && <p>{inProgressMessage}</p>}
+
+      <div>
+      <input
+        type="text"
+        placeholder="Enter username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      </div>
       <div>
         <p>Farmer: {players.farmer ? "Connected" : "Waiting"}</p>
         <p>Thief: {players.thief ? "Connected" : "Waiting"}</p>

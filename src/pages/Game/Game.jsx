@@ -7,8 +7,13 @@ import GameBoard from '../../components/GameBoard/GameBoard.jsx';
 import Scoreboard from '../../components/Scoreboard/Scoreboard.jsx';
 
 const Game = () => {
-    const location = useLocation();
+
+  // Get the role passed from the previous page via location state
+  const location = useLocation(); //role passed from lobby
   const { socket } = useWebSocket();
+  const name =useLocation(); //username passed from lobby
+
+  // Define the initial game state variables
   const [grid, setGrid] = useState([]);
   const [thiefPosition, setThiefPosition] = useState({ row: 1, col: 1 });
   const [farmerPosition, setFarmerPosition] = useState({ row: 1, col: 1 });
@@ -18,7 +23,10 @@ const Game = () => {
   const [timeLeft, setTimeLeft] = useState(60);
   const [turnTimeLeft, setTurnTimeLeft] = useState(10);
   const thiefImage = "path/to/thief-image.png"; // Replace with your image path
+  const [username, setUsername] = useState(name.state?.username || "Guest"); // Set default if not provided
 
+
+  // Initial setup and event listeners for receiving game data from the server
   useEffect(() => {
     console.log(role);
     if (!socket) return;
@@ -36,18 +44,20 @@ const Game = () => {
       });
     });
 
+    // Listen for timer updates from the server
     socket.on("timerUpdate", ({ timeLeft, turnTimeLeft }) => {
       setTimeLeft(timeLeft);
       setTurnTimeLeft(turnTimeLeft);
     });
 
+    // Listen for the end of game, announcing the winner
     socket.on("winner", ({ winner, scores }) => {
       alert(`${winner === 'farmer' ? "Farmer catches the thief!" : "Thief reaches the tunnel!"} ${winner} wins!\nCurrent Scores:\nFarmer: ${scores.farmer}, Thief: ${scores.thief}`);
       setScores(scores);
     });
-
+// Request game reset when component mounts
     socket.emit("resetGame");
-
+ // Cleanup listeners on component unmount
     return () => {
       socket.off("roleAssigned");
       socket.off("gameState");
@@ -111,7 +121,7 @@ const Game = () => {
 
   return (
     <div>
-      <GameHeader role={role} timeLeft={timeLeft} turn={turn} turnTimeLeft={turnTimeLeft} />
+      <GameHeader  role={role} timeLeft={timeLeft} turn={turn} turnTimeLeft={turnTimeLeft} username={username} />
       <GameBoard
         grid={grid}
         farmerPosition={farmerPosition}
