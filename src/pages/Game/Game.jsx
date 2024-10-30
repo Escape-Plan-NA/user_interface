@@ -1,33 +1,27 @@
 // Game.jsx
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useWebSocket } from '../../context/WebSocketProvider';
 import GameHeader from '../../components/GameHeader/GameHeader.jsx';
 import GameBoard from '../../components/GameBoard/GameBoard.jsx';
 import Scoreboard from '../../components/Scoreboard/Scoreboard.jsx';
 
 const Game = () => {
+    const location = useLocation();
   const { socket } = useWebSocket();
   const [grid, setGrid] = useState([]);
   const [thiefPosition, setThiefPosition] = useState({ row: 1, col: 1 });
   const [farmerPosition, setFarmerPosition] = useState({ row: 1, col: 1 });
   const [turn, setTurn] = useState("");
   const [scores, setScores] = useState({ farmer: 0, thief: 0 });
-  const [role, setRole] = useState(null); // Start with null role
+  const [role, setRole] = useState(location.state?.role || null);
   const [timeLeft, setTimeLeft] = useState(60);
   const [turnTimeLeft, setTurnTimeLeft] = useState(10);
   const thiefImage = "path/to/thief-image.png"; // Replace with your image path
 
   useEffect(() => {
+    console.log(role);
     if (!socket) return;
-
-    // Request role from server based on socket ID
-    socket.emit("getRole");
-
-    // Listen for the server's response with the assigned role
-    socket.on("roleAssigned", ({ role: assignedRole }) => {
-      console.log("Role assigned by server:", assignedRole);
-      setRole(assignedRole); // Set the assigned role in state
-    });
 
     // Listen for game state updates from the server
     socket.on("gameState", (gameData) => {
