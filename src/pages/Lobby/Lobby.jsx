@@ -1,157 +1,117 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useWebSocket } from '../../context/WebSocketProvider';
 import { useNavigate } from 'react-router-dom';
-import './Lobby.css'; // Local CSS file for this component
 
 const Lobby = () => {
-  const [playerName, setPlayerName] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false); // Control modal visibility
-  const [profilePicture, setProfilePicture] = useState('src/assets/placeholderProfile.jpg');
-  const [currentIndex, setCurrentIndex] = useState(0); // Track the current image index
-  const [userId, setUserId] = useState(''); // Track the user ID
-
-  const imageOptions = [
-    "src/assets/customize/cyan.jpg",
-    "src/assets/customize/mario.jpg",
-    "src/assets/customize/orange.jpg",
-    "src/assets/customize/red.jpg",
-    "src/assets/customize/spiderman.jpg",
-    "src/assets/customize/squidgame.jpg",
-  ];
-
+  const { socket, isConnected } = useWebSocket();
   const navigate = useNavigate();
+  const [players, setPlayers] = useState({ farmer: false, thief: false });
+  const [role, setRole] = useState(null);
+  const [inProgressMessage, setInProgressMessage] = useState('');
 
-  // Function to handle clearing user data on page reload or game restart
-  const handlePageReloadOrRestart = async () => {
-    try {
-      await axios.post('http://localhost:3000/users/removeUser');
-      console.log('User data cleared from server');
-    } catch (error) {
-      console.error('Error clearing user data from the server:', error);
-    }
-  };
 
-  // Call the function to clear user data when the component unmounts (i.e., when reloading the page)
   useEffect(() => {
-    window.addEventListener('beforeunload', handlePageReloadOrRestart);
-    return () => {
-      window.removeEventListener('beforeunload', handlePageReloadOrRestart);
-    };
+    // Forcing a temporary role assignment for testing
+    setRole("farmer"); // or setRole("thief")
+    setPlayers((prev) => ({ ...prev, ["farmer"]: true })); // Replace with "thief" if needed
+    console.log("Temporary role set for testing purposes");
   }, []);
 
-  // Function to open the customization modal
-  const handleCustomize = (e) => {
-    e.preventDefault();
-    const finalPlayerName = playerName || "Guest"; // Use "Guest" if playerName is empty
-    setPlayerName(finalPlayerName);
+  useEffect(() => {
+    if (!socket) return;
 
-    setIsModalOpen(true); // Open customization modal
+    console.log("Lobby component mounted. Socket is available:", socket);
+    console.log("Connection status:", isConnected);
+
+    // Emit joinLobby event to the server
+    socket.emit('joinLobby');
+    console.log("Emitted 'joinLobby' event to the server.");
+
+    // Listen for the assigned role from the server
+    socket.on('playerConnected', ({ role: assignedRole }) => {
+      if (!role) {
+        console.log(`Setting role to ${assignedRole}`);
+        setRole(assignedRole); // Store the assigned role for this client
+        setPlayers((prev) => ({ ...prev, [assignedRole]: true }));
+      } else {
+        console.warn("Attempted to reassign role:", assignedRole, "Existing role:", role);
+      }
+      console.log("Current client role after assignment:", assignedRole);
+      console.log("Players state:", { ...players });
+    });
+
+    // Listen for player status updates
+    socket.on('currentPlayerStatus', ({ players: updatedPlayers }) => {
+      console.log("Received 'currentPlayerStatus' update:", updatedPlayers);
+      setPlayers({
+        farmer: updatedPlayers[0].connected,
+        thief: updatedPlayers[1].connected,
+      });
+      console.log("Updated players state:", { farmer: updatedPlayers[0].connected, thief: updatedPlayers[1].connected });
+    });
+
+    // Listen for game start event
+    socket.on('gameStarted', () => {
+      console.log("Both players are ready. Game is starting...");
+      navigate('/game');
+    });
+
+    // Listen for disconnection events
+    socket.on('playerDisconnected', ({ role: disconnectedRole }) => {
+      console.log(`Received 'playerDisconnected' event for role: ${disconnectedRole}`);
+      setPlayers((prev) => ({ ...prev, [disconnectedRole]: false }));
+      console.log("Updated players state after 'playerDisconnected':", { ...players });
+    });
+
+    // Listen for game-in-progress messages if lobby is full
+    socket.on('gameInProgress', ({ message }) => {
+      console.log("Received 'gameInProgress' message from server.");
+      setInProgressMessage(message);
+    });
+
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      socket.off('playerConnected');
+      socket.off('currentPlayerStatus');
+      socket.off('gameStarted');
+      socket.off('playerDisconnected');
+      socket.off('gameInProgress');
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      console.log("Lobby component unmounted, listeners removed.");
+    };
+  }, [socket, isConnected]);
+
+  const handleStartGame = () => {
+    console.log("Start Game button clicked");  // Add this line
+    if (!role) {
+      console.error("No role assigned yet. Cannot start the game.");
+      return;
+    }
+    console.log("Current players state:", players);
+    socket.emit('playerReady');
+    console.log(`Emitted 'playerReady' event for role: ${role}`);
   };
-
-  // Function to handle navigation to the game page
-  const handleStartGame = async (e) => {
-    e.preventDefault();
-    const finalPlayerName = playerName || "Guest"; // If playerName is empty, use "Guest"
   
-    try {
-      // Send the user data (name and profile picture) in a single request
-      const response = await axios.post('http://localhost:3000/users/setUser', { 
-        name: finalPlayerName, 
-        profilePicture 
-      });
-      console.log('User data set:', response.data);
-
-      const userId = response.data.user.userId;  // Get the generated userId
-      setUserId(userId);  // Store the userId in state
-
-      console.log('Generated User ID:', userId);
-
-      // Update the connected status using the generated userId
-      await axios.put('http://localhost:3000/games/update-user', { 
-        role: 'thief',  // Update based on the role (you can also handle farmer here)
-        userId: userId, 
-      });
-
-      // Navigate to the game after successfully updating the connection status
-      navigate('/start');  // Navigate to the main game here
-    } catch (error) {
-      console.error('Error setting user data or updating connection status:', error);
-    }
-  };
-
-  // Handle profile picture change on arrow click
-  const handleArrowClick = (direction) => {
-    if (direction === 'left') {
-      setCurrentIndex((prevIndex) => (prevIndex === 0 ? imageOptions.length - 1 : prevIndex - 1));
-    } else {
-      setCurrentIndex((prevIndex) => (prevIndex === imageOptions.length - 1 ? 0 : prevIndex + 1));
-    }
-    setProfilePicture(imageOptions[currentIndex]);  // Update the profile picture as the user navigates
-  };
-
-  // Save the game state inside the modal (without sending to server)
-  const handleSaveGameState = () => {
-    const newProfilePicture = imageOptions[currentIndex];  // Set the selected picture
-    setProfilePicture(newProfilePicture);  // Update profile picture in state
-
-    // Just store the player name (or "Guest") and profile picture in the state
-    setPlayerName(playerName || "Guest");
-
-    // Close the modal after saving
-    setIsModalOpen(false);
-  };
 
   return (
-    <div className="lobby-container">
-      {/* Display current profile picture */}
-      <div className="profile-preview">
-        <img src={profilePicture} alt="Current Profile" className="current-profile-pic" />
+    <div>
+      <h2>Game Lobby</h2>
+      {inProgressMessage && <p>{inProgressMessage}</p>}
+      <div>
+        <p>Farmer: {players.farmer ? "Connected" : "Waiting"}</p>
+        <p>Thief: {players.thief ? "Connected" : "Waiting"}</p>
       </div>
-
-      {/* Form for player name */}
-      <form>
-        <input
-          className="enter-info"
-          type="text"
-          value={playerName}
-          onChange={(e) => setPlayerName(e.target.value)}
-          placeholder="Enter your name"
-          required
-        />
-
-        {/* Separate buttons for Start Game and Customize */}
-        <div>
-          <button type="button" onClick={handleStartGame}>Start Game</button> {/* Just navigate to the game page */}
-          <button type="button" onClick={handleCustomize}>Customize</button> {/* Open customization modal */}
-        </div>
-      </form>
-
-      {/* Display generated user ID */}
-      {userId && <p>Generated User ID: {userId}</p>}
-
-      {/* Customization Modal */}
-      {isModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>Customize Your Character</h2>
-            <p>Player: {playerName || "Guest"}</p> {/* Show the player name */}
-
-            <div className="arrow-container">
-              <button className="arrow left-arrow" onClick={() => handleArrowClick('left')}>&lt;</button>
-              <img
-                src={imageOptions[currentIndex]}
-                alt={`Option ${currentIndex + 1}`}
-                className="option-img"
-              />
-              <button className="arrow right-arrow" onClick={() => handleArrowClick('right')}>&gt;</button>
-            </div>
-
-            <div className="modal-actions">
-              <button onClick={handleSaveGameState}>Save</button> {/* Save game state */}
-              <button onClick={() => setIsModalOpen(false)}>Close</button> {/* Option to close modal */}
-            </div>
-          </div>
-        </div>
+      {isConnected ? (
+        <button onClick={handleStartGame}>
+          Start Game
+        </button>
+      ) : (
+        <p>Connecting...</p>
       )}
     </div>
   );
