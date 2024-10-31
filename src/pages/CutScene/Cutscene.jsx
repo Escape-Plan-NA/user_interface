@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import '../../App.css';
+import './Cutscene.css';
 
 const Cutscene = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate('/role');
-    }, 5000);
+      navigate('/start');
+    }, 20000);
 
     return () => clearTimeout(timer);
   }, [navigate]);
@@ -29,8 +29,7 @@ const Cutscene = () => {
 
   return (
     <div className="cutscene-container">
-      <h1>Cutscene Playing...</h1>
-      <button onClick={() => navigate('/role')}>skip</button>
+      <button onClick={() => navigate('/start')}>skip</button>
     </div>
   );
 };

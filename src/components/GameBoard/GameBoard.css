@@ -1,51 +1,65 @@
+/* Ensure the entire gameboard container is centered in the viewport */
+.gameboard-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+  width: 100vw; /* Full viewport width */
+}
+
+/* Game board styling */
 .game-table {
-  border-collapse: collapse;
-  margin: 20px auto;
-  width: 100%; /* Full width */
-  max-width: 600px; /* Limit maximum width */
-  height: 600px; /* Adjust height as needed */
-  border-radius: 12px; /* Rounded corners */
-  overflow: hidden; /* Prevent overflow for rounded corners */
+  border-collapse: collapse;  /* Remove grid lines */
+  margin: 0 auto;
+  width: 480px;  /* New board size of 480x480 */
+  height: 480px;
+  border-radius: 0px;  /* Sharp 90-degree corners */
+  overflow: hidden;
 }
 
+/* Each tile styling */
 .table-cell {
-  width: 60px;
-  height: 60px;
+  width: 96px;  /* Set each tile to 96x96 pixels */
+  height: 96px;
   text-align: center;
-  border: 2px solid #adb5bd;
+  border: none;  /* Remove borders for invisible grid lines */
   position: relative;
-  transition: background-color 0.3s ease;
-  border-radius: 6px; /* Slightly rounded corners for cells */
 }
 
-.table-cell:hover {
-  background-color: rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-}
-
-.table-cell.free {
-  background-image: url('https://png.pngtree.com/element_our/sm/20180216/sm_5a8637f76b5ff.jpg');
+/* Different tile types with background images */
+.table-cell.free1,
+.table-cell.free2,
+.table-cell.free3,
+.table-cell.obstacle,
+.table-cell.tunnel {
   background-size: cover;
   background-position: center;
+}
+
+.table-cell.free1 {
+  background-image: url('../../assets/map_components/autumn/AutumnFree(1).png');
+}
+
+.table-cell.free2 {
+  background-image: url('../../assets/map_components/autumn/AutumnFree(2).png');
+}
+
+.table-cell.free3 {
+  background-image: url('../../assets/map_components/autumn/AutumnFree(3).png');
 }
 
 .table-cell.obstacle {
-  background-image: url('https://img.freepik.com/free-photo/red-ceramic-glass-colorful-tiles-mosaic-composition-pattern-background_1258-52340.jpg');
-  background-size: cover;
-  background-position: center;
-  border-color: #e63946;
+  background-image: url('../../assets/map_components/autumn/AutumnObtacle.png');
 }
 
 .table-cell.tunnel {
-  background-image: url('https://img.freepik.com/free-photo/abstract-bright-green-square-pixel-tile-mosaic-wall-background-texture_1258-72162.jpg');
-  background-size: cover;
-  background-position: center;
-  border-color: #2a9d8f;
+  background-image: url('../../assets/map_components/autumn/AutumnTunnel.png');
 }
 
-.thief-image {
-  width: 40px;
-  height: 40px;
+/* Character image styling */
+.character-image {
+  width: 80px;  /* Adjust character image size to fit the smaller 96x96 tile */
+  height: 80px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -54,6 +68,21 @@
   z-index: 1;
 }
 
+/* Character label styling */
+.character-label {
+  position: absolute;
+  top: -30px;  /* Position label above the character image */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.2);  /* Semi-transparent black background */
+  color: #fff;
+  padding: 2px 5px;  /* Padding for better readability */
+  border-radius: 4px;  /* Rounded corners */
+  font-size: 0.8rem;  /* Smaller font size */
+  z-index: 10;  /* Ensure label appears above the character */
+}
+
+/* Thief hover effect */
 .thief-image:hover {
   transform: translate(-50%, -50%) scale(1.2);
 }

@@ -4,81 +4,67 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Lobby = () => {
-  const { socket, isConnected } = useWebSocket(); //socket is the connection context and isconnected is connected status
+  const { socket, isConnected } = useWebSocket();
   const navigate = useNavigate();
-  const [players, setPlayers] = useState({ farmer: false, thief: false });
+  
+  const [username, setUsername] = useState(''); // Single state for user-provided name
+  const [playerName, setPlayerName] = useState('Guest');
+  const [profilePicture, setProfilePicture] = useState('src/assets/Character/White/White.gif');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [userId, setUserId] = useState('');
   const [role, setRole] = useState(null);
-  const [gameStarted, setGameStarted] = useState(false); // Track if game should start
+  const [players, setPlayers] = useState({ farmer: false, thief: false });
+  const [gameStarted, setGameStarted] = useState(false);
   const [inProgressMessage, setInProgressMessage] = useState('');
-  const [username, setUsername]=useState(""); //get username from form
-  const [isReady, setIsReady] = useState(false); //to start the game when button click
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    if (role) {
-      console.log("Role is set in Lobby:", role);
-    }
-  }, [role]);
+  const imageOptions = [
+    "src/assets/Character/White/White.gif",
+    "src/assets/Character/Blue/Blue.gif",
+    "src/assets/Character/Cream/Cream.gif",
+    "src/assets/Character/DarkGreen/Dark Green.gif",
+    "src/assets/Character/Green/Green.gif",
+    "src/assets/Character/Pink/Pink.gif",
+    "src/assets/Character/Purple/Purple.gif",
+    "src/assets/Character/Red/Red.gif",
+    "src/assets/Character/Yellow/Yellow.gif"
+  ];
 
   useEffect(() => {
     const fetchRole = async () => {
-      try {
-        console.log("Fetching role for socket id" , socket.id);
-        const socketID = socket.id;  // Retrieve the current socket ID
-        const response = await axios.get(`http://127.0.0.1:3000/api/get-role/${socketID}`);
-        const assignedRole = response.data.role;
-        console.log("Assigned role from API:", assignedRole);
-        setRole(assignedRole);
-      } catch (error) {
-        console.error("Error fetching role:", error.response?.data || error.message);
+      if (socket?.id) {
+        try {
+          const response = await axios.get(`http://127.0.0.1:3000/api/get-role/${socket.id}`);
+          const assignedRole = response.data.role;
+          setRole(assignedRole);
+        } catch (error) {
+          console.error("Error fetching role:", error.response?.data || error.message);
+        }
       }
     };
 
-    if (socket && socket.id) {
-      fetchRole();
-    }
+    fetchRole();
   }, [socket]);
 
   useEffect(() => {
     if (!socket) return;
 
-    console.log("Lobby component mounted. Socket is available:", socket);
-    console.log("Connection status:", isConnected);
-
+    socket.emit('joinLobby');
     socket.once('playerConnected', ({ role: assignedRole }) => {
-      console.log("Received playerConnected event with role:", assignedRole);
-      //setRole(assignedRole);
       setPlayers((prev) => ({ ...prev, [assignedRole]: true }));
     });
 
-    // Emit joinLobby event to the server
-    socket.emit('joinLobby');
-    console.log("Emitted 'joinLobby' event to the server.");
-
-    // Listen for player status updates
     socket.on('currentPlayerStatus', ({ players: updatedPlayers }) => {
-      console.log("Received 'currentPlayerStatus' update:", updatedPlayers);
       setPlayers({
         farmer: updatedPlayers[0].connected,
         thief: updatedPlayers[1].connected,
       });
     });
 
-    // Listen for game start event
-    socket.on('gameStarted', () => {
-      console.log("Both players are ready. Game is starting...");
-      setGameStarted(true); // Set gameStarted to true
-    });
-
-    // Listen for disconnection events
+    socket.on('gameStarted', () => setGameStarted(true));
+    socket.on('gameInProgress', ({ message }) => setInProgressMessage(message));
     socket.on('playerDisconnected', ({ role: disconnectedRole }) => {
-      console.log(`Received 'playerDisconnected' event for role: ${disconnectedRole}`);
       setPlayers((prev) => ({ ...prev, [disconnectedRole]: false }));
-    });
-
-    // Listen for game-in-progress messages if lobby is full
-    socket.on('gameInProgress', ({ message }) => {
-      console.log("Received 'gameInProgress' message from server.");
-      setInProgressMessage(message);
     });
 
     const handleBeforeUnload = (event) => {
@@ -91,20 +77,29 @@ const Lobby = () => {
       socket.off('playerConnected');
       socket.off('currentPlayerStatus');
       socket.off('gameStarted');
-      socket.off('playerDisconnected');
       socket.off('gameInProgress');
+      socket.off('playerDisconnected');
       window.removeEventListener('beforeunload', handleBeforeUnload);
-      console.log("Lobby component unmounted, listeners removed.");
     };
   }, [socket, isConnected]);
 
-  // UseEffect to trigger navigation only when `gameStarted` is true and `role` is available
   useEffect(() => {
     if (gameStarted && role) {
-      console.log("Navigating to game with role:", role);
       navigate('/game', { state: { username, role } });
     }
   }, [gameStarted, role, navigate]);
+
+  const handleCustomize = () => setIsModalOpen(true);
+
+  const handleArrowClick = (direction) => {
+    setCurrentIndex((prevIndex) => {
+      const newIndex = direction === 'left'
+        ? (prevIndex === 0 ? imageOptions.length - 1 : prevIndex - 1)
+        : (prevIndex === imageOptions.length - 1 ? 0 : prevIndex + 1);
+      
+      return newIndex;
+    });
+  };
 
   const handleStartGame = () => {
     console.log("Start Game button clicked");
@@ -114,38 +109,56 @@ const Lobby = () => {
     alert("Please enter a username.");
     return;
   }
-
+  
     if (!role) {
       console.error("No role assigned yet. Cannot start the game.");
       return;
     }
     socket.emit('playerReady', {userId: socket.id, username});
     console.log(`Emitted 'playerReady' event for ${username} role: ${role}`);
-  };
+  }
 
   return (
     <div>
       <h2>Game Lobby</h2>
       {inProgressMessage && <p>{inProgressMessage}</p>}
 
-      <div>
       <input
         type="text"
         placeholder="Enter username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
       />
-      </div>
-      <div>
-        <p>Farmer: {players.farmer ? "Connected" : "Waiting"}</p>
-        <p>Thief: {players.thief ? "Connected" : "Waiting"}</p>
-      </div>
+
+      <p>Farmer: {players.farmer ? "Connected" : "Waiting"}</p>
+      <p>Thief: {players.thief ? "Connected" : "Waiting"}</p>
+
       {isConnected ? (
-        <button onClick={handleStartGame}>
-          Start Game
-        </button>
+        <button onClick={handleStartGame}>Start Game</button>
       ) : (
         <p>Connecting...</p>
+      )}
+
+      <button type="button" onClick={handleCustomize}>Customize</button>
+
+      {userId && <p>Generated User ID: {userId}</p>}
+
+      {isModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Customize Your Character</h2>
+            <p>Player: {playerName}</p>
+            <div className="arrow-container">
+              <button className="arrow left-arrow" onClick={() => handleArrowClick('left')}>&lt;</button>
+              <img src={imageOptions[currentIndex]} alt={`Option ${currentIndex + 1}`} className="option-img" />
+              <button className="arrow right-arrow" onClick={() => handleArrowClick('right')}>&gt;</button>
+            </div>
+            <div className="modal-actions">
+              <button onClick={handleSaveGameState}>Save</button>
+              <button onClick={() => setIsModalOpen(false)}>Close</button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
