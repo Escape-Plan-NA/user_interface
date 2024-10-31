@@ -1,33 +1,42 @@
+/* Lobby Container */
 .lobby-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;    /* Centers elements horizontally */
-    justify-content: center; /* Centers elements vertically */
-    background-image: url('../../assets/Main Menu BG.gif');
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    height: 100vh;           /* Takes full viewport height */
-    width: 100vw;            /* Takes full viewport width */
-    position: absolute;      /* Ensures the container fills the screen */
-    top: 0;                  /* Position from the top */
-    left: 0;                 /* Position from the left */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-image: url('../../assets/Main Menu BG.gif');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
+/* Profile Preview */
 .profile-preview {
   margin-bottom: 20px;
 }
 
+/* Current Profile Picture */
 .current-profile-pic {
   width: 100px;
   height: 100px;
   border-radius: 30%;
 }
 
+/* Username Text */
 .enter-info {
-  margin-bottom: 10px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 10px;
+  text-align: center;
+  color: #333;
 }
 
+/* Modal Styles */
 .modal {
   position: fixed;
   top: 50%;
@@ -44,6 +53,7 @@
   padding: 20px;
 }
 
+/* Image Selector Arrows */
 .arrow-container {
   display: flex;
   align-items: center;
@@ -57,6 +67,7 @@
   cursor: pointer;
 }
 
+/* Image Options */
 .option-img {
   width: 150px;
   height: 150px;
@@ -69,6 +80,7 @@
   border: 2px solid #333;
 }
 
+/* Modal Actions */
 .modal-actions {
   display: flex;
   justify-content: space-between;
@@ -77,4 +89,46 @@
 
 button {
   cursor: pointer;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #333;
+  color: #fff;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #555;
+}
+
+/* Centered Player Avatar */
+.player-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+/* Status Actions */
+.status-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+}
+
+/* Green text color for connected player count */
+.connected-green {
+  color: green;
+  font-weight: bold;
+}
+
+/* Style for button after it's pressed */
+.button-pressed {
+  background-color: #4CAF50; /* Match the hover color */
+  color: white;
+  cursor: not-allowed;
 }

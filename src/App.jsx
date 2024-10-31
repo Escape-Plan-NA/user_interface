@@ -21,6 +21,9 @@ const App = () => (
         <Route path="/" element={<Menu />} />
         <Route path="/lobby" element={<Lobby />} />
         <Route path="/game" element={<Game />} />
+        <Route path="/cutscene" element={<Cutscene />} />
+        <Route path="/setting" element={<Setting />} />
+        <Route path="/singledevice" element={<SingleplayerModeSelection />} />
       </Routes>
     </Router>
   </WebSocketProvider>
