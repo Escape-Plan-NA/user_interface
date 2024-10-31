@@ -1,15 +1,16 @@
-import sound from "../../assets/forest_sounds.mp3";
+import sound from "../../assets/soundEffects/forest_sounds.mp3";
 import React, { useEffect, useState, useContext } from "react";
 import { FaVolumeUp, FaArrowLeft, FaArrowRight } from "react-icons/fa"; // Import sound icon and arrows
 import "./Settings.css";
 import { AudioContext } from '../../context/AudioContext';
 import ThemeToggle from '../../components/ThemeToggle';
-
+import { SoundEffectContext } from '../../context/SoundEffectContext';
 
 import { useNavigate } from "react-router-dom";
 
 function Setting() {
-  const { isPlaying, toggleAudio } = useContext(AudioContext);
+  const { isPlaying, toggleAudio } = useContext(AudioContext); //global audio
+  const { soundEffectsEnabled, toggleSoundEffects } = useContext(SoundEffectContext); //sound effects
   const navigate = useNavigate(); // Initialize the navigate function!!
   return (
     <div className="settings-container">
@@ -33,12 +34,18 @@ function Setting() {
         </div>
 
         <div className="option">
-          <label className="selection-display-text">Effect:</label>
-          <div className="button-group">
-            <button className="side-by-side-button"><label className="button-text">On</label></button>
-
-          </div>
-        </div>
+      <label className="selection-display-text">Effect:</label>
+      <div className="button-group">
+        <button 
+          className="side-by-side-button"
+          onClick={toggleSoundEffects} // Toggles sound effects on click
+        >
+          <label className="button-text">
+            {soundEffectsEnabled ? "On" : "Off"} {/* Reflects current state */}
+          </label>
+        </button>
+      </div>
+    </div>
 
         <div>
           <ThemeToggle></ThemeToggle>

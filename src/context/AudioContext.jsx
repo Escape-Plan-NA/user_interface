@@ -1,6 +1,6 @@
 // AudioContext.js
 import React, { createContext, useState } from 'react';
-import forestSounds from '../assets/forest_sounds.mp3';
+import forestSounds from '../assets/soundEffects/forest_sounds.mp3';
 
 const AudioContext = createContext();
 

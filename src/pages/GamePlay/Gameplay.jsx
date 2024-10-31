@@ -1,9 +1,17 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+
 import GameHeader from '../../components/GameHeader/GameHeader.jsx';
 import GameBoard from '../../components/GameBoard/GameBoard.jsx';
 import Scoreboard from '../../components/Scoreboard/Scoreboard.jsx';
+import { SoundEffectContext } from "../../context/SoundEffectContext.jsx";
+
+import farmerMoveSound from '../../assets/soundEffects/farmer_move.mp3';
+import thiefMoveSound from '../../assets/soundEffects/thief_move.mp3';
+import farmerWinSound from '../../assets/soundEffects/farmer_win.mp3';
+import thiefWinSound from '../../assets/soundEffects/thief_win.mp3';
+import tieGameSound from '../../assets/soundEffects/tieGame.mp3';
 import farmer from '../../assets/Character/White/White(T).gif';
 import thief from '../../assets/Character/White/White(Th).gif';
 
@@ -22,8 +30,34 @@ const GamePlay = () => {
   const farmerImage = farmer;
   const isFirstRender = useRef(true);
   const [playerName, setPlayerName] = useState('');
+  const { soundEffectsEnabled } = useContext(SoundEffectContext);
+
   const [profilePicture, setProfilePicture] = useState(''); // State for profile picture
   let gameWon = false; // Prevent multiple win triggers
+
+
+  // Preloaded audio files
+  const sounds = useRef({
+    farmerMove: new Audio(farmerMoveSound),
+    thiefMove: new Audio(thiefMoveSound),
+    farmerWin: new Audio(farmerWinSound),
+    thiefWin: new Audio(thiefWinSound),
+    tieGame: new Audio(tieGameSound)
+  });
+
+  useEffect(() => {
+    if (soundEffectsEnabled) {
+      Object.values(sounds.current).forEach(sound => sound.load());
+    }
+  }, [soundEffectsEnabled]);
+
+  // Function to play sound
+  const playSound = (sound) => {
+    if (soundEffectsEnabled && sound) {
+      sound.play().catch(error => console.error("Error playing sound:", error));
+    }
+  };
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -42,7 +76,7 @@ const GamePlay = () => {
   useEffect(() => {
     // Log a welcome message when the player enters the gameplay page
     console.log("Welcome to the game! The game has started.");
-    startGame(); 
+    startGame();
 
     return async () => {
       if (isFirstRender.current) {
@@ -91,19 +125,6 @@ const GamePlay = () => {
     }
   };
 
-  const handleGameOver = () => {
-    let winner;
-    if (scores.farmer > scores.thief) {
-      winner = 'Farmer';
-    } else if (scores.thief > scores.farmer) {
-      winner = 'Thief';
-    } else {
-      winner = 'No one'; 
-    }
-
-    setGameOverMessage(`Game Over, ${winner} wins!!!`);
-  };
-
   useEffect(() => {
     if (timeLeft > 0) {
       const gameTimer = setInterval(() => {
@@ -134,7 +155,7 @@ const GamePlay = () => {
       const updatedGameState = response.data;
 
       setTurn(updatedGameState.currentTurn);
-      setTurnTimeLeft(10); 
+      setTurnTimeLeft(10);
     } catch (error) {
       console.error("Error switching turn:", error);
     }
@@ -142,8 +163,9 @@ const GamePlay = () => {
 
   useEffect(() => {
     let moveInProgress = false;
+   
     const handleKeyPress = async (e) => {
-      if (moveInProgress) return; 
+      if (moveInProgress) return;
       moveInProgress = true;
 
       if (turn !== role) {
@@ -176,7 +198,7 @@ const GamePlay = () => {
       if (newPosition.row === currentPosition.row && newPosition.col === currentPosition.col) {
         console.log("Invalid move: outside the grid boundaries.");
         moveInProgress = false;
-        return; 
+        return;
       }
 
       try {
@@ -193,6 +215,10 @@ const GamePlay = () => {
         setTurn(updatedGameState.currentTurn);
 
         setTurnTimeLeft(10);
+        //play sound according to the move
+        playSound(role === 'farmer' ? sounds.current.farmerMove : sounds.current.thiefMove);
+
+    
 
         checkWinConditions(newPosition);
 
@@ -216,18 +242,24 @@ const GamePlay = () => {
     if (turn === "thief") {
       if (currentPosition.row === farmerPosition.row && currentPosition.col === farmerPosition.col) {
         gameWon = true;
+        playSound(sounds.current.farmerWin);
         alert(`Farmer catches the thief! Farmer wins! \nCurrent Scores:\nFarmer: ${scores.farmer + 1}, Thief: ${scores.thief}`);
+
         await updateScore('farmer');
       } else if (grid[currentPosition.row][currentPosition.col] === 'tunnel') {
         gameWon = true;
         setThiefPosition(currentPosition);
+        playSound(sounds.current.thiefWin);
         alert(`Thief reaches the tunnel! Thief wins! \nCurrent Scores:\nFarmer: ${scores.farmer}, Thief: ${scores.thief + 1}`);
+
         await updateScore('thief');
       }
     } else if (turn === "farmer") {
       if (currentPosition.row === thiefPosition.row && currentPosition.col === thiefPosition.col) {
         gameWon = true;
+        playSound(sounds.current.farmerWin);
         alert(`Farmer catches the thief! Farmer wins! \nCurrent Scores:\nFarmer: ${scores.farmer + 1}, Thief: ${scores.thief}`);
+
         await updateScore('farmer');
       }
     }
@@ -244,7 +276,7 @@ const GamePlay = () => {
       });
 
       setTurn(winner);
-      await startGame(); 
+      await startGame();
       gameWon = false;
     } catch (error) {
       console.error(`Error updating score for ${winner}:`, error);
@@ -274,6 +306,31 @@ const GamePlay = () => {
     }
   };
 
+  const handleGameOver = () => {
+    let winner;
+    let winnerSound;
+    if (scores.farmer > scores.thief) {
+      winner = 'Farmer';
+      winnerSound = sounds.current.farmerWin;
+    } else if (scores.thief > scores.farmer) {
+      winner = 'Thief';
+      winnerSound = sounds.current.thiefWin;
+    } else {
+      winner = 'No one';
+      winnerSound = sounds.current.tieGame;
+    }
+
+    setGameOverMessage(`Game Over, ${winner} wins!!!\nFarmer: ${scores.farmer}, Thief: ${scores.thief}`);
+    playSound(sounds.current.winnerSound);
+    setTimeout(() => {
+      try {
+        navigate('/');
+      } catch (error) {
+        console.error("Failed to navigate:", error);
+      }
+    }, 5000);
+  };
+
   useEffect(() => {
     const fetchPlayerName = async () => {
       try {
@@ -284,7 +341,7 @@ const GamePlay = () => {
       }
     };
 
-    fetchPlayerName(); 
+    fetchPlayerName();
   }, []);
 
   return (
