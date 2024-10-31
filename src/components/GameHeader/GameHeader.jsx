@@ -4,6 +4,7 @@ import './GameHeader.css';
 const GameHeader = ({ role, timeLeft, turn, turnTimeLeft, username}) => {
   return (
     <div className="game-header">
+      <h2>Welcome, {username}</h2>
       <h2>Your role is: {role === "farmer" ? "Farmer" : "Thief"}</h2>
       <p>Time left: {Math.floor(timeLeft / 60).toString().padStart(2, '0')}:{(timeLeft % 60).toString().padStart(2, '0')}</p>
       <p>Turn: {turn === "farmer" ? "Farmer" : "Thief"}</p>
