@@ -5,6 +5,7 @@ import { useWebSocket } from '../../context/WebSocketProvider';
 import GameHeader from '../../components/GameHeader/GameHeader.jsx';
 import GameBoard from '../../components/GameBoard/GameBoard.jsx';
 import Scoreboard from '../../components/Scoreboard/Scoreboard.jsx';
+import Chat from '../../components/Chat/Chat.jsx';
 
 const Game = () => {
 
@@ -24,6 +25,8 @@ const Game = () => {
   const [turnTimeLeft, setTurnTimeLeft] = useState(10);
   const thiefImage = "path/to/thief-image.png"; // Replace with your image path
   const [username, setUsername] = useState(name.state?.username || "Guest"); // Set default if not provided
+
+
 
 
   // Initial setup and event listeners for receiving game data from the server
@@ -128,6 +131,8 @@ const Game = () => {
         thiefPosition={thiefPosition}
         thiefImage={thiefImage}
       />
+      <Chat username={username} /> {/* Integrating Chat Component */}
+
       <Scoreboard farmerScore={scores.farmer} thiefScore={scores.thief} />
       <button onClick={resetGame}>Full Reset</button>
     </div>
