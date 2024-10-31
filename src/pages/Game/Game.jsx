@@ -18,8 +18,6 @@ import thiefMoveSound from '../../assets/soundEffects/thief_move.mp3';
 import farmerWinSound from '../../assets/soundEffects/farmer_win.mp3';
 import thiefWinSound from '../../assets/soundEffects/thief_win.mp3';
 import tieGameSound from '../../assets/soundEffects/tieGame.mp3';
-import farmer from '../../assets/Character/White/White(T).gif';
-import thief from '../../assets/Character/White/White(Th).gif';
 
 
 const Game = () => {
