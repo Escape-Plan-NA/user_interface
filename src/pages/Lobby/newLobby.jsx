@@ -10,8 +10,8 @@ const Lobby = () => {
   const [username, setUsername] = useState(''); // Single state for user-provided name
   const [playerName, setPlayerName] = useState('Guest');
   const [profilePicture, setProfilePicture] = useState('src/assets/Character/White/White.gif');
+  const [selectedProfilePicture, setSelectedProfilePicture] = useState('src/assets/Character/White/White.gif');
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [userId, setUserId] = useState('');
   const [role, setRole] = useState(null);
   const [players, setPlayers] = useState({ farmer: false, thief: false });
   const [gameStarted, setGameStarted] = useState(false);
@@ -89,7 +89,13 @@ const Lobby = () => {
     }
   }, [gameStarted, role, navigate]);
 
-  const handleCustomize = () => setIsModalOpen(true);
+  const handleCustomize = (e) => {
+    e.preventDefault();
+    const finalPlayerName = playerName || "Guest"; // Use "Guest" if playerName is empty
+    setPlayerName(finalPlayerName);
+    setSelectedProfilePicture(profilePicture); // Set the initial profile picture in the modal
+    setIsModalOpen(true); // Open customization modal
+  };
 
   const handleArrowClick = (direction) => {
     setCurrentIndex((prevIndex) => {
@@ -97,6 +103,7 @@ const Lobby = () => {
         ? (prevIndex === 0 ? imageOptions.length - 1 : prevIndex - 1)
         : (prevIndex === imageOptions.length - 1 ? 0 : prevIndex + 1);
       
+      setSelectedProfilePicture(imageOptions[newIndex]);  // Update the temporary profile picture with the new index
       return newIndex;
     });
   };
@@ -118,9 +125,18 @@ const Lobby = () => {
     console.log(`Emitted 'playerReady' event for ${username} role: ${role}`);
   }
 
+  const handleSaveGameState = () => {
+    setProfilePicture(selectedProfilePicture);  // Update profile picture in state only when the user clicks 'Save'
+    setPlayerName(playerName || "Guest");
+
+    // Close the modal after saving
+    setIsModalOpen(false);
+  };
+
   return (
     <div>
       <h2>Game Lobby</h2>
+      <img src = {profilePicture}/>
       {inProgressMessage && <p>{inProgressMessage}</p>}
 
       <input
@@ -141,7 +157,6 @@ const Lobby = () => {
 
       <button type="button" onClick={handleCustomize}>Customize</button>
 
-      {userId && <p>Generated User ID: {userId}</p>}
 
       {isModalOpen && (
         <div className="modal">

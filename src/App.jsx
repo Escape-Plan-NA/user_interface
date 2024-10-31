@@ -2,7 +2,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { WebSocketProvider } from './context/WebSocketProvider';
-import Lobby from './pages/Lobby/Lobby.jsx';
+import Lobby from './pages/Lobby/newLobby.jsx';
 import Game from './pages/Game/Game.jsx';
 import Menu from "./pages/MainMenu/Menu.jsx";
 import Profile from "./pages/Profile/Profile.jsx";
