@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useWebSocket } from '../../context/WebSocketProvider';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -12,6 +12,7 @@ const Lobby = () => {
   const [profilePicture, setProfilePicture] = useState('src/assets/Character/White/White.gif');
   const [selectedProfilePicture, setSelectedProfilePicture] = useState('src/assets/Character/White/White.gif');
   const [currentIndex, setCurrentIndex] = useState(0);
+  const hasJoinedLobby = useRef(false);
   const [role, setRole] = useState(null);
   const [players, setPlayers] = useState({ farmer: false, thief: false });
   const [gameStarted, setGameStarted] = useState(false);
@@ -49,7 +50,10 @@ const Lobby = () => {
   useEffect(() => {
     if (!socket) return;
 
-    socket.emit('joinLobby');
+    if (!hasJoinedLobby.current && socket) {
+      socket.emit('joinLobby');
+      hasJoinedLobby.current = true;
+    }
     socket.once('playerConnected', ({ role: assignedRole }) => {
       setPlayers((prev) => ({ ...prev, [assignedRole]: true }));
     });

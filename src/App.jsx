@@ -18,7 +18,8 @@ const App = () => (
   <WebSocketProvider>
     <Router>
       <Routes>
-        <Route path="/" element={<Lobby />} />
+        <Route path="/" element={<Menu />} />
+        <Route path="/lobby" element={<Lobby />} />
         <Route path="/game" element={<Game />} />
       </Routes>
     </Router>

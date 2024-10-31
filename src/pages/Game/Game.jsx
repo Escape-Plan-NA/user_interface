@@ -6,6 +6,8 @@ import GameHeader from '../../components/GameHeader/GameHeader.jsx';
 import GameBoard from '../../components/GameBoard/GameBoard.jsx';
 import Scoreboard from '../../components/Scoreboard/Scoreboard.jsx';
 import Chat from '../../components/Chat/Chat.jsx';
+import farmer from '../../assets/Character/White/White(T).gif';
+import thief from '../../assets/Character/White/White(Th).gif';
 
 const Game = () => {
 
@@ -19,15 +21,14 @@ const Game = () => {
   const [thiefPosition, setThiefPosition] = useState({ row: 1, col: 1 });
   const [farmerPosition, setFarmerPosition] = useState({ row: 1, col: 1 });
   const [turn, setTurn] = useState("");
+  const thiefImage = thief;
+  const farmerImage = farmer;
   const [scores, setScores] = useState({ farmer: 0, thief: 0 });
   const [role, setRole] = useState(location.state?.role || null);
   const [timeLeft, setTimeLeft] = useState(60);
   const [turnTimeLeft, setTurnTimeLeft] = useState(10);
-  const thiefImage = "path/to/thief-image.png"; // Replace with your image path
   const [username, setUsername] = useState(name.state?.username || "Guest"); // Set default if not provided
-
-
-
+  const [logs, setLogs] = useState([]);
 
   // Initial setup and event listeners for receiving game data from the server
   useEffect(() => {
@@ -71,44 +72,43 @@ const Game = () => {
 
   const handleKeyPress = (e) => {
     console.log(`Client role: ${role}, current turn: ${turn}`);
-
+  
     if (turn !== role) {
       console.log("Not your turn");
       return;
     }
-
-    let newPosition = role === "farmer" ? { ...farmerPosition } : { ...thiefPosition };
-    console.log("Key pressed:", e.key);
-
+  
+    let direction = "";
+  
     switch (e.key) {
       case "ArrowUp":
-        newPosition.row -= 1;
+        direction = "up";
         break;
       case "ArrowDown":
-        newPosition.row += 1;
+        direction = "down";
         break;
       case "ArrowLeft":
-        newPosition.col -= 1;
+        direction = "left";
         break;
       case "ArrowRight":
-        newPosition.col += 1;
+        direction = "right";
         break;
       default:
-        return;
+        return; // Ignore any non-arrow key presses
     }
-
-    if (
-      newPosition.row < 0 ||
-      newPosition.row >= grid.length ||
-      newPosition.col < 0 ||
-      newPosition.col >= grid[0].length
-    ) {
-      console.log("Invalid move: outside the grid boundaries.");
-      return;
-    }
-
-    socket.emit("move", { role, newPosition });
+  
+    console.log(`Move direction: ${direction}`);
+    socket.emit("move", { role, direction });
   };
+  
+  // Attach event listener to handle arrow key press
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyPress);
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [turn, role]);
+  
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyPress);
@@ -117,26 +117,70 @@ const Game = () => {
     };
   }, [turn, role, farmerPosition, thiefPosition, grid]);
 
+  useEffect(() => {
+    // Listen for move logs from the server
+    socket.on("moveLog", (message) => {
+      setLogs((prevLogs) => [...prevLogs, message]);
+    });
+
+    // Cleanup event listener on component unmount
+    return () => {
+      socket.off("moveLog");
+    };
+  }, []);
+
   const resetGame = () => {
     socket.emit("resetGame");
     console.log("Requested a full game reset with scores reset");
   };
 
   return (
-    <div>
-      <GameHeader  role={role} timeLeft={timeLeft} turn={turn} turnTimeLeft={turnTimeLeft} username={username} />
-      <GameBoard
-        grid={grid}
-        farmerPosition={farmerPosition}
-        thiefPosition={thiefPosition}
-        thiefImage={thiefImage}
-      />
-      <Chat username={username} /> {/* Integrating Chat Component */}
-
-      <Scoreboard farmerScore={scores.farmer} thiefScore={scores.thief} />
-      <button onClick={resetGame}>Full Reset</button>
+    <div className="container">
+      <div className="background-front"></div> 
+  
+      <div className="player-name-display">
+        <p>Player: {username || "Guest"}</p>
+        
+        <GameHeader 
+          role={role} 
+          timeLeft={timeLeft} 
+          turn={turn} 
+          turnTimeLeft={turnTimeLeft} />
+        
+        <Chat username={username}></Chat>
+        
+        <div className="gameboard-container">
+          <GameBoard
+            grid={grid}
+            farmerPosition={farmerPosition}
+            thiefPosition={thiefPosition}
+            thiefImage={thiefImage}
+            farmerImage={farmerImage}
+            farmerName="Kiak"  // Replace with the actual farmer name
+            thiefName="Guest" // Replace with the actual thief name
+          />
+          <Scoreboard 
+            farmerScore={scores.farmer} 
+            thiefScore={scores.thief} 
+            farmerName="Kiak"  // Replace with the actual farmer name
+            thiefName="Guest"
+          />
+          
+          {/* New container for logs and reset button */}
+          <div className="bottom-controls">
+            <h3>Move Logs</h3>
+            <ul className="move-logs">
+              {logs.map((log, index) => (
+                <li key={index}>{log}</li>
+              ))}
+            </ul>
+            <button className="reset-button" onClick={resetGame}>Reset</button>
+          </div>
+        </div>
+      </div>
     </div>
   );
+  
 };
 
 export default Game;
