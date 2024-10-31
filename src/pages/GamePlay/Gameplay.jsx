@@ -5,13 +5,15 @@ import { useNavigate } from 'react-router-dom';
 import GameHeader from '../../components/GameHeader/GameHeader.jsx';
 import GameBoard from '../../components/GameBoard/GameBoard.jsx';
 import Scoreboard from '../../components/Scoreboard/Scoreboard.jsx';
+
+
 import { SoundEffectContext } from "../../context/SoundEffectContext.jsx";
 
-import farmerMoveSound from '../../assets/soundEffects/farmer_move.mp3';
-import thiefMoveSound from '../../assets/soundEffects/thief_move.mp3';
-import farmerWinSound from '../../assets/soundEffects/farmer_win.mp3';
-import thiefWinSound from '../../assets/soundEffects/thief_win.mp3';
-import tieGameSound from '../../assets/soundEffects/tieGame.mp3';
+// import farmerMoveSound from '../../assets/soundEffects/farmer_move.mp3';
+// import thiefMoveSound from '../../assets/soundEffects/thief_move.mp3';
+// import farmerWinSound from '../../assets/soundEffects/farmer_win.mp3';
+// import thiefWinSound from '../../assets/soundEffects/thief_win.mp3';
+// import tieGameSound from '../../assets/soundEffects/tieGame.mp3';
 import farmer from '../../assets/Character/White/White(T).gif';
 import thief from '../../assets/Character/White/White(Th).gif';
 
@@ -36,13 +38,13 @@ const GamePlay = () => {
   let gameWon = false; // Prevent multiple win triggers
 
 
-  // Preloaded audio files
-  const sounds = useRef({
-    farmerMove: new Audio(farmerMoveSound),
-    thiefMove: new Audio(thiefMoveSound),
-    farmerWin: new Audio(farmerWinSound),
-    thiefWin: new Audio(thiefWinSound),
-    tieGame: new Audio(tieGameSound)
+   // Preloaded audio files
+   const sounds = useRef({
+    farmerMove: new Audio("/soundEffects/farmer_move.mp3"),
+    thiefMove: new Audio("/soundEffects/thief_move.mp3"),
+    farmerWin: new Audio("/soundEffects/farmer_win.mp3"),
+    thiefWin: new Audio("/soundEffects/thief_move.mp3"),
+    tieGame: new Audio("/soundEffects/tieGame.mp3")
   });
 
   useEffect(() => {

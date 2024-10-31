@@ -13,11 +13,11 @@ import thief from '../../assets/Character/White/White(Th).gif';
 
 import { SoundEffectContext } from "../../context/SoundEffectContext.jsx";
 
-import farmerMoveSound from '../../assets/soundEffects/farmer_move.mp3';
-import thiefMoveSound from '../../assets/soundEffects/thief_move.mp3';
-import farmerWinSound from '../../assets/soundEffects/farmer_win.mp3';
-import thiefWinSound from '../../assets/soundEffects/thief_win.mp3';
-import tieGameSound from '../../assets/soundEffects/tieGame.mp3';
+// import farmerMoveSound from 'public/soundEffects/farmer_move.mp3'; 
+// import thiefMoveSound from 'public/assets/soundEffects/thief_move.mp3';
+// import farmerWinSound from 'public/assets/soundEffects/farmer_win.mp3';
+// import thiefWinSound from 'public/assets/soundEffects/thief_win.mp3';
+// import tieGameSound from 'public/assets/soundEffects/tieGame.mp3';
 
 
 const Game = () => {
@@ -46,14 +46,17 @@ const Game = () => {
   
   // Preloaded audio files
   const sounds = useRef({
-    farmerMove: new Audio(farmerMoveSound),
-    thiefMove: new Audio(thiefMoveSound),
-    farmerWin: new Audio(farmerWinSound),
-    thiefWin: new Audio(thiefWinSound),
-    tieGame: new Audio(tieGameSound)
+    farmerMove: new Audio("/soundEffects/farmer_move.mp3"),
+    thiefMove: new Audio("/soundEffects/thief_move.mp3"),
+    farmerWin: new Audio("/soundEffects/farmer_win.mp3"),
+    thiefWin: new Audio("/soundEffects/thief_move.mp3"),
+    tieGame: new Audio("/soundEffects/tieGame.mp3")
   });
 
-  
+  useEffect(() => {
+    playSound(sounds.current.farmerMove); // Play sound on component mount as a test
+  }, []);
+
   useEffect(() => {
     if (soundEffectsEnabled) {
       Object.values(sounds.current).forEach(sound => sound.load());
@@ -62,6 +65,7 @@ const Game = () => {
 
   // Function to play sound
   const playSound = (sound) => {
+    console.log("Playing sound:", sound.src);
     if (soundEffectsEnabled && sound) {
       sound.play().catch(error => console.error("Error playing sound:", error));
     }
@@ -145,6 +149,13 @@ const Game = () => {
   
     console.log(`Move direction: ${direction}`);
     socket.emit("move", { role, direction });
+
+    // Play the sound effect based on the player's role
+    if (role === "farmer") {
+      playSound(sounds.current.farmerMove);
+  } else if (role === "thief") {
+      playSound(sounds.current.thiefMove);
+  }
   };
   
   // Attach event listener to handle arrow key press
@@ -191,7 +202,9 @@ const Game = () => {
           role={role} 
           timeLeft={timeLeft} 
           turn={turn} 
-          turnTimeLeft={turnTimeLeft} />
+          turnTimeLeft={turnTimeLeft}
+          username={username}
+           />
         
         <Chat username={username}></Chat>
         

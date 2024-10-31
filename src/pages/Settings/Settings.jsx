@@ -1,4 +1,4 @@
-import sound from "../../assets/soundEffects/forest_sounds.mp3";
+import sound from "../../assets/forest_sounds.mp3";
 import React, { useEffect, useState, useContext } from "react";
 import { FaVolumeUp, FaArrowLeft, FaArrowRight } from "react-icons/fa"; // Import sound icon and arrows
 import "./Settings.css";
