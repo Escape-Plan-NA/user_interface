@@ -12,11 +12,13 @@ import thiefMoveSound from '../../assets/thief_move.mp3';
 import farmerWinSound from '../../assets/farmer_win.mp3';
 import thiefWinSound from '../../assets/thief_win.mp3';
 import tieGameSound from '../../assets/tieGame.mp3';
+import farmer from '../../assets/Character/White/White(T).gif';
+import thief from '../../assets/Character/White/White(Th).gif';
 
 const GamePlay = () => {
   const navigate = useNavigate();
   const role = 'thief';
-  const [timeLeft, setTimeLeft] = useState(60); // 3-minute overall game timer
+  const [timeLeft, setTimeLeft] = useState(15); // 3-minute overall game timer
   const [gameOverMessage, setGameOverMessage] = useState(null);  // State for game over message
   const [grid, setGrid] = useState([]);
   const [farmerPosition, setFarmerPosition] = useState(null);
@@ -24,11 +26,13 @@ const GamePlay = () => {
   const [turn, setTurn] = useState(null);
   const [turnTimeLeft, setTurnTimeLeft] = useState(10); // 10-second turn timer
   const [scores, setScores] = useState({ farmer: 0, thief: 0 }); // Score tracking
-  const thiefImage = import.meta.env.VITE_THIEF_IMAGE;
+  const thiefImage = thief;
+  const farmerImage = farmer;
   const isFirstRender = useRef(true);
   const [playerName, setPlayerName] = useState('');
   const { soundEffectsEnabled } = useContext(SoundEffectContext);
 
+  const [profilePicture, setProfilePicture] = useState(''); // State for profile picture
   let gameWon = false; // Prevent multiple win triggers
 
 
@@ -56,6 +60,21 @@ const GamePlay = () => {
 
 
   useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/users/getUser'); // Fetch user data
+        setPlayerName(response.data.user.name); // Set the player name in state
+        setProfilePicture(response.data.user.profilePicture); // Set the profile picture in state
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData(); // Call the fetch function
+  }, []);
+
+  useEffect(() => {
+    // Log a welcome message when the player enters the gameplay page
     console.log("Welcome to the game! The game has started.");
     startGame();
 
@@ -95,6 +114,7 @@ const GamePlay = () => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/games/start`);
       const gameData = response.data.gameData;
+      console.log(response.data);
 
       setGrid(gameData.grid.blocks || []);
       setThiefPosition(gameData.grid.thiefPosition);
@@ -278,7 +298,7 @@ const GamePlay = () => {
         thief: resetGameData.players[1].score,
       });
 
-      setTimeLeft(60);
+      setTimeLeft(15);
       setTurnTimeLeft(10);
 
     } catch (error) {
@@ -314,8 +334,8 @@ const GamePlay = () => {
   useEffect(() => {
     const fetchPlayerName = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/getUser`);
-        setPlayerName(response.data.name);
+        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/getUser`); // Fetch player name
+        setPlayerName(response.data.user.name); // Set the player name in state
       } catch (error) {
         console.error("Error fetching player name:", error);
       }
@@ -325,44 +345,55 @@ const GamePlay = () => {
   }, []);
 
   return (
-    <>
+    <div className="container">
+      {/* Game Header positioned at the top left */}
+
+      {/* Game Board and other content */}
+      <div className="background-front"></div> {/* Front background layer */}
+
       <div className="player-name-display">
-        <h2>Welcome {playerName}</h2>
+        <p>Player: {playerName || "Guest"}</p>
+
+        {!gameOverMessage ? (
+          <>
+            <GameHeader 
+              role={role} 
+              timeLeft={timeLeft} 
+              turn={turn} 
+              turnTimeLeft={turnTimeLeft} />
+            <div className="gameboard-container">
+            <GameBoard
+              grid={grid}
+              farmerPosition={farmerPosition}
+              thiefPosition={thiefPosition}
+              thiefImage={thiefImage}
+              farmerImage={farmerImage}
+              farmerName="Kiak"  // Replace with the actual farmer name
+              thiefName="Guest" // Replace with the actual thief name
+            />
+            <Scoreboard 
+            farmerScore={scores.farmer} 
+            thiefScore={scores.thief} 
+            farmerName="Kiak"  // Replace with the actual farmer name
+            thiefName="Guest"
+            />
+            <button onClick={refreshGame}>Refresh Game</button>
+          </div>
+          </>
+        ) : (
+          <div className="game-over-container">
+            <Scoreboard 
+            winMessage={gameOverMessage}
+            farmerScore={scores.farmer} 
+            thiefScore={scores.thief} 
+            farmerName="Kiak"  // Replace with the actual farmer name
+            thiefName="Guest"
+            />
+          <button onClick={refreshGame}>Restart</button>
+          </div>
+        )}
       </div>
-
-      {!gameOverMessage ? (
-        <div className="gameplay-container">
-          <GameHeader
-            role={role}
-            timeLeft={timeLeft}
-            turn={turn}
-            turnTimeLeft={turnTimeLeft}
-          />
-
-          <GameBoard
-            grid={grid}
-            farmerPosition={farmerPosition}
-            thiefPosition={thiefPosition}
-            thiefImage={thiefImage}
-          />
-
-          <Scoreboard
-            farmerScore={scores.farmer}
-            thiefScore={scores.thief}
-          />
-
-          <button onClick={refreshGame}>Refresh Game</button>
-        </div>
-      ) : (
-        <div className="game-over-container">
-          <h2>{gameOverMessage}</h2>
-          <Scoreboard
-            farmerScore={scores.farmer}
-            thiefScore={scores.thief}
-          />
-        </div>
-      )}
-    </>
+    </div>
   );
 };
 

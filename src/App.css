@@ -1,24 +1,4 @@
-.menu-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;    /* Centers elements horizontally */
-  justify-content: center; /* Centers elements vertically */
-  height: 100vh;           /* Takes full viewport height */
-  width: 100vw;            /* Takes full viewport width */
-  position: absolute;      /* Ensures the container fills the screen */
-  top: 0;                  /* Position from the top */
-  left: 0;                 /* Position from the left */
 
-
-}
-
-.menu-container button {
-  width: 200px;
-  margin: 10px;
-  padding: 10px;
-  font-size: 16px;
-  cursor: pointer;
-}
 
 .image-container {
   display: flex;
@@ -50,13 +30,6 @@
 .game-table {
   border-collapse: collapse;
   margin: 20px auto;
-}
-
-.table-cell {
-  width: 50px;
-  height: 50px;
-  border: 1px solid #000;
-  text-align: center;
 }
 
 .game-over {

@@ -8,6 +8,7 @@ function Profile() {
   const [imageOptions, setImageOptions] = useState([]);
   const [profilePicture, setProfilePicture] = useState("src/assets/placeholderProfile.jpg");
   const [playerName, setPlayerName] = useState("Guest");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const girlImages = ["src/assets/dora_explorer_show.jpg", "src/assets/dora_explorer_show.jpg", "src/assets/dora_explorer_show.jpg"];
   const boyImages = ["src/assets/Diego.jpg", "src/assets/Diego.jpg", "src/assets/Diego.jpg"];
@@ -40,18 +41,24 @@ function Profile() {
   const handleBoyCharacter = () => {
     console.log("Boy character selected");
     setImageOptions(boyImages);
+    setIsModalOpen(true);
+
   };
 
   const handleGirlCharacter = () => {
     console.log("Girl character selected");
     setImageOptions(girlImages);
+    setIsModalOpen(true);  
+    
+    
+
   };
 
   const handleProfilePictureChange = (url, index) => {
     console.log(`Selected image URL: ${url}`);
     setProfilePicture(url);
     localStorage.setItem('profilePicture', url);
-
+    setIsModalOpen(false);
   };
 
 

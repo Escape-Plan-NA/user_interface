@@ -1,26 +1,45 @@
-.scoreboard {
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 10px 20px;
-    margin-top: 20px;
-    text-align: center;
-  }
-  
-  .scoreboard h3 {
-    color: #495057;
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-  }
-  
-  .scoreboard-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
-  }
-  
-  .score-value {
-    font-weight: bold;
-    color: #333;
-  }
-  
+.scoreboard-normal {
+  position: fixed; /* Fixed position */
+  bottom: 20px; /* Offset from the bottom */
+  left: 20px; /* Offset from the left */
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
+  padding: 20px;
+  text-align: center;
+  z-index: 3; /* Ensures it stays above game elements */
+}
+
+.win-message {
+  position: fixed; /* Fixed position */
+  bottom: 50%; /* Offset from the bottom */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Adjust for true centering */
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
+  padding: 20px;
+  text-align: center;
+  z-index: 3; /* Ensures it stays above game elements */
+}
+
+.scoreboard h3 {
+  color: #495057;
+  font-size: 1.8rem; /* Increased font size for better visibility */
+  margin-bottom: 15px; /* More space below the title */
+  font-weight: 600; /* Semi-bold for emphasis */
+}
+
+.scoreboard-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px; /* Space between scoreboard items */
+  padding: 5px; /* Added padding for touch targets */
+  background-color: #f8f9fa; /* Light background for items */
+  border-radius: 5px; /* Rounded corners for items */
+}
+
+.score-value {
+  font-weight: bold;
+  color: #333;
+}

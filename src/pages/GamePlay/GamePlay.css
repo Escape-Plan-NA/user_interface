@@ -1,7 +1,58 @@
-.gameplay-container{
-    margin-top: 20px;
+/* Prevent scrolling on the entire page */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;  /* Ensure it covers the full height */
+  overflow: hidden;  /* Prevent scrolling */
 }
 
-.player-name-display{
-    padding: 10px;
+/* Full viewport container */
+.container {
+  width: 100vw;  /* Full viewport width */
+  height: 100vh; /* Full viewport height */
+  position: relative;  /* Ensure child elements can be positioned absolutely */
+  overflow: hidden;
 }
+
+/* Front background layer - Always on top */
+.background-front {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('../../assets/map_components/autumn/Autumn Gameplay BG Front.gif');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: 1;  /* Lowered to ensure gameboard is above this layer */
+  pointer-events: none; /* Allow interactions to pass through */
+}
+
+/* Main container for the rest of the background */
+.container {
+  background-image: url('../../assets/map_components/autumn/Autumn Gameplay BG.gif'); /* Main background */
+  background-position: center;
+  background-size: cover; /* Ensure the entire background covers the container */
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* Fix the background to prevent scrolling */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  z-index: 0;
+}
+
+/* Gameboard container */
+.gameboard-container {
+  display: flex;
+  justify-content: flex-start; /* Align gameboard to the start of the container */
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  margin-left: 42px; /* Adjust this value to move it further to the right */
+  margin-bottom: 40px;
+  position: relative;
+  z-index: 10; /* Set higher z-index to ensure gameboard is on top of everything */
+}
+
+
+
+

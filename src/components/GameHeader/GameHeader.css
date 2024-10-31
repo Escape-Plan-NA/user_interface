@@ -1,20 +1,11 @@
 .game-header {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  h1 {
-    font-size: 2.5rem;
-    color: #343a40;
-  }
-  
-  h2 {
-    font-size: 1.8rem;
-    color: #495057;
-  }
-  
-  p {
-    font-size: 1.2rem;
-    color: #6c757d;
-  }
-  
+  position: fixed; /* Fix the header at the top */
+  top: 20px; /* Offset from the top */
+  left: 20px; /* Offset from the left */
+  background-color: rgba(255, 255, 255, 0.7); /* Slightly transparent background */
+  padding: 10px 20px; /* Padding for better spacing */
+  border-radius: 8px; /* Rounded corners */
+  z-index: 3; /* Place it above other components */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a soft shadow */
+  text-align: left; /* Align the text to the left */
+}
