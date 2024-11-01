@@ -144,6 +144,19 @@ html, body {
 .bottom-controls::-webkit-scrollbar-thumb:hover {
   background-color: #a0a0a0; /* Darker color on hover */
 }
-  
-  
-  
+
+
+.settings-button {
+  margin: 30px auto 10px;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #333;
+  font-size: 0.9em;
+  line-height: 1.4;
+  position: relative;
+  left: -65px;
+  bottom: -130px;
+  z-index: 10;
+}
+

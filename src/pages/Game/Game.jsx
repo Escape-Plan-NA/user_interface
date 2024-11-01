@@ -8,6 +8,7 @@ import { SoundEffectContext } from "../../context/SoundEffectContext.jsx";
 import { imageMap } from '../../utils/imageMap';
 import './Game.css';
 import Chat from '../../components/Chat/Chat.jsx';
+import SettingsModal from '../Settings/SettingsModal.jsx';
 
 const Game = () => {
   const location = useLocation();
@@ -37,6 +38,7 @@ const Game = () => {
   const [timeLeft, setTimeLeft] = useState(60);
   const [turnTimeLeft, setTurnTimeLeft] = useState(10);
   const [logs, setLogs] = useState([]);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const { soundEffectsEnabled } = useContext(SoundEffectContext);
   
@@ -133,6 +135,9 @@ const Game = () => {
     socket.emit("resetGame");
   };
 
+  const openSettings= () => setIsSettingsOpen(true);  
+  const closeSettings = () => setIsSettingsOpen(false);
+
   return (
     <div className="container">
       <div className="background-front"></div> 
@@ -175,6 +180,11 @@ const Game = () => {
               ))}
             </ul>
             <button className="reset-button" onClick={resetGame}>Reset</button>
+          </div>
+
+          <div className='settings-button'>
+            <button onClick={openSettings}>Open Settings</button>
+            <SettingsModal isOpen={isSettingsOpen} onClose={closeSettings} />
           </div>
         </div>
       </div>
