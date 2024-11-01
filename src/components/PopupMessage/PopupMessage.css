@@ -1,0 +1,23 @@
+.popup-message {
+  background-color: #f9f9f9; /* Match the light background */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px 15px;
+  max-width: 250px; /* Set maximum width for the popup */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  color: #2f993d; /* Message text color to match username */
+  font-weight: bold;
+  position: fixed;
+  top: 20px; /* Positioned near the top */
+  right: 20px; /* Same right position as chat */
+  z-index: 1100; /* Above chat but below higher elements */
+  opacity: 0.9; /* Slightly transparent */
+  animation: fadeInOut 2s ease-in-out forwards; /* Fade animation */
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-10px); }
+  10% { opacity: 0.9; transform: translateY(0); }
+  90% { opacity: 0.9; }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
