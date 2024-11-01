@@ -1,0 +1,18 @@
+.tutorial-container{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 90vh;
+    background-image: url('../../assets/tutorial/Tutorial.gif');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+.main-menu{
+    position: relative;
+    top: 40px;
+}

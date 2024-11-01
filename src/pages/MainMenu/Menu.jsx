@@ -29,7 +29,8 @@ const Menu = () => {
     <div className="menu-container">
       <h1>ESCAPE PLAN</h1>
       <button id="start-button" onClick={() => navigate('/lobby')}>Multiplayer</button>
-      <button id="start-button" onClick={() => navigate('/singledevice')}>Singleplayer</button> 
+      <button id="start-button" onClick={() => navigate('/singledevice')}>Singleplayer</button>
+      <button id="tutorial" onClick={() => navigate('/tutorial')}>Tutorial</button> 
       <button id="settings" onClick={() => navigate('/setting')}>Settings</button>
       <div className="connected-clients">
         <p>Connected Clients: {connectedClientCount}</p>
