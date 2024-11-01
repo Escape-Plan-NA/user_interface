@@ -7,6 +7,7 @@ import Game from './pages/Game/Game.jsx';
 import Menu from "./pages/MainMenu/Menu.jsx";
 import Profile from "./pages/Profile/Profile.jsx";
 import Setting from "./pages/Settings/Settings.jsx";
+import Tutorial from './pages/Tutorial/Tutorial.jsx';
 import GamePlay from "./pages/GamePlay/Gameplay.jsx";
 import SingleGameplay from "./pages/GamePlay/SingleGameplay.jsx";
 import BotGameplay from "./pages/GamePlay/BotGameplay.jsx";
@@ -23,6 +24,7 @@ const App = () => (
         <Route path="/game" element={<Game />} />
         <Route path="/cutscene" element={<Cutscene />} />
         <Route path="/setting" element={<Setting />} />
+        <Route path="/tutorial" element={<Tutorial />} />
         <Route path="/singledevice" element={<SingleplayerModeSelection />} />
         <Route path="/singlecutscene" element={<SingleCutscene />} />
         <Route path="/bot" element={<BotGameplay />} />
