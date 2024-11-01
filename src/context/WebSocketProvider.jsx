@@ -12,7 +12,7 @@ export const WebSocketProvider = ({ children }) => {
     console.log("Initializing WebSocket...");
 
     // Initialize socket if not already created
-    socket = io("http://127.0.0.1:3000", {
+    socket = io("http://localhost:3000", {
       reconnectionAttempts: 5,
       timeout: 10000,
     });

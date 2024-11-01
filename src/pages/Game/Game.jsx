@@ -5,6 +5,7 @@ import GameHeader from '../../components/GameHeader/GameHeader.jsx';
 import GameBoard from '../../components/GameBoard/GameBoard.jsx';
 import Scoreboard from '../../components/Scoreboard/Scoreboard.jsx';
 import { SoundEffectContext } from "../../context/SoundEffectContext.jsx";
+import PopupMessage from '../../components/PopupMessage/PopupMessage.jsx';
 import { imageMap } from '../../utils/imageMap';
 import './Game.css';
 import Chat from '../../components/Chat/Chat.jsx';
@@ -14,21 +15,14 @@ const Game = () => {
   const { socket } = useWebSocket();
   const { role, username, gameData } = location.state || { gameData: { players: [] } };
 
-  // Log gameData to confirm reception
-  useEffect(() => {
-    console.log("Received gameData in Game.jsx:", gameData);
-  }, [gameData]);
-
-  // Access farmer and thief data with fallback
   const farmer = gameData?.players?.find(player => player.role === 'farmer') || {};
   const thief = gameData?.players?.find(player => player.role === 'thief') || {};
-
+  
   const farmerName = farmer.username || "Farmer";
   const thiefName = thief.username || "Thief";
   const farmerImage = farmer.image_id ? imageMap[farmer.image_id]?.farmer : "/assets/characters/default_farmer.gif";
   const thiefImage = thief.image_id ? imageMap[thief.image_id]?.thief : "/assets/characters/default_thief.gif";
 
-  // Define the initial game state variables
   const [grid, setGrid] = useState([]);
   const [thiefPosition, setThiefPosition] = useState({ row: 1, col: 1 });
   const [farmerPosition, setFarmerPosition] = useState({ row: 1, col: 1 });
@@ -37,9 +31,9 @@ const Game = () => {
   const [timeLeft, setTimeLeft] = useState(60);
   const [turnTimeLeft, setTurnTimeLeft] = useState(10);
   const [logs, setLogs] = useState([]);
-
+  const [popupMessages, setPopupMessages] = useState([]);
   const { soundEffectsEnabled } = useContext(SoundEffectContext);
-  
+
   const sounds = useRef({
     farmerMove: new Audio("/soundEffects/farmer_move.mp3"),
     thiefMove: new Audio("/soundEffects/thief_move.mp3"),
@@ -82,7 +76,15 @@ const Game = () => {
     socket.on("winner", ({ winner, scores }) => {
       setScores(scores);
       playSound(winner === "farmer" ? sounds.current.farmerWin : sounds.current.thiefWin);
-      alert(`${winner === "farmer" ? "Farmer" : "Thief"} wins!\nCurrent Scores:\nFarmer: ${scores.farmer}, Thief: ${scores.thief}`);
+      showPopup(`${winner === "farmer" ? "Farmer" : "Thief"} wins! Scores: Farmer ${scores.farmer}, Thief ${scores.thief}`);
+    });
+
+    socket.on("outOfBounds", (data) => {
+      showPopup(data.message);
+    });
+
+    socket.on("invalidMove", (data) => {
+      showPopup(data.message);
     });
 
     socket.emit("resetGame");
@@ -91,8 +93,19 @@ const Game = () => {
       socket.off("gameState");
       socket.off("timerUpdate");
       socket.off("winner");
+      socket.off("outOfBounds");
+      socket.off("invalidMove");
     };
   }, [socket]);
+
+  const showPopup = (message) => {
+    const id = Date.now();
+    setPopupMessages((prevMessages) => [...prevMessages, { id, message }]);
+
+    setTimeout(() => {
+      setPopupMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== id));
+    }, 2000);
+  };
 
   const handleKeyPress = (e) => {
     if (turn !== role) return;
@@ -122,8 +135,7 @@ const Game = () => {
         return updatedLogs.slice(-4); // Keep only the last 4 entries
       });
     });
-  
-    // Cleanup event listener on component unmount
+
     return () => {
       socket.off("moveLog");
     };
@@ -135,7 +147,7 @@ const Game = () => {
 
   return (
     <div className="container">
-      <div className="background-front"></div> 
+      <div className="background-front"></div>
   
       <div className="player-name-display">
         <p>Player: {username || "Guest"}</p>
@@ -178,6 +190,10 @@ const Game = () => {
           </div>
         </div>
       </div>
+
+      {popupMessages.map((msg) => (
+        <PopupMessage key={msg.id} message={msg.message} onClose={() => setPopupMessages(popupMessages.filter(m => m.id !== msg.id))} />
+      ))}
     </div>
   );
 };
