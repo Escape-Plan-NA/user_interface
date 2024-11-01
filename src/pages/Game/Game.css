@@ -74,6 +74,48 @@ html, body {
   margin-bottom: 10px;
 }
 
+/* components/MoveLogs/MoveLogs.css */
+
+.bottom-controls {
+  background-color: #f9f9f9; /* Light background for move logs */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  max-height: 300px; /* Max height for scrollable area */
+  overflow-y: auto; /* Enable scrolling */
+  width: 300px; /* Set width for move logs */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  position: fixed; /* Fixed positioning to keep in view */
+  bottom: 20px; /* Distance from bottom of the viewport */
+  right: 20px; /* Distance from right of the viewport */
+  z-index: 1000; /* Ensure it's on top of other components */
+}
+
+.bottom-controls h3 {
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ddd;
+  font-size: 1.1em;
+  color: #2f993d; /* Title color */
+}
+
+.move-logs {
+  list-style-type: none;
+  padding: 0;
+  margin: 10px 0 0 0; /* Adjust margin */
+}
+
+.move-logs li {
+  margin: 5px 0;
+  padding: 5px;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #333;
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+
 /* Styling for the reset button */
 .reset-button {
   padding: 8px 16px;
@@ -82,6 +124,26 @@ html, body {
 }
 
   
+
+/* Custom scrollbar styles */
+.bottom-controls::-webkit-scrollbar {
+  width: 8px; /* Set width for scrollbar */
+}
+
+.bottom-controls::-webkit-scrollbar-track {
+  background: #f0f0f0; /* Track color */
+  border-radius: 10px;
+}
+
+.bottom-controls::-webkit-scrollbar-thumb {
+  background-color: #c1c1c1; /* Thumb color */
+  border-radius: 10px;
+  border: 2px solid #f0f0f0; /* Adds padding around thumb */
+}
+
+.bottom-controls::-webkit-scrollbar-thumb:hover {
+  background-color: #a0a0a0; /* Darker color on hover */
+}
   
   
   
