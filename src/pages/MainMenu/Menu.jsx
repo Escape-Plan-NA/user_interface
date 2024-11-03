@@ -1,4 +1,3 @@
-// Menu.jsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWebSocket } from '../../context/WebSocketProvider';
@@ -12,8 +11,12 @@ const Menu = () => {
   useEffect(() => {
     if (!isConnected) return; // Ensure the socket is connected
 
+    // Emit 'clientConnected' event to notify server of this connection
+    socket.emit('clientConnected');
+
+    // Update client count when received
     const handleConnectedClients = (count) => {
-      setConnectedClientCount(count); // Update client count when received
+      setConnectedClientCount(count);
     };
 
     // Listen for 'totalConnectedClients' event

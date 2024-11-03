@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useWebSocket } from '../../context/WebSocketProvider';
 import GameHeader from '../../components/GameHeader/GameHeader.jsx';
 import GameBoard from '../../components/GameBoard/GameBoard.jsx';
@@ -11,15 +11,14 @@ import Chat from '../../components/Chat/Chat.jsx';
 
 const Game = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { socket } = useWebSocket();
   const { role, username, gameData } = location.state || { gameData: { players: [] } };
 
-  // Log gameData to confirm reception
   useEffect(() => {
     console.log("Received gameData in Game.jsx:", gameData);
   }, [gameData]);
 
-  // Access farmer and thief data with fallback
   const farmer = gameData?.players?.find(player => player.role === 'farmer') || {};
   const thief = gameData?.players?.find(player => player.role === 'thief') || {};
 
@@ -28,7 +27,6 @@ const Game = () => {
   const farmerImage = farmer.image_id ? imageMap[farmer.image_id]?.farmer : "/assets/characters/default_farmer.gif";
   const thiefImage = thief.image_id ? imageMap[thief.image_id]?.thief : "/assets/characters/default_thief.gif";
 
-  // Define the initial game state variables
   const [grid, setGrid] = useState([]);
   const [thiefPosition, setThiefPosition] = useState({ row: 1, col: 1 });
   const [farmerPosition, setFarmerPosition] = useState({ row: 1, col: 1 });
@@ -63,6 +61,10 @@ const Game = () => {
   useEffect(() => {
     if (!socket) return;
 
+    // Emit `start-game` to let the server handle game initialization
+    socket.emit("start-game");
+
+    // Listen for game updates from the server
     socket.on("gameState", (gameData) => {
       setGrid(gameData.grid.blocks || []);
       setThiefPosition(gameData.grid.thiefPosition);
@@ -85,14 +87,18 @@ const Game = () => {
       alert(`${winner === "farmer" ? "Farmer" : "Thief"} wins!\nCurrent Scores:\nFarmer: ${scores.farmer}, Thief: ${scores.thief}`);
     });
 
-    socket.emit("resetGame");
+    socket.on('leftLobby', () => {
+      console.log("Received 'leftLobby' event, redirecting to main menu.");
+      navigate('/');
+    });
 
     return () => {
       socket.off("gameState");
       socket.off("timerUpdate");
       socket.off("winner");
+      socket.off("leftLobby");
     };
-  }, [socket]);
+  }, [socket, navigate]);
 
   const handleKeyPress = (e) => {
     if (turn !== role) return;
@@ -119,11 +125,10 @@ const Game = () => {
     socket.on("moveLog", (message) => {
       setLogs((prevLogs) => {
         const updatedLogs = [...prevLogs, message];
-        return updatedLogs.slice(-4); // Keep only the last 4 entries
+        return updatedLogs.slice(-4);
       });
     });
   
-    // Cleanup event listener on component unmount
     return () => {
       socket.off("moveLog");
     };
