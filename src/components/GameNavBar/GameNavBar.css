@@ -1,0 +1,52 @@
+/* components/Navbar/Navbar.css */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #e2e2e2; /* Light grey background */
+    border: 4px solid #000; /* Bold border for a retro look */
+    padding: 8px;
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    border-radius: 15%;
+    transform: translateX(-50%);
+    width: fit-content;
+    z-index: 10000;
+    box-shadow: none;
+    image-rendering: pixelated; /* Pixelated look for retro style */
+}
+
+/* Icon buttons in navbar */
+.nav-icon {
+    width: 50px; /* Increase size for better visibility */
+    height: 50px;
+    
+    color: #000;
+    font-size: 1.5em; /* Increase font size for the icons */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 10px; /* Increased margin for spacing */
+    border: 2px solid #000; /* Black border for pixel effect */
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-radius: 5px; /* Optional: rounded corners */
+}
+
+.nav-icon:hover {
+    background-color: #8b8b8b; /* Slightly darker on hover */
+}
+
+/* Dark mode toggle button */
+.dark-mode-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px; /* Consistent size */
+    height: 50px; /* Consistent size */
+    background-color: #a8a8a8;
+    border: 2px solid #000;
+    cursor: pointer;
+    border-radius: 5px; /* Optional: rounded corners */
+}

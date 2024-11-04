@@ -8,7 +8,7 @@ import { SoundEffectContext } from "../../context/SoundEffectContext.jsx";
 import { imageMap } from '../../utils/imageMap';
 import './Game.css';
 import Chat from '../../components/Chat/Chat.jsx';
-
+import GameNavBar from '../../components/GameNavBar/GameNavBar.jsx';
 const Game = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -140,6 +140,7 @@ const Game = () => {
 
   return (
     <div className="container">
+      <div className="header-spacer"></div>
       <div className="background-front"></div> 
   
       <div className="player-name-display">
@@ -171,6 +172,7 @@ const Game = () => {
             farmerName={farmerName}
             thiefName={thiefName}
           />
+          <GameNavBar/>
           
           <div className="bottom-controls">
             <h3>Move Logs</h3>
