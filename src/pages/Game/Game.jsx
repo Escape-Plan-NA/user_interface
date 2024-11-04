@@ -87,7 +87,7 @@ const Game = () => {
       alert(`${winner === "farmer" ? "Farmer" : "Thief"} wins!\nCurrent Scores:\nFarmer: ${scores.farmer}, Thief: ${scores.thief}`);
     });
 
-    socket.on('leftLobby', () => {
+    socket.on('leftGame', () => {
       console.log("Received 'leftLobby' event, redirecting to main menu.");
       navigate('/');
     });
@@ -96,7 +96,7 @@ const Game = () => {
       socket.off("gameState");
       socket.off("timerUpdate");
       socket.off("winner");
-      socket.off("leftLobby");
+      socket.off("leftGame");
     };
   }, [socket, navigate]);
 
