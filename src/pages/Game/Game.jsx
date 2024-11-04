@@ -10,6 +10,7 @@ import { imageMap } from '../../utils/imageMap';
 import './Game.css';
 import Chat from '../../components/Chat/Chat.jsx';
 import SettingsModal from '../Settings/SettingsModal.jsx';
+import SurrenderButton from "../../components/SpecialButtons/SurrenderButton.jsx";
 
 const Game = () => {
   const location = useLocation();
@@ -192,6 +193,7 @@ const Game = () => {
               ))}
             </ul>
             <button className="reset-button" onClick={resetGame}>Reset</button>
+            <SurrenderButton role={role} />
           </div>
 
           <div className='settings-button'>
