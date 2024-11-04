@@ -64,6 +64,14 @@ const Game = () => {
     // Emit `start-game` to let the server handle game initialization
     socket.emit("start-game");
 
+  // Listen for the game start confirmation
+  socket.on("gameStarted", () => {
+    // Set a timeout as a fallback to request game state if not received in time
+    setTimeout(() => {
+      socket.emit("requestGameState");
+    }, 500); // Adjust this delay if necessary
+  });
+
     // Listen for game updates from the server
     socket.on("gameState", (gameData) => {
       setGrid(gameData.grid.blocks || []);
@@ -93,6 +101,7 @@ const Game = () => {
     });
 
     return () => {
+      socket.off("gameStarted");
       socket.off("gameState");
       socket.off("timerUpdate");
       socket.off("winner");
