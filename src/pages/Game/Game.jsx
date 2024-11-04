@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Import axios to fetch data from API
 import { useWebSocket } from '../../context/WebSocketProvider';
 import GameHeader from '../../components/GameHeader/GameHeader.jsx';
 import GameBoard from '../../components/GameBoard/GameBoard.jsx';
@@ -10,190 +11,225 @@ import './Game.css';
 import Chat from '../../components/Chat/Chat.jsx';
 
 const Game = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { socket } = useWebSocket();
-  const { role, username, gameData } = location.state || { gameData: { players: [] } };
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { socket } = useWebSocket();
+    const { role, username, gameData } = location.state || { gameData: { players: [] } };
 
-  useEffect(() => {
-    console.log("Received gameData in Game.jsx:", gameData);
-  }, [gameData]);
+    const [grid, setGrid] = useState([]);
+    const [thiefPosition, setThiefPosition] = useState({ row: 1, col: 1 });
+    const [farmerPosition, setFarmerPosition] = useState({ row: 1, col: 1 });
+    const [turn, setTurn] = useState("");
+    const [scores, setScores] = useState({ farmer: 0, thief: 0 });
+    const [finalScores, setFinalScores] = useState(null); // Store final scores here
+    const [timeLeft, setTimeLeft] = useState(60);
+    const [turnTimeLeft, setTurnTimeLeft] = useState(10);
+    const [logs, setLogs] = useState([]);
+    const [winMessage, setWinMessage] = useState("");
+    const [sessionEnded, setSessionEnded] = useState(false); // Track session end
+    const { soundEffectsEnabled } = useContext(SoundEffectContext);
 
-  const farmer = gameData?.players?.find(player => player.role === 'farmer') || {};
-  const thief = gameData?.players?.find(player => player.role === 'thief') || {};
+    const farmer = gameData?.players?.find(player => player.role === 'farmer') || {};
+    const thief = gameData?.players?.find(player => player.role === 'thief') || {};
 
-  const farmerName = farmer.username || "Farmer";
-  const thiefName = thief.username || "Thief";
-  const farmerImage = farmer.image_id ? imageMap[farmer.image_id]?.farmer : "/assets/characters/default_farmer.gif";
-  const thiefImage = thief.image_id ? imageMap[thief.image_id]?.thief : "/assets/characters/default_thief.gif";
+    const farmerName = farmer.username || "Farmer";
+    const thiefName = thief.username || "Thief";
+    const farmerImage = farmer.image_id ? imageMap[farmer.image_id]?.farmer : "/assets/characters/default_farmer.gif";
+    const thiefImage = thief.image_id ? imageMap[thief.image_id]?.thief : "/assets/characters/default_thief.gif";
 
-  const [grid, setGrid] = useState([]);
-  const [thiefPosition, setThiefPosition] = useState({ row: 1, col: 1 });
-  const [farmerPosition, setFarmerPosition] = useState({ row: 1, col: 1 });
-  const [turn, setTurn] = useState("");
-  const [scores, setScores] = useState({ farmer: 0, thief: 0 });
-  const [timeLeft, setTimeLeft] = useState(60);
-  const [turnTimeLeft, setTurnTimeLeft] = useState(10);
-  const [logs, setLogs] = useState([]);
-
-  const { soundEffectsEnabled } = useContext(SoundEffectContext);
-  
-  const sounds = useRef({
-    farmerMove: new Audio("/soundEffects/farmer_move.mp3"),
-    thiefMove: new Audio("/soundEffects/thief_move.mp3"),
-    farmerWin: new Audio("/soundEffects/farmer_win.mp3"),
-    thiefWin: new Audio("/soundEffects/thief_win.mp3"),
-    tieGame: new Audio("/soundEffects/tieGame.mp3")
-  });
-
-  useEffect(() => {
-    if (soundEffectsEnabled) {
-      Object.values(sounds.current).forEach(sound => sound.load());
-    }
-  }, [soundEffectsEnabled]);
-
-  const playSound = (sound) => {
-    if (soundEffectsEnabled && sound) {
-      sound.play().catch(error => console.error("Error playing sound:", error));
-    }
-  };
-
-  useEffect(() => {
-    if (!socket) return;
-
-    // Emit `start-game` to let the server handle game initialization
-    socket.emit("start-game");
-
-  // Listen for the game start confirmation
-  socket.on("gameStarted", () => {
-    // Set a timeout as a fallback to request game state if not received in time
-    setTimeout(() => {
-      socket.emit("requestGameState");
-    }, 500); // Adjust this delay if necessary
-  });
-
-    // Listen for game updates from the server
-    socket.on("gameState", (gameData) => {
-      setGrid(gameData.grid.blocks || []);
-      setThiefPosition(gameData.grid.thiefPosition);
-      setFarmerPosition(gameData.grid.farmerPosition);
-      setTurn(gameData.currentTurn);
-      setScores({
-        farmer: gameData.players[0].score,
-        thief: gameData.players[1].score,
-      });
+    const sounds = useRef({
+        farmerMove: new Audio("/soundEffects/farmer_move.mp3"),
+        thiefMove: new Audio("/soundEffects/thief_move.mp3"),
+        farmerWin: new Audio("/soundEffects/farmer_win.mp3"),
+        thiefWin: new Audio("/soundEffects/thief_win.mp3"),
+        tieGame: new Audio("/soundEffects/tieGame.mp3")
     });
 
-    socket.on("timerUpdate", ({ timeLeft, turnTimeLeft }) => {
-      setTimeLeft(timeLeft);
-      setTurnTimeLeft(turnTimeLeft);
-    });
+    useEffect(() => {
+        if (soundEffectsEnabled) {
+            Object.values(sounds.current).forEach(sound => sound.load());
+        }
+    }, [soundEffectsEnabled]);
 
-    socket.on("winner", ({ winner, scores }) => {
-      setScores(scores);
-      playSound(winner === "farmer" ? sounds.current.farmerWin : sounds.current.thiefWin);
-      alert(`${winner === "farmer" ? "Farmer" : "Thief"} wins!\nCurrent Scores:\nFarmer: ${scores.farmer}, Thief: ${scores.thief}`);
-    });
-
-    socket.on('leftGame', () => {
-      console.log("Received 'leftLobby' event, redirecting to main menu.");
-      navigate('/');
-    });
-
-    return () => {
-      socket.off("gameStarted");
-      socket.off("gameState");
-      socket.off("timerUpdate");
-      socket.off("winner");
-      socket.off("leftGame");
+    const playSound = (sound) => {
+        if (soundEffectsEnabled && sound) {
+            sound.play().catch(error => console.error("Error playing sound:", error));
+        }
     };
-  }, [socket, navigate]);
 
-  const handleKeyPress = (e) => {
-    if (turn !== role) return;
-
-    let direction = "";
-    switch (e.key) {
-      case "ArrowUp": direction = "up"; break;
-      case "ArrowDown": direction = "down"; break;
-      case "ArrowLeft": direction = "left"; break;
-      case "ArrowRight": direction = "right"; break;
-      default: return;
-    }
-
-    socket.emit("move", { role, direction });
-    playSound(role === "farmer" ? sounds.current.farmerMove : sounds.current.thiefMove);
-  };
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [turn, role]);
-
-  useEffect(() => {
-    socket.on("moveLog", (message) => {
-      setLogs((prevLogs) => {
-        const updatedLogs = [...prevLogs, message];
-        return updatedLogs.slice(-4);
-      });
-    });
-  
-    return () => {
-      socket.off("moveLog");
+    const fetchFinalScores = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/api/final-scores'); // Update with correct URL if needed
+            const scores = response.data.scores;
+            setFinalScores(scores); // Set final scores to display in scoreboard
+            
+            // Determine win message based on final scores
+            if (scores.farmer > scores.thief) {
+                setWinMessage(`${farmerName} (farmer) ${scores.farmer} : ${thiefName} (thief) ${scores.thief}`);
+            } else if (scores.thief > scores.farmer) {
+                setWinMessage(`${thiefName} (thief) ${scores.thief} : ${farmerName} (farmer) ${scores.farmer}`);
+            } else {
+                setWinMessage(`${farmerName} (farmer) ${scores.farmer} : ${thiefName} (thief) ${scores.thief} - It's a tie!`);
+            }
+        } catch (error) {
+            console.error("Error fetching final scores:", error);
+        }
     };
-  }, [socket]);
 
-  const resetGame = () => {
-    socket.emit("resetGame");
-  };
+    useEffect(() => {
+        if (!socket) return;
 
-  return (
-    <div className="container">
-      <div className="background-front"></div> 
-  
-      <div className="player-name-display">
-        <p>Player: {username || "Guest"}</p>
-        
-        <GameHeader 
-          role={role} 
-          timeLeft={timeLeft} 
-          turn={turn} 
-          turnTimeLeft={turnTimeLeft}
-          username={username}
-        />
-        
-        <Chat username={username} />
-        
-        <div className="gameboard-container">
-          <GameBoard
-            grid={grid}
-            farmerPosition={farmerPosition}
-            thiefPosition={thiefPosition}
-            farmerImage={farmerImage}
-            thiefImage={thiefImage}
-            farmerName={farmerName}
-            thiefName={thiefName}
-          />
-          <Scoreboard 
-            farmerScore={scores.farmer} 
-            thiefScore={scores.thief} 
-            farmerName={farmerName}
-            thiefName={thiefName}
-          />
-          
-          <div className="bottom-controls">
-            <h3>Move Logs</h3>
-            <ul className="move-logs">
-              {logs.map((log, index) => (
-                <li key={index}>{log}</li>
-              ))}
-            </ul>
-            <button className="reset-button" onClick={resetGame}>Reset</button>
-          </div>
+        socket.emit("start-game");
+
+        socket.on("gameStarted", () => {
+            setTimeout(() => {
+                socket.emit("requestGameState");
+            }, 500);
+        });
+
+        socket.on("gameState", (gameData) => {
+            setGrid(gameData.grid.blocks || []);
+            setThiefPosition(gameData.grid.thiefPosition);
+            setFarmerPosition(gameData.grid.farmerPosition);
+            setTurn(gameData.currentTurn);
+
+            // Only update scores if the session hasn't ended
+            if (!sessionEnded) {
+                setScores({
+                    farmer: gameData.players[0].score,
+                    thief: gameData.players[1].score,
+                });
+            }
+        });
+
+        socket.on("timerUpdate", ({ timeLeft, turnTimeLeft }) => {
+            setTimeLeft(timeLeft);
+            setTurnTimeLeft(turnTimeLeft);
+        });
+
+        socket.on("sessionEnded", () => {
+            setSessionEnded(true); // Mark session as ended
+            fetchFinalScores(); // Fetch and display final scores
+        });
+
+        socket.on("winner", ({ winner, scores }) => {
+            setScores(scores);
+            playSound(winner === "farmer" ? sounds.current.farmerWin : sounds.current.thiefWin);
+            alert(`${winner === "farmer" ? "Farmer" : "Thief"} wins!\nCurrent Scores:\nFarmer: ${scores.farmer}, Thief: ${scores.thief}`);
+        });
+
+        socket.on('leftGame', () => {
+            console.log("Received 'leftLobby' event, redirecting to main menu.");
+            navigate('/');
+        });
+
+        return () => {
+            socket.off("gameStarted");
+            socket.off("gameState");
+            socket.off("timerUpdate");
+            socket.off("winner");
+            socket.off("leftGame");
+            socket.off("sessionEnded");
+        };
+    }, [socket, navigate, sessionEnded]);
+
+    const handleKeyPress = (e) => {
+        if (turn !== role) return;
+
+        let direction = "";
+        switch (e.key) {
+            case "ArrowUp": direction = "up"; break;
+            case "ArrowDown": direction = "down"; break;
+            case "ArrowLeft": direction = "left"; break;
+            case "ArrowRight": direction = "right"; break;
+            default: return;
+        }
+
+        socket.emit("move", { role, direction });
+        playSound(role === "farmer" ? sounds.current.farmerMove : sounds.current.thiefMove);
+    };
+
+    useEffect(() => {
+        window.addEventListener("keydown", handleKeyPress);
+        return () => window.removeEventListener("keydown", handleKeyPress);
+    }, [turn, role]);
+
+    useEffect(() => {
+        socket.on("moveLog", (message) => {
+            setLogs((prevLogs) => {
+                const updatedLogs = [...prevLogs, message];
+                return updatedLogs.slice(-4);
+            });
+        });
+
+        return () => {
+            socket.off("moveLog");
+        };
+    }, [socket]);
+
+    const resetGame = () => {
+        socket.emit("resetGame");
+    };
+
+    return (
+        <div className="container">
+          <div className="background-front"></div> 
+            {sessionEnded ? (
+                // Display only the win message and final score when game ends
+                <div className="win-message">
+                    <h2>Game Over</h2>
+                    <p>{winMessage}</p>
+                </div>
+            ) : (
+                // Show game components only if the session has not ended
+                <>
+
+                    <div className="player-name-display">
+                        <p>Player: {username || "Guest"}</p>
+                        
+                        <GameHeader 
+                            role={role} 
+                            timeLeft={timeLeft} 
+                            turn={turn} 
+                            turnTimeLeft={turnTimeLeft}
+                            username={username}
+                        />
+                        
+                        <Chat username={username} />
+                        
+                        <div className="gameboard-container">
+                            <GameBoard
+                                grid={grid}
+                                farmerPosition={farmerPosition}
+                                thiefPosition={thiefPosition}
+                                farmerImage={farmerImage}
+                                thiefImage={thiefImage}
+                                farmerName={farmerName}
+                                thiefName={thiefName}
+                            />
+                            
+                            <Scoreboard 
+                                farmerScore={scores.farmer}
+                                thiefScore={scores.thief}
+                                farmerName={farmerName}
+                                thiefName={thiefName}
+                            />
+            
+                            <div className="bottom-controls">
+                                <h3>Move Logs</h3>
+                                <ul className="move-logs">
+                                    {logs.map((log, index) => (
+                                        <li key={index}>{log}</li>
+                                    ))}
+                                </ul>
+                                <button className="reset-button" onClick={resetGame}>Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )}
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Game;
