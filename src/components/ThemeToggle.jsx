@@ -1,5 +1,5 @@
+// components/ThemeToggle.jsx
 import React from 'react';
-import { FaSun, FaMoon } from 'react-icons/fa'; // Import the icons
 import { useTheme } from '../context/ThemeContext.jsx'; // Import the theme context
 
 const ThemeToggle = () => {
@@ -7,12 +7,11 @@ const ThemeToggle = () => {
 
   return (
     <button 
-      className="theme-toggle nav-icon" 
+      className="theme-toggle nav-button" 
       onClick={toggleTheme}
-      title="Toggle Theme"
+       // Green when dark mode is on, red when off
     >
-      {/* Use the icons based on the theme state */}
-      {isDarkMode ? <FaMoon style={{ color: "#FFD700" }} /> : <FaSun style={{ color: "#FFD700" }} />}
+      {isDarkMode ? "Dark Mode On" : "Light Mode On"}
     </button>
   );
 };

@@ -1,6 +1,5 @@
 // components/Navbar/GameNavBar.jsx
 import React, { useContext } from "react";
-import { FaVolumeUp, FaMusic, FaHome } from "react-icons/fa"; // Import icons
 import { useNavigate } from "react-router-dom";
 import { AudioContext } from '../../context/AudioContext';
 import { SoundEffectContext } from '../../context/SoundEffectContext';
@@ -14,14 +13,20 @@ function GameNavBar() {
 
   return (
     <div className="navbar">
-      <button className="nav-icon" onClick={() => navigate('/')}>
-        <FaHome title="Home" />
+      <button className="nav-button" onClick={() => navigate('/')}>
+        Home
       </button>
-      <button className="nav-icon" onClick={toggleAudio}>
-        <FaVolumeUp title="Toggle Audio" style={{ color: isPlaying ? "#2f993d" : "#888" }} />
+      <button 
+        className={`nav-button ${isPlaying ? 'active' : ''}`} // Add 'active' class based on audio state
+        onClick={toggleAudio}
+      >
+        {isPlaying ? "Audio On" : "Audio Off"}
       </button>
-      <button className="nav-icon" onClick={toggleSoundEffects}>
-        <FaMusic title="Toggle Sound Effects" style={{ color: soundEffectsEnabled ? "#2f993d" : "#888" }} />
+      <button 
+        className={`nav-button ${soundEffectsEnabled ? 'active' : ''}`} // Add 'active' class based on sound effects state
+        onClick={toggleSoundEffects}
+      >
+        {soundEffectsEnabled ? "Sound Effects On" : "Sound Effects Off"}
       </button>
       <ThemeToggle /> {/* Render ThemeToggle directly here */}
     </div>

@@ -166,6 +166,7 @@ const Game = () => {
             farmerName={farmerName}
             thiefName={thiefName}
           />
+          </div>
           <Scoreboard 
             farmerScore={scores.farmer} 
             thiefScore={scores.thief} 
@@ -183,8 +184,9 @@ const Game = () => {
             </ul>
             <button className="reset-button" onClick={resetGame}>Reset</button>
           </div>
-        </div>
+        
       </div>
+      <div class="dark-mode-overlay"></div>
     </div>
   );
 };

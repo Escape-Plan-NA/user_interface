@@ -116,6 +116,7 @@ html, body {
 }
 
 
+
 /* Styling for the reset button */
 .reset-button {
   padding: 8px 16px;
@@ -146,4 +147,27 @@ html, body {
 }
   
   
-  
+/* Dark Mode Overlay */
+.dark-mode-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(211, 214, 42, 0.185); /* Semi-transparent dark background */
+  filter: grayscale(50%); /* Grayscale filter for a dark effect */
+  z-index: 50; /* Ensures it sits on top but below essential components */
+  pointer-events: none; /* Allow interactions to pass through */
+  opacity: 0; /* Start hidden */
+  transition: opacity 0.3s ease; /* Smooth transition */
+}
+
+/* Enable overlay when dark mode is on */
+body.dark-mode .dark-mode-overlay {
+  opacity: 1; /* Show overlay in dark mode */
+}
+
+/* Optional: Toggle background colors or other styles for dark mode */
+body.dark-mode {
+  background-color: #333; /* Set dark background if needed */
+}
