@@ -1,115 +1,156 @@
-/* Container for settings */
-.settings-container {
+/* Full-screen background container with background image */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+.background-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-  background-color: var(--background-color); /* Ensure this changes with theme */
-  color: var(--text-color); /* Ensure this changes with theme */
-  height: 100vh; /* Full screen height */
-  box-sizing: border-box;
+  background-image: url('../../assets/Main Menu BG.gif');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #333;
 }
 
-/* Settings title */
-h1 {
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
-  text-align: center;
+/* Oval board styling */
+.oval-board {
+  width: 400px; /* Reduced width */
+  height: 50px; /* Reduced height */
+  border: 10px solid #704F23; /* Brown border */
+  border-radius: 75px; /* Half of height for an oval shape */
+  background-color: #704F23; /* Solid dark brown background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute; /* Position on top of settings container */
+  top: 150px; /* Adjust top position as needed */
+  z-index: 1; /* Ensure it is on top of the settings container */
 }
 
-/* Circle around the icon */
-.icon-container {
-  margin-bottom: 2rem;
+/* Settings container styling - larger with more padding */
+.settings-container {
+  width: 400px; /* Increased width for a larger container */
+  padding: 30px; /* Increased padding for more internal spacing */
+  border: 10px solid #704F23; /* Brown border */
+  border-radius: 8px;
+  background-color: #4E342E; /* Dark brown background */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Press Start 2P', sans-serif; /* Pixelated font */
+  color: #fff; /* White text color for contrast */
+  gap: 20px; /* Adds space between inner components */
+  position: relative; /* Ensure relative positioning for the absolute positioning of the oval board */
+  z-index: 0; /* Ensure it is behind the oval board */
 }
 
-.circle {
-  width: 100px;
-  height: 100px;
-  background-color: var(--button-bg);
+/* Adjust title font size and spacing */
+.settings-title {
+  font-size: 48px; /* Larger font size */
+  margin-bottom: 35px; /* Space below title */
+}
+
+/* Spacing for each setting label */
+.setting-label {
+  width: 100%; /* Full width for better alignment */
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Space out label and switch */
+  font-size: 25px; /* Larger text for labels */
+  margin-bottom: 15px; /* Adds space below each setting */
+  font-family: 'Press Start 2P', sans-serif; /* Ensure all labels use the same font */
+}
+
+.setting-label span {
+  font-family: 'Press Start 2P', sans-serif; /* Ensure span uses the desired font */
+}
+
+
+
+/* Back button - slightly larger */
+.back-button {
+  position: absolute;
+  top: 20px; /* Moves back button down a bit */
+  left: 20px; /* Moves back button right a bit */
+  width: 32px; /* Larger width */
+  height: 32px; /* Larger height */
+  background-color: #fff; /* White background color */
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  font-size: 16px; /* Larger icon */
 }
 
-.sound-icon {
-  color: var(--button-text-color);
-  font-size: 2.5rem;
+/* Switch container styling - larger switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px; /* Increased width */
+  height: 30px; /* Increased height */
 }
 
-/* Options container */
-.options-container {
+/* Hide the default checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 15px; /* Rounded edges */
+}
+
+/* Slider when checked */
+.switch input:checked + .slider {
+  background-color: #4CAF50; /* Change color when checked */
+}
+
+/* Slider handle (circle) */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 24px; /* Increased height */
+  width: 24px; /* Increased width */
+  left: 4px; /* Position inside the slider */
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%; /* Rounded handle */
+}
+
+/* Position of the handle when checked */
+.switch input:checked + .slider:before {
+  transform: translateX(30px); /* Adjust to slide right */
+}
+
+/* Back button */
+.back-button {
+  position: absolute;
+  top: 20px; /* Moves the button slightly lower */
+  left: 20px; /* Moves the button slightly to the right */
+  width: 40px; /* Increased width for a larger button */
+  height: 40px; /* Increased height for a larger button */
+  background-color: #fff;
+  border-radius: 50%;
   display: flex;
-  flex-direction: column;
-  gap: 2rem; /* Add space between options */
-  width: 100%;
-  max-width: 400px; /* Ensure a nice centered alignment */
-  padding: 20px;
-}
-
-.option {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-}
-
-.selection-display-text {
-  font-size: 1.2rem;
-  color: var(--text-color); /* Theme-based color */
-}
-
-/* Button styles */
-.button-group {
-  display: flex;
-}
-
-.side-by-side-button {
-  background-color: var(--button-bg);
-  color: var(--button-text-color);
-  padding: 10px 20px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 40px;
+  justify-content: center;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.side-by-side-button:hover {
-  background-color: var(--link-color); /* Lighter color on hover */
-}
-
-.button-group label.button-text {
-  font-size: 1rem;
-}
-
-.theme-toggle-button {
-  padding: 10px 20px;
-  margin-top: 1rem;
-  background-color: var(--button-bg);
-  color: var(--button-text-color);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.theme-toggle-button:hover {
-  background-color: var(--link-color); /* Change to lighter tone on hover */
-}
-
-/* Main menu button */
-button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: var(--button-bg);
-  color: var(--button-text-color);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: var(--link-color);
 }
