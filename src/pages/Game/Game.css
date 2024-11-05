@@ -156,7 +156,6 @@ html, body {
   line-height: 1.4;
   position: relative;
   left: -65px;
-  bottom: -130px;
-  z-index: 10;
+  z-index: 1001;
 }
 
