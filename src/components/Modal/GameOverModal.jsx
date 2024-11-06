@@ -14,7 +14,6 @@ const GameOverModal = ({ resultMessage, winnerName, winnerRole, scores, onClose 
                     <p>Thief: {scores.thief}</p>
                 </div>
                 <p className="redirect-message">Redirecting to main menu...</p>
-                <button className="close-button" onClick={onClose}>Close</button>
             </div>
         </div>
     );

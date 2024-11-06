@@ -11,6 +11,8 @@ import './Game.css';
 import Chat from '../../components/Chat/Chat.jsx';
 import WinModal from '../../components/Modal/WinModal.jsx';
 import GameOverModal from '../../components/Modal/GameOverModal.jsx'; // Import GameOverModal
+import SurrenderButton from "../../components/SpecialButtons/SurrenderButton.jsx";
+import TutorialModal from '../../components/Modal/TutorialModal';
 
 const Game = () => {
     const location = useLocation();
@@ -32,6 +34,7 @@ const Game = () => {
     const { soundEffectsEnabled } = useContext(SoundEffectContext);
 
     const [showWinModal, setShowWinModal] = useState(false);
+    const [isTutorialOpen, setIsTutorialOpen] = useState(false);
     const [showGameOverModal, setShowGameOverModal] = useState(false); // New state for GameOverModal
     const [winnerData, setWinnerData] = useState(null);
 
@@ -50,6 +53,10 @@ const Game = () => {
         thiefWin: new Audio("/soundEffects/thief_win.mp3"),
         tieGame: new Audio("/soundEffects/tieGame.mp3")
     });
+
+    const toggleTutorialModal = () => {
+      setIsTutorialOpen(!isTutorialOpen);
+  };
 
     useEffect(() => {
         if (soundEffectsEnabled) {
@@ -128,6 +135,7 @@ const Game = () => {
             });
             setShowWinModal(true);
         });
+      
 
         socket.on('leftGame', () => {
             console.log("Received 'leftLobby' event, redirecting to main menu.");
@@ -275,6 +283,11 @@ const Game = () => {
                             ))}
                         </ul>
                         <button className="reset-button" onClick={resetGame}>Reset</button>
+                        <button className="tutorial-button" onClick={toggleTutorialModal}>?</button>
+  
+  {/* Render the tutorial modal */}
+  <TutorialModal isOpen={isTutorialOpen} onClose={toggleTutorialModal} />
+                        <SurrenderButton role={role} />
                     </div>
                 </div>
             </div>

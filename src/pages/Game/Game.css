@@ -176,5 +176,25 @@ html, body {
   font-size: 1.2em;
 }
 
+.tutorial-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tutorial-button:hover {
+  background-color: #e0e0e0;
+}
+
   
   
