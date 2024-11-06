@@ -24,37 +24,12 @@
   text-align: center;
   border: none;  /* Remove borders for invisible grid lines */
   position: relative;
-}
-
-/* Different tile types with background images */
-.table-cell.free1,
-.table-cell.free2,
-.table-cell.free3,
-.table-cell.obstacle,
-.table-cell.tunnel {
   background-size: cover;
   background-position: center;
+
 }
 
-.table-cell.free1 {
-  background-image: url('../../assets/map_components/autumn/AutumnFree(1).png');
-}
 
-.table-cell.free2 {
-  background-image: url('../../assets/map_components/autumn/AutumnFree(2).png');
-}
-
-.table-cell.free3 {
-  background-image: url('../../assets/map_components/autumn/AutumnFree(3).png');
-}
-
-.table-cell.obstacle {
-  background-image: url('../../assets/map_components/autumn/AutumnObtacle.png');
-}
-
-.table-cell.tunnel {
-  background-image: url('../../assets/map_components/autumn/AutumnTunnel.png');
-}
 
 /* Character image styling */
 .character-image {

@@ -30,28 +30,29 @@ html, body {
   }
   /* Front layers for specific themes */
 .background-front.bg-autumn {
-  background-image: url('../../assets/map_components/autumn/Autumn Gameplay BG Front.gif');
+  background-image: url('/map_components/autumn/Autumn Gameplay BG Front.gif');
 }
 
 .background-front.bg-summer {
-  background-image: url('../../assets/map_components/summer/Summer Gameplay BG Front.gif');
+  
+  background-image: url('/map_components/summer/Summer Gameplay BG Front.gif');
 }
 
 .background-front.bg-spring {
-  background-image: url('../../assets/map_components/spring/Spring Gameplay BG Front.gif');
+  background-image: url('/map_components/spring/Spring Gameplay BG Front.gif');
 }
 
 /* Main container for the rest of the background */
 .container.bg-autumn {
-  background-image: url('../../assets/map_components/autumn/Autumn Gameplay BG.gif');
+  background-image: url('/map_components/autumn/Autumn Gameplay BG.gif');
 }
 
 .container.bg-summer {
-  background-image: url('../../assets/map_components/summer/Summer Gameplay BG.gif');
+  background-image: url('/map_components/summer/Summer Gameplay BG.gif');
 }
 
 .container.bg-spring {
-  background-image: url('../../assets/map_components/spring/Spring Gameplay BG.gif');
+  background-image: url('/map_components/spring/Spring Gameplay BG.gif');
 }
 
 
