@@ -5,9 +5,11 @@ import './Cutscene.css';
 const Cutscene = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { role, username } = location.state || {};
+  const { role, username, theme } = location.state || {};
   const [gameData, setGameData] = useState(null);
 
+  const [cutsceneData, setCutsceneData] = useState(null);
+  console.log("Received theme:", theme);
   // Fetch game data on component mount
   useEffect(() => {
     const fetchGameData = async () => {
@@ -28,16 +30,16 @@ const Cutscene = () => {
   useEffect(() => {
     if (gameData) { // Ensure gameData is loaded before navigating
       const timer = setTimeout(() => {
-        console.log("Navigating with data:", { role, username, gameData }); // Log state before navigating
-        navigate('/game', { state: { role, username, gameData } });
+        console.log("Navigating with data:", { role, username, gameData, theme }); // Log state before navigating
+        navigate('/game', { state: { role, username, gameData, theme } });
       }, 16000);
 
       return () => clearTimeout(timer);
     }
-  }, [navigate, role, username, gameData]);
+  }, [navigate, role, username, gameData, theme, cutsceneData]);
 
   return (
-    <div className="cutscene-container">
+    <div className={`cutscene-container theme-${theme?.toLowerCase()}`}> {/* Apply theme-specific class */}
     </div>
   );
 };

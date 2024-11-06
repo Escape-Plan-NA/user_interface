@@ -21,6 +21,7 @@ const Lobby = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [buttonPressed, setButtonPressed] = useState(false);
   const [startingMessage, setStartingMessage] = useState(''); // New state for "starting ..." message
+  const [theme,setTheme]= useState('Autumn');
 
   const profilePicture = imageMap[profilePictureId].base;
 
@@ -84,9 +85,9 @@ const Lobby = () => {
   useEffect(() => {
     if (gameStarted && role) {
       setStartingMessage("Starting ..."); // Show the "starting ..." message
-      setTimeout(() => navigate('/cutscene', { state: { role, username} }), 1800); // Delay navigation by
+      setTimeout(() => navigate('/cutscene', { state: { role, username, theme} }), 1800); // Delay navigation by
     }
-  }, [gameStarted, role, navigate]);
+  }, [gameStarted, role, navigate, theme]);
 
   const handleCustomize = (e) => {
     e.preventDefault();
@@ -135,6 +136,12 @@ const Lobby = () => {
     setIsModalOpen(false);
   };
 
+  // Theme selection handler
+  const handleThemeChange = (event) => {
+    setTheme(event.target.value);
+  };
+
+
   return (
     <div className="lobby-container">
       <h2>Game Lobby</h2>
@@ -166,6 +173,16 @@ const Lobby = () => {
         )}
   
         <button type="button" onClick={handleCustomize}>Customize</button>
+      </div>
+      
+      {/* Theme selection */}
+      <div className="theme-selector">
+        <label>Select Theme:</label>
+        <select value={theme} onChange={handleThemeChange}>
+          <option value="Autumn">Autumn</option>
+          <option value="Summer">Summer</option>
+          <option value="Spring">Spring</option>
+        </select>
       </div>
   
       {isModalOpen && (

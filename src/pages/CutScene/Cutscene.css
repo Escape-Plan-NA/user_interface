@@ -14,7 +14,20 @@
     justify-content: center;
     align-items: flex-end;
   }
+
+  /* Theme-specific background images */
+.cutscene-container.theme-autumn {
+  background-image: url('../../assets/map_components/autumn/Cutscene Autumn Theme Before Gameplay.gif');
+}
+
+.cutscene-container.theme-summer {
+  background-image: url('../../assets/map_components/summer/Cutscene Summer Theme Before Gameplay.gif');
+}
+.cutscene-container.theme-spring {
+  background-image: url('../../assets/map_components/spring/Cutscene Spring Theme Before Gameplay.gif');
+}
   
+
   .cutscene-container button {
     margin-bottom: 20px;
     padding: 10px 20px;
