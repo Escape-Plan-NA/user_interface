@@ -12,6 +12,10 @@
   - **Prisoner Victory**: The prisoner wins by reaching the tunnel block.
 - **Automatic Game Reset**: The server can reset the game board and player scores to restart the match.
 
+## Extra Features: 
+- **Single Player Mode**: Player can play with bot.
+- **Chat**: The players can converse in the game through typing.
+
 ## Game Rules
 1. **Map Configuration**:
    - The map consists of:
@@ -33,7 +37,7 @@
    - After a win, the server resets the game, and the winning player gets to start first in the next match. Player scores are tracked and displayed.
 
 6. **Reset Feature**:
-   - The server includes a reset button that allows the administrator to restart the game and reset player scores at any time.
+   - The server includes a reset button that allows the administrator to restart the game and reset player scores at any time
 
 ## Server Specifications
 - **Hardcoded Server Address**: The server’s IP address and port are predefined in the source code, simplifying the connection process for clients.
