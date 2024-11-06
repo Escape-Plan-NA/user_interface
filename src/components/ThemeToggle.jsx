@@ -11,7 +11,7 @@ const ThemeToggle = () => {
       onClick={toggleTheme}
        // Green when dark mode is on, red when off
     >
-      {isDarkMode ? "Dark Mode On" : "Light Mode On"}
+      {isDarkMode ? "Light Mode" : "Dark Mode"}
     </button>
   );
 };

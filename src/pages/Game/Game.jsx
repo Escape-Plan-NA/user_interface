@@ -186,7 +186,7 @@ const Game = () => {
           </div>
         
       </div>
-      <div class="dark-mode-overlay"></div>
+      <div className="dark-mode-overlay"></div>
     </div>
   );
 };
