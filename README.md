@@ -1,5 +1,7 @@
 # Warder and Prisoner Game
 
+# I really like turtles. They eat lettuce
+
 ## Overview
 **Warder and Prisoner** is a two-player strategic game where one player takes on the role of the **Warder** while the other is the **Prisoner**, competing on a dynamic 5x5 block map. The **Warder**'s goal is to capture the **Prisoner**, while the **Prisoner** aims to escape by reaching a tunnel. The game operates using a client-server architecture, with the server managing the game flow and handling multiple clients.
 
@@ -12,10 +14,6 @@
   - **Prisoner Victory**: The prisoner wins by reaching the tunnel block.
 - **Automatic Game Reset**: The server can reset the game board and player scores to restart the match.
 
-## Extra Features: 
-- **Single Player Mode**: Player can play with bot.
-- **Chat**: The players can converse in the game through typing.
-
 ## Game Rules
 1. **Map Configuration**:
    - The map consists of:
@@ -27,7 +25,7 @@
    - At the start of each game, the server randomly places the free, obstacle, and tunnel blocks, along with the starting positions of the characters.
 
 3. **Turn-Based Movement**:
-   - Each player has 10 seconds to move to an adjacent block (up, down, right, or left). If no move is made within the time limit, the turn is skipped.
+   - Each player has 10 seconds to move to an adjacent block (up, down, left, or right). If no move is made within the time limit, the turn is skipped.
    
 4. **Win Conditions**:
    - **Warder Wins**: If the warder reaches the prisoner's location.
@@ -37,7 +35,7 @@
    - After a win, the server resets the game, and the winning player gets to start first in the next match. Player scores are tracked and displayed.
 
 6. **Reset Feature**:
-   - The server includes a reset button that allows the administrator to restart the game and reset player scores at any time
+   - The server includes a reset button that allows the administrator to restart the game and reset player scores at any time.
 
 ## Server Specifications
 - **Hardcoded Server Address**: The server’s IP address and port are predefined in the source code, simplifying the connection process for clients.
