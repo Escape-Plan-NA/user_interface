@@ -12,8 +12,9 @@ import Chat from '../../components/Chat/Chat.jsx';
 const Game = () => {
   const location = useLocation();
   const { socket } = useWebSocket();
-  const { role, username, gameData } = location.state || { gameData: { players: [] } };
+  const { role, username, gameData, theme } = location.state || { gameData: { players: [] } };
 
+  //console.log("received theme", theme);
   // Log gameData to confirm reception
   useEffect(() => {
     console.log("Received gameData in Game.jsx:", gameData);
@@ -133,9 +134,12 @@ const Game = () => {
     socket.emit("resetGame");
   };
 
+  const containerClass = `container bg-${theme}`;
+  const frontLayerClass = `background-front bg-${theme}`;
+
   return (
-    <div className="container">
-      <div className="background-front"></div> 
+    <div className={containerClass}>
+      <div className={frontLayerClass}></div> 
   
       <div className="player-name-display">
         <p>Player: {username || "Guest"}</p>
@@ -153,6 +157,7 @@ const Game = () => {
         <div className="gameboard-container">
           <GameBoard
             grid={grid}
+            selectedTheme={theme}
             farmerPosition={farmerPosition}
             thiefPosition={thiefPosition}
             farmerImage={farmerImage}

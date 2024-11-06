@@ -21,7 +21,7 @@ const Lobby = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [buttonPressed, setButtonPressed] = useState(false);
   const [startingMessage, setStartingMessage] = useState(''); // New state for "starting ..." message
-  const [theme,setTheme]= useState('Autumn');
+  const [theme,setTheme]= useState('autumn');
 
   const profilePicture = imageMap[profilePictureId].base;
 
@@ -174,14 +174,14 @@ const Lobby = () => {
   
         <button type="button" onClick={handleCustomize}>Customize</button>
       </div>
-      
+
       {/* Theme selection */}
       <div className="theme-selector">
         <label>Select Theme:</label>
         <select value={theme} onChange={handleThemeChange}>
-          <option value="Autumn">Autumn</option>
-          <option value="Summer">Summer</option>
-          <option value="Spring">Spring</option>
+          <option value="autumn">Autumn</option>
+          <option value="summer">Summer</option>
+          <option value="spring">Spring</option>
         </select>
       </div>
   
