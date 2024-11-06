@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import Scoreboard from '../../components/Scoreboard/SingleScoreboard.jsx';
-import WinModal from '../../components/WinModal/WinModal.jsx'; // Import the WinModal
+import WinModal from '../../components/Modal/WinModal.jsx'; // Import the WinModal
 import './GamePlay.css';
 
 const SingleGameplay = () => {

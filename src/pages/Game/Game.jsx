@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios'; // Import axios to fetch data from API
+import axios from 'axios';
 import { useWebSocket } from '../../context/WebSocketProvider';
 import GameHeader from '../../components/GameHeader/GameHeader.jsx';
 import GameBoard from '../../components/GameBoard/GameBoard.jsx';
@@ -9,6 +9,8 @@ import { SoundEffectContext } from "../../context/SoundEffectContext.jsx";
 import { imageMap } from '../../utils/imageMap';
 import './Game.css';
 import Chat from '../../components/Chat/Chat.jsx';
+import WinModal from '../../components/Modal/WinModal.jsx';
+import GameOverModal from '../../components/Modal/GameOverModal.jsx'; // Import GameOverModal
 
 const Game = () => {
     const location = useLocation();
@@ -21,13 +23,17 @@ const Game = () => {
     const [farmerPosition, setFarmerPosition] = useState({ row: 1, col: 1 });
     const [turn, setTurn] = useState("");
     const [scores, setScores] = useState({ farmer: 0, thief: 0 });
-    const [finalScores, setFinalScores] = useState(null); // Store final scores here
+    const [finalScores, setFinalScores] = useState(null);
     const [timeLeft, setTimeLeft] = useState(60);
     const [turnTimeLeft, setTurnTimeLeft] = useState(10);
     const [logs, setLogs] = useState([]);
     const [winMessage, setWinMessage] = useState("");
-    const [sessionEnded, setSessionEnded] = useState(false); // Track session end
+    const [sessionEnded, setSessionEnded] = useState(false);
     const { soundEffectsEnabled } = useContext(SoundEffectContext);
+
+    const [showWinModal, setShowWinModal] = useState(false);
+    const [showGameOverModal, setShowGameOverModal] = useState(false); // New state for GameOverModal
+    const [winnerData, setWinnerData] = useState(null);
 
     const farmer = gameData?.players?.find(player => player.role === 'farmer') || {};
     const thief = gameData?.players?.find(player => player.role === 'thief') || {};
@@ -59,11 +65,10 @@ const Game = () => {
 
     const fetchFinalScores = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/final-scores'); // Update with correct URL if needed
+            const response = await axios.get('http://localhost:3000/api/final-scores');
             const scores = response.data.scores;
-            setFinalScores(scores); // Set final scores to display in scoreboard
+            setFinalScores(scores);
             
-            // Determine win message based on final scores
             if (scores.farmer > scores.thief) {
                 setWinMessage(`${farmerName} (farmer) ${scores.farmer} : ${thiefName} (thief) ${scores.thief}`);
             } else if (scores.thief > scores.farmer) {
@@ -93,7 +98,6 @@ const Game = () => {
             setFarmerPosition(gameData.grid.farmerPosition);
             setTurn(gameData.currentTurn);
 
-            // Only update scores if the session hasn't ended
             if (!sessionEnded) {
                 setScores({
                     farmer: gameData.players[0].score,
@@ -108,14 +112,21 @@ const Game = () => {
         });
 
         socket.on("sessionEnded", () => {
-            setSessionEnded(true); // Mark session as ended
-            fetchFinalScores(); // Fetch and display final scores
+            setSessionEnded(true);
+            fetchFinalScores();
+            setShowGameOverModal(true); // Show the GameOverModal when session ends
         });
 
         socket.on("winner", ({ winner, scores }) => {
             setScores(scores);
             playSound(winner === "farmer" ? sounds.current.farmerWin : sounds.current.thiefWin);
-            alert(`${winner === "farmer" ? "Farmer" : "Thief"} wins!\nCurrent Scores:\nFarmer: ${scores.farmer}, Thief: ${scores.thief}`);
+
+            setWinnerData({ 
+                message: `${winner === "farmer" ? "Farmer" : "Thief"} wins!`, 
+                role: winner, 
+                scores 
+            });
+            setShowWinModal(true);
         });
 
         socket.on('leftGame', () => {
@@ -171,63 +182,102 @@ const Game = () => {
         socket.emit("resetGame");
     };
 
+    const closeWinModal = () => {
+        setShowWinModal(false);
+    };
+
+    // Automatically close the WinModal after 1.5 seconds if not manually closed
+    useEffect(() => {
+        if (showWinModal) {
+            const timer = setTimeout(() => {
+                setShowWinModal(false);
+            }, 1500);
+            return () => clearTimeout(timer);
+        }
+    }, [showWinModal]);
+
+    // Automatically close GameOverModal and navigate after 3 seconds
+    useEffect(() => {
+        if (showGameOverModal) {
+            const timer = setTimeout(() => {
+                setShowGameOverModal(false);
+                navigate('/');
+            }, 10000);
+            return () => clearTimeout(timer);
+        }
+    }, [showGameOverModal, navigate]);
+
     return (
         <div className="container">
           <div className="background-front"></div> 
-            {sessionEnded ? (
-                // Display only the win message and final score when game ends
+            {sessionEnded && !showGameOverModal && (
                 <div className="win-message">
                     <h2>Game Over</h2>
                     <p>{winMessage}</p>
                 </div>
-            ) : (
-                // Show game components only if the session has not ended
-                <>
-
-                    <div className="player-name-display">
-                        <p>Player: {username || "Guest"}</p>
-                        
-                        <GameHeader 
-                            role={role} 
-                            timeLeft={timeLeft} 
-                            turn={turn} 
-                            turnTimeLeft={turnTimeLeft}
-                            username={username}
-                        />
-                        
-                        <Chat username={username} />
-                        
-                        <div className="gameboard-container">
-                            <GameBoard
-                                grid={grid}
-                                farmerPosition={farmerPosition}
-                                thiefPosition={thiefPosition}
-                                farmerImage={farmerImage}
-                                thiefImage={thiefImage}
-                                farmerName={farmerName}
-                                thiefName={thiefName}
-                            />
-                            
-                            <Scoreboard 
-                                farmerScore={scores.farmer}
-                                thiefScore={scores.thief}
-                                farmerName={farmerName}
-                                thiefName={thiefName}
-                            />
-            
-                            <div className="bottom-controls">
-                                <h3>Move Logs</h3>
-                                <ul className="move-logs">
-                                    {logs.map((log, index) => (
-                                        <li key={index}>{log}</li>
-                                    ))}
-                                </ul>
-                                <button className="reset-button" onClick={resetGame}>Reset</button>
-                            </div>
-                        </div>
-                    </div>
-                </>
             )}
+            
+            {showGameOverModal && (
+                <GameOverModal
+                    resultMessage={winMessage}
+                    winnerName={winnerData?.message.split(' ')[0]}
+                    winnerRole={winnerData?.role}
+                    scores={scores}
+                    onClose={() => setShowGameOverModal(false)}
+                />
+            )}
+            
+            {showWinModal && (
+                <WinModal 
+                    message={winnerData.message}
+                    role={winnerData.role}
+                    scores={winnerData.scores}
+                    onClose={closeWinModal}
+                />
+            )}
+            
+            <div className="player-name-display">
+                <p>Player: {username || "Guest"}</p>
+                
+                <GameHeader 
+                    role={role} 
+                    timeLeft={timeLeft} 
+                    turn={turn} 
+                    turnTimeLeft={turnTimeLeft}
+                    username={username}
+                />
+                
+                <Chat username={username} />
+                
+                <div className="gameboard-container">
+                    <GameBoard
+                        grid={grid}
+                        farmerPosition={farmerPosition}
+                        thiefPosition={thiefPosition}
+                        farmerImage={farmerImage}
+                        thiefImage={thiefImage}
+                        farmerName={farmerName}
+                        thiefName={thiefName}
+                    />
+                    
+                    <Scoreboard 
+                        farmerScore={scores.farmer}
+                        thiefScore={scores.thief}
+                        farmerName={farmerName}
+                        thiefName={thiefName}
+                    />
+
+                    <div className="bottom-controls">
+                        <h3>Move Logs</h3>
+                        <ul className="move-logs">
+                            {logs.map((log, index) => (
+                                <li key={index}>{log}</li>
+                            ))}
+                        </ul>
+                        <button className="reset-button" onClick={resetGame}>Reset</button>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
