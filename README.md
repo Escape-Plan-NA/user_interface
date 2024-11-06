@@ -27,7 +27,7 @@
    - At the start of each game, the server randomly places the free, obstacle, and tunnel blocks, along with the starting positions of the characters.
 
 3. **Turn-Based Movement**:
-   - Each player has 10 seconds to move to an adjacent block (up, down, left, or right). If no move is made within the time limit, the turn is skipped.
+   - Each player has 10 seconds to move to an adjacent block (up, down, right, or left). If no move is made within the time limit, the turn is skipped.
    
 4. **Win Conditions**:
    - **Warder Wins**: If the warder reaches the prisoner's location.
