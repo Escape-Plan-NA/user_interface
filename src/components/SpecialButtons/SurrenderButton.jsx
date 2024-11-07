@@ -69,7 +69,7 @@ const SurrenderButton = ({ role }) => {
                  setTimeout(() => {
                     setIsModalOpen(false);
                     navigate('/');
-                }, 6000);
+                }, 8000);
             } else {
                 console.error("Surrender failed: Invalid response from server");
             }
