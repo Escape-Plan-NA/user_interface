@@ -299,10 +299,11 @@ const Game = () => {
                         </ul>
                 <button className="reset-button" onClick={resetGame}>Reset</button>
                 <button className="tutorial-button" onClick={toggleTutorialModal}>?</button>
+                <SurrenderButton role={role} />
                 </div>
   {/* Render the tutorial modal */}
   <TutorialModal isOpen={isTutorialOpen} onClose={toggleTutorialModal} />
-                        <SurrenderButton role={role} />
+                        
                     </div>
                     <div className="dark-mode-overlay"></div>
                 </div>

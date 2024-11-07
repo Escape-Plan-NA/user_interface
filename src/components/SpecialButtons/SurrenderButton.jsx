@@ -31,9 +31,11 @@ const SurrenderButton = ({ role }) => {
             });
             setIsModalOpen(true);
 
-            closeAndNavigateHome();
-
-            setTimeout(() => setGameOverMessage(null), 4000);
+            // Set timeout to go back to main menu
+            setTimeout(() => {
+                setIsModalOpen(false);
+                navigate('/'); // Adjust route as needed
+            }, 5000);
         });
 
         // Clean up on component unmount
@@ -41,7 +43,7 @@ const SurrenderButton = ({ role }) => {
             socket.off('game_update');
             socket.off('surrender');
         };
-    }, [socket]);
+    }, [socket, navigate]);
 
     // Emit "surrender" event to notify the server of the surrender action
     const handleSurrender = () => {
@@ -63,23 +65,18 @@ const SurrenderButton = ({ role }) => {
                 // Show modal with game over message
                 setIsModalOpen(true);
 
-                closeAndNavigateHome();
-                
-                setTimeout(() => setGameOverMessage(null), 4000);
+                 // Navigate to main menu after a short delay
+                 setTimeout(() => {
+                    setIsModalOpen(false);
+                    navigate('/');
+                }, 6000);
             } else {
                 console.error("Surrender failed: Invalid response from server");
             }
         });
     };   
 
-    const closeAndNavigateHome = () => {
-        const timer = setTimeout(() => {
-            setIsModalOpen(false);
-            socket.emit('resetFromSurrender');
-        }, 5000);
 
-        return () => clearTimeout(timer); // Cleanup timeout on unmount
-    };
 
     return (
         <div>
@@ -91,8 +88,15 @@ const SurrenderButton = ({ role }) => {
                     <div className="modal">
                         {gameOverMessage ? (
                             <>
+                            <div>
+                            <div className="modal-message">
                                 <h2>{gameOverMessage}</h2>
+                                </div>
+                                <div className='modal-scoreboard'>
                                 <Scoreboard farmerScore={scores.farmer} thiefScore={scores.thief} /> {/* Scoreboard */}
+                                </div>
+                                </div>
+                                
                                 <button onClick={() => setIsModalOpen(false)} autoFocus>Close</button>
                             </>
                         ) : (

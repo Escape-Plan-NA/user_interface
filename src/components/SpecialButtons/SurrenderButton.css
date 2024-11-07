@@ -17,18 +17,23 @@
     background: #fff;
     padding: 20px;
     border-radius: 8px;
-    width: 300px;
+    width: 400px;
+    min-height: 350px;
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .modal h2 {
     margin-top: 0;
+    font-size: 1.6em;
 }
 
 .modal p {
-    margin: 10px 0;
+    margin: 15px 0;
 }
 
 .modal button {
@@ -39,6 +44,17 @@
     cursor: pointer;
 }
 
+.modal-scoreboard {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+
+
+
 .modal button:first-of-type {
     background-color: #ff4d4f;
     color: white;
@@ -46,4 +62,10 @@
 
 .modal button:last-of-type {
     background-color: #d3d3d3;
+}
+
+.modal-message {
+    padding: 10px;
+    font-size: 1em;
+    color: #333;
 }
