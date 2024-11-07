@@ -88,16 +88,23 @@ const SurrenderButton = ({ role }) => {
                     <div className="modal">
                         {gameOverMessage ? (
                             <>
-                            <div>
+                            <div className="modal-content">
                             <div className="modal-message">
                                 <h2>{gameOverMessage}</h2>
-                                </div>
-                                <div className='modal-scoreboard'>
-                                <Scoreboard farmerScore={scores.farmer} thiefScore={scores.thief} /> {/* Scoreboard */}
-                                </div>
+                             </div>
+                               
+                               <div className="modal-scoreboard-container">
+                             <div className='modal-scoreboard'>
+                                <p>Farmer: {scores.farmer}</p>
+                                <p> Thief: {scores.thief}</p>
+                                
+                             </div>
+                             </div>
+                             <button className="modal-close-button" onClick={() => setIsModalOpen(false)} autoFocus>Close</button>
+                               
                                 </div>
                                 
-                                <button onClick={() => setIsModalOpen(false)} autoFocus>Close</button>
+                                
                             </>
                         ) : (
                             <>
