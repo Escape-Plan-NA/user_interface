@@ -49,16 +49,19 @@ const SingleplayerModeSelection = () => {
     <div className="singleplayer-mode-container"
     style={{ backgroundImage: `url(${backgroundImages[backgroundIndex]})` }}
     >
-      <h2>Select Mode</h2>
+      
       <div className='content-wrapper'>
-      <button id="bot-mode-button" onClick={() => handleModeSelection('bot')}>Play with Bot</button>
-      <button id="friends-mode-button" onClick={() => handleModeSelection('friends')}>Play with Friends</button>
+        <h2 className='select-mode'>Select Mode</h2>
+        <button id="bot-mode-button" onClick={() => handleModeSelection('bot')}>Play with Bot</button>
+        <button id="friends-mode-button" onClick={() => handleModeSelection('friends')}>Play with Friends</button>
       </div>
       {showRoleModal && (
         <div className="role-modal">
-          <h3>Select Your Role</h3>
-          <button onClick={() => handleRoleSelection('farmer')}>Farmer</button>
-          <button onClick={() => handleRoleSelection('thief')}>Thief</button>
+          <div className='role-modal-content'>
+            <h3>Select Your Role</h3>
+            <button onClick={() => handleRoleSelection('farmer')}>Farmer</button>
+            <button onClick={() => handleRoleSelection('thief')}>Thief</button>
+          </div>
         </div>
       )}
     </div>
