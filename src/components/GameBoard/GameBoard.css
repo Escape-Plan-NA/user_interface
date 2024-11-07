@@ -69,7 +69,7 @@
   padding: 2px 5px;  /* Padding for better readability */
   border-radius: 4px;  /* Rounded corners */
   font-size: 0.8rem;  /* Smaller font size */
-  z-index: 10001;  /* Ensure label appears above the character */
+  z-index: 100;  /* Ensure label appears above the character */
 }
 
 /* Thief hover effect */

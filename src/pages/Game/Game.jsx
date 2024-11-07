@@ -148,6 +148,7 @@ const Game = () => {
 
         socket.on('leftGame', () => {
             console.log("Received 'leftLobby' event, redirecting to main menu.");
+            socket.emit("clearLobby");
             navigate('/');
         });
 
@@ -158,6 +159,8 @@ const Game = () => {
             socket.off("winner");
             socket.off("leftGame");
             socket.off("sessionEnded");
+            socket.off("leftGame");
+            socket.off("clearLobby");
         };
     }, [socket, navigate, sessionEnded]);
 

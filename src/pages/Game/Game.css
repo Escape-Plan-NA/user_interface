@@ -25,7 +25,7 @@ html, body {
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    z-index: 1;  /* Lowered to ensure gameboard is above this layer */
+    z-index: 999;  /* Lowered to ensure gameboard is above this layer */
     pointer-events: none; /* Allow interactions to pass through */
   }
   /* Front layers for specific themes */
@@ -79,10 +79,10 @@ html, body {
     align-items: center;
     height: 100vh;
     width: 100vw;
-    margin-left: 42px; /* Adjust this value to move it further to the right */
-    margin-bottom: 40px;
+    margin-right: 15px; /* Adjust this value to move it further to the right */
+    margin-top: -20px;
     position: relative;
-    z-index: 10; /* Set higher z-index to ensure gameboard is on top of everything */
+    z-index: 1; /* Set higher z-index to ensure gameboard is on top of everything */
   }
   
   /* Bottom controls container */
