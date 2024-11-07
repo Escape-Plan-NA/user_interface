@@ -1,6 +1,6 @@
 :root {
   /* Font settings */
-  --font-family: 'Pixelify Sans';
+  --font-family: 'HeadFont';
   --font-size: 1em;
   --font-weight: 500;
   --line-height: 1.5;
@@ -47,11 +47,17 @@
 }
 .dark-mode {
   /*--text-color: #F6F6F6; */
- /* --background-color: #1a1a1a; */
- /* --button-bg: #333; */
+  /* --background-color: #1a1a1a; */
+  /* --button-bg: #333; */
   /*--button-text-color: white; */
 }
 
+@font-face {
+  font-family: 'HeadFont'; /* Name of your font */
+  src: url('assets/fonts/HeadFont.ttf') format('truetype'); /* Path to your font file */
+  font-weight: normal; /* Specify font weight (normal, bold, etc.) */
+  font-style: normal; /* Specify font style (normal, italic, etc.) */
+}
 
 /* Link styling */
 a {
