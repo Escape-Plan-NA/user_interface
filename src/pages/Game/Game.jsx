@@ -111,8 +111,10 @@ const Game = () => {
   };
 
   const handleKeyPress = (e) => {
-    if (turn !== role) return;
-
+    if (turn !== role) {
+      showPopup("this is not your turn!")
+      return;
+    }
     let direction = "";
     switch (e.key) {
       case "ArrowUp": direction = "up"; break;
