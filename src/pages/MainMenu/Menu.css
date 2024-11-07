@@ -1,22 +1,28 @@
-
 .menu-container {
     display: flex;
-    flex-direction: column;
-    align-items: center;    /* Centers elements horizontally */
-    justify-content: center; /* Centers elements vertically */
-    background-image: url('../../assets/Main Menu BG.gif');
+    align-items: center;
+    justify-content: center;
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    height: 100vh;           /* Takes full viewport height */
-    width: 100vw;            /* Takes full viewport width */
-    position: absolute;      /* Ensures the container fills the screen */
-    top: 0;                  /* Position from the top */
-    left: 0;                 /* Position from the left */
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: background-image 1s ease-in-out;
 }
 
-.menu-container h1{
-    color: aqua;               /* Position from the left */
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 400px; /* Adjust this value to move content down */
+}
+
+.menu-container h1 {
+    color: aqua;
+    margin-bottom: 20px; /* Adjust spacing between title and buttons if needed */
 }
 
 .menu-container button {
