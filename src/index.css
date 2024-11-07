@@ -46,11 +46,12 @@
   cursor: var(--cursor);
 }
 .dark-mode {
-  --text-color: #F6F6F6;
-  --background-color: #1a1a1a;
-  --button-bg: #333;
-  --button-text-color: white;
+  /*--text-color: #F6F6F6; */
+ /* --background-color: #1a1a1a; */
+ /* --button-bg: #333; */
+  /*--button-text-color: white; */
 }
+
 
 /* Link styling */
 a {

@@ -1,22 +1,32 @@
-
-import React, { createContext, useState, useContext } from 'react';
+// context/ThemeContext.js
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-    const [theme, setTheme] = useState('light');
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
-    const toggleTheme = () => {
-        const newTheme = theme === 'light' ? 'dark' : 'light';
-        setTheme(newTheme);
-        document.documentElement.setAttribute('data-theme', newTheme);
-    };
+  // Function to toggle dark mode and add a grayscale filter
+  const toggleTheme = () => {
+    setIsDarkMode((prevMode) => !prevMode);
+  };
 
-    return (
-        <ThemeContext.Provider value={{ theme, toggleTheme }}>
-            {children}
-        </ThemeContext.Provider>
-    );
+  // Effect to add or remove the dark-mode class and grayscale filter
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.classList.add('dark-mode');
+      document.body.style.filter = 'grayscale(100%)';  // Add grayscale filter
+    } else {
+      document.body.classList.remove('dark-mode');
+      document.body.style.filter = 'none';  // Remove grayscale filter
+    }
+  }, [isDarkMode]); // Re-run effect when isDarkMode changes
+
+  return (
+    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
 };
 
 export const useTheme = () => useContext(ThemeContext);

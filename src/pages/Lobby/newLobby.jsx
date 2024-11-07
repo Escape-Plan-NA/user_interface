@@ -13,7 +13,7 @@ const Lobby = () => {
   const [profilePictureId, setProfilePictureId] = useState('white');
   const [selectedUsername, setSelectedUsername] = useState('Guest');
   const [currentIndex, setCurrentIndex] = useState(0);
-  const hasJoinedLobby = useRef(false);
+  const hasJoinedLobby = useRef(false); // Track if the user has already been notified about lobby status
   const [role, setRole] = useState(null);
   const [connectedPlayerCount, setConnectedPlayerCount] = useState(0);
   const [gameStarted, setGameStarted] = useState(false);
@@ -27,7 +27,7 @@ const Lobby = () => {
 
   useEffect(() => {
     const fetchRole = async () => {
-      if (socket?.id) {
+      if (socket?.id && !hasJoinedLobby.current) {
         try {
           const response = await axios.get(`http://127.0.0.1:3000/api/get-role/${socket.id}`);
           const assignedRole = response.data.role;
@@ -49,6 +49,14 @@ const Lobby = () => {
       socket.emit('joinLobby');
       hasJoinedLobby.current = true;
     }
+
+    // Listen for lobbyFull event and handle redirection
+    socket.on('lobbyFull', ({ message }) => {
+      console.log(message);
+      alert(message); // Display an alert to inform the user
+      setTimeout(() => navigate('/'), 1000); // Delay navigation by 1 second
+      hasJoinedLobby.current = true; // Prevent further role fetching
+    });
 
     socket.on('connectedPlayerCount', (count) => {
       console.log('Updated connected player count:', count);
@@ -73,6 +81,7 @@ const Lobby = () => {
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
+      socket.off('lobbyFull');
       socket.off('connectedPlayerCount');
       socket.off('playerConnected');
       socket.off('playerDisconnected');
@@ -80,7 +89,7 @@ const Lobby = () => {
       socket.off('gameInProgress');
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [socket, isConnected]);
+  }, [socket, isConnected, navigate]);
 
   useEffect(() => {
     if (gameStarted && role) {
@@ -155,7 +164,7 @@ const Lobby = () => {
         {inProgressMessage && <p>{inProgressMessage}</p>}
         
         <p className={connectedPlayerCount === 2 ? 'connected-green' : ''}>
-          {connectedPlayerCount}/2 players connected
+          {connectedPlayerCount}/2 players have joined the lobby
         </p>
   
         {startingMessage ? (

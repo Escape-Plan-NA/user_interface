@@ -1,0 +1,46 @@
+/* components/Navbar/GameNavBar.css */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(255, 255, 255, 0.7); /* Light background with transparency */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    padding: 10px 20px; /* Padding for spacing */
+    position: fixed;
+    top: 10px; /* Adjust position as needed */
+    left: 50%;
+    transform: translateX(-50%);
+    width: fit-content;
+    z-index: 10000; /* High z-index to stay above other elements */
+}
+
+/* Game navigation button styles */
+.game-nav-button {
+    background-color: red; /* Initial color */
+    color: black; /* Text color */
+    border: none; /* No border for a softer look */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px 20px; /* Padding */
+    font-size: 1em; /* Font size */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition */
+}
+
+.game-nav-button.active {
+    background-color: green; /* Color when active */
+}
+
+.game-nav-button:hover {
+    background-color: rgba(255, 102, 102, 0.8); /* Lighter red on hover */
+}
+
+.game-nav-button.active:hover {
+    background-color: rgba(102, 255, 102, 0.8); /* Lighter green when active and hovered */
+}
+
+.game-nav-button:active {
+    transform: scale(0.95); /* Scale down on click */
+}
+
+/* Add custom styles for ThemeToggle if necessary */
