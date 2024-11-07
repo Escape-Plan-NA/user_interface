@@ -7,12 +7,12 @@ const GameBoard = ({ grid, selectedTheme, farmerPosition, thiefPosition, thiefIm
   return (
     <div className="gameboard-container">
       <table className="game-table">
-        <tbody>
+        <tbody className="table-body">
           {grid.map((row, rowIndex) => (
             <tr key={rowIndex}>
               {row.map((block, colIndex) => (
                 <td key={colIndex}
-                  className={`table-cell ${block}`}
+                  className="table-cell"
                   style={{ backgroundImage: `url(${currentTheme[block]})` }}>
                   {block === 'obstacle' && <img src={currentTheme.obstacle} alt="Obstacle" />}
                   {block === 'tunnel' && <img src={currentTheme.tunnel} alt="Tunnel" />}

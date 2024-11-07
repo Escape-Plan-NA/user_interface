@@ -1,40 +1,55 @@
 /* Ensure the entire gameboard container is centered in the viewport */
 .gameboard-container {
-  display: flex;
+  
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Full viewport height */
-  width: 100vw; /* Full viewport width */
+  min-height: 100vh; /* Full viewport height */
+  min-width: 100vw; /* Full viewport width */
+  margin: 0 auto;
 }
 
 /* Game board styling */
 .game-table {
   border-collapse: collapse;  /* Remove grid lines */
-  margin: 0 auto;
-  width: 480px;  /* New board size of 480x480 */
-  height: 480px;
+  margin: 0 auto ;
+  width: 450px;  /* New board size of 480x480 */
+  height: 450px;
   border-radius: 0px;  /* Sharp 90-degree corners */
   overflow: hidden;
+  align-items: center;
+  display: flexbox;
+  scale: 1;
+  padding: 50px;
+  
 }
 
-/* Each tile styling */
 .table-cell {
-  width: 96px;  /* Set each tile to 96x96 pixels */
+  width: 96px;
   height: 96px;
-  text-align: center;
-  border: none;  /* Remove borders for invisible grid lines */
-  position: relative;
+  padding: 0;         /* Ensure no padding */
+  margin: 0;          /* Ensure no margin */
   background-size: cover;
   background-position: center;
-
+  background-repeat: no-repeat;
+  overflow: hidden;
+  position: relative;
 }
+.table-cell img {
+  display: block;
+  width: 100%;        /* Scale image to fill the cell */
+  height: 100%;
+  object-fit: cover;  /* Cover the cell without stretching */
+  margin: 0;          /* Remove any default margin */
+  padding: 0;         /* Remove any default padding */
+}
+
 
 
 
 /* Character image styling */
 .character-image {
-  width: 80px;  /* Adjust character image size to fit the smaller 96x96 tile */
-  height: 80px;
+  width: 50px;  /* Adjust character image size to fit the smaller 96x96 tile */
+  height: 50px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -46,7 +61,7 @@
 /* Character label styling */
 .character-label {
   position: absolute;
-  top: -30px;  /* Position label above the character image */
+  top: -20px;  /* Position label above the character image */
   left: 50%;
   transform: translateX(-50%);
   background-color: rgba(0, 0, 0, 0.2);  /* Semi-transparent black background */
@@ -54,10 +69,16 @@
   padding: 2px 5px;  /* Padding for better readability */
   border-radius: 4px;  /* Rounded corners */
   font-size: 0.8rem;  /* Smaller font size */
-  z-index: 10;  /* Ensure label appears above the character */
+  z-index: 10001;  /* Ensure label appears above the character */
 }
 
 /* Thief hover effect */
 .thief-image:hover {
   transform: translate(-50%, -50%) scale(1.2);
+}
+
+.table-body{
+  align-items: center;
+  justify-content: center;
+  display: block;
 }
