@@ -1,18 +1,31 @@
 .popup-message {
-    position: fixed;   /* Fixed to the viewport */
-    top: 500000000000000px;          /* Vertically center it */
-    left: 40%;         /* Horizontally center it */
-    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 9999;     /* Ensure it's above other elements */
-    position: relative;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  color: rgb(0, 0, 0);
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  z-index: 9999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 300px;
+  opacity: 1;
+  animation: fadeOut 1s forwards;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
   }
-  @keyframes fadeInOut {
-    0% { opacity: 0; transform: translateY(-10px); }
-    10% { opacity: 0.9; transform: translateY(0); }
-    90% { opacity: 0.9; }
-    100% { opacity: 0; transform: translateY(-10px); }
+  80% {
+    opacity: 0.9;
   }
+  100% {
+    opacity: 0;
+    display: none;
+  }
+}
