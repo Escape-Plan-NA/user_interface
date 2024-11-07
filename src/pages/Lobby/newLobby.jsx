@@ -25,6 +25,7 @@ const Lobby = () => {
 
   const profilePicture = imageMap[profilePictureId].base;
 
+  
   useEffect(() => {
     const fetchRole = async () => {
       if (socket?.id && !hasJoinedLobby.current) {
@@ -152,8 +153,13 @@ const Lobby = () => {
 
 
   return (
-    <div className="lobby-container">
-      <h2>Game Lobby</h2>
+    <div
+    className={`lobby-container lobby-container-${theme}`}>
+    
+    <h2 className='lobby-heading'>
+      <img src='src/assets/Lobby lobby.png' alt="Lobby Logo"></img>
+      </h2>
+      
   
       <div className="player-avatar">
         <img src={profilePicture} alt="Your Character" className="current-profile-pic" />

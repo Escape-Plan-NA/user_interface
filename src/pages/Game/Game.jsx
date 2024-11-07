@@ -311,7 +311,8 @@ const Game = () => {
                                 <li key={index}>{log}</li>
                             ))}
                         </ul>
-                <button className="reset-button" onClick={resetGame}>Reset</button>
+                {/*<button className="reset-button" onClick={resetGame}>Reset</button>*/}
+                
                 <button className="tutorial-button" onClick={toggleTutorialModal}>?</button>
                 <SurrenderButton role={role} />
                 </div>
