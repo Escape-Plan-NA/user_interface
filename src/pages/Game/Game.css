@@ -68,6 +68,8 @@ html, body {
     background-attachment: fixed; /* Fix the background to prevent scrolling */
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
     z-index: 0;
+    position: relative; /* Ensure the parent container is positioned correctly */
+    overflow: visible;
   }
   
   /* Gameboard container */

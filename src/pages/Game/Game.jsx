@@ -9,6 +9,7 @@ import { SoundEffectContext } from "../../context/SoundEffectContext.jsx";
 import { imageMap } from '../../utils/imageMap';
 import './Game.css';
 import Chat from '../../components/Chat/Chat.jsx';
+import PopupMessage from '../../components/PopupMessage/PopupMessage.jsx';
 import GameNavBar from '../../components/GameNavBar/GameNavBar.jsx';
 import WinModal from '../../components/Modal/WinModal.jsx';
 import GameOverModal from '../../components/Modal/GameOverModal.jsx'; // Import GameOverModal
@@ -38,6 +39,7 @@ const Game = () => {
     const [isTutorialOpen, setIsTutorialOpen] = useState(false);
     const [showGameOverModal, setShowGameOverModal] = useState(false); // New state for GameOverModal
     const [winnerData, setWinnerData] = useState(null);
+    const [popupMessages, setPopupMessages] = useState([]);
 
     const farmer = gameData?.players?.find(player => player.role === 'farmer') || {};
     const thief = gameData?.players?.find(player => player.role === 'thief') || {};
@@ -159,8 +161,20 @@ const Game = () => {
         };
     }, [socket, navigate, sessionEnded]);
 
+    const showPopup = (message) => {
+        const id = Date.now();
+        setPopupMessages((prevMessages) => [...prevMessages, { id, message }]);
+    
+        setTimeout(() => {
+          setPopupMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== id));
+        }, 2000);
+      };
+
     const handleKeyPress = (e) => {
-        if (turn !== role) return;
+        if (turn !== role) {
+            showPopup("this is not your turn!")
+            return;
+          }
 
         let direction = "";
         switch (e.key) {
@@ -306,6 +320,9 @@ const Game = () => {
                         
                     </div>
                     <div className="dark-mode-overlay"></div>
+                    {popupMessages.map((msg) => (
+        <PopupMessage key={msg.id} message={msg.message} onClose={() => setPopupMessages(popupMessages.filter(m => m.id !== msg.id))} />
+      ))}
                 </div>
            
     );
