@@ -13,19 +13,24 @@
   position: absolute;
   top: 0;
   left: 0;
+
+  transition: background-color 0.5s ease-in-out;
 }
 
 .lobby-container-autumn{
   background-image: url('map_components/autumn/Autumn BG.gif') ;
+  transition: background-image 0.5s ease-in-out, opacity 0.5s ease-in-out;
 }
 
 
 .lobby-container-summer{
   background-image: url('map_components/summer/Summer BG.gif') ;
+  transition: background-image 0.5s ease-in-out, opacity 0.5s ease-in-out;
 }
 
 .lobby-container-spring{
   background-image: url('map_components/spring/Spring BG.gif') ;
+  transition: background-image 0.5s ease-in-out, opacity 0.5s ease-in-out;
 }
 
 
@@ -134,9 +139,11 @@ button:hover {
   width: 100%;
 }
 
+
+
 /* Green text color for connected player count */
 .connected-green {
-  color: rgb(48, 167, 48);
+  color: rgb(159, 238, 159);
   font-weight: bold;
   font-size: x-large;
 }

@@ -169,9 +169,11 @@ const Lobby = () => {
       <div className="status-actions">
         {inProgressMessage && <p>{inProgressMessage}</p>}
         
+        <div className="player-status">
         <p className={connectedPlayerCount === 2 ? 'connected-green' : ''}>
           {connectedPlayerCount}/2 players have joined the lobby
         </p>
+        </div>
   
         {startingMessage ? (
           <p>{startingMessage}</p>
