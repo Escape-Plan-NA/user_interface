@@ -1,12 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../App.css';
 import '../../index.css';
-
+import SpringMenu from '../../assets/Menu/SpringMenu.gif';
+import SummerMenu from '../../assets/Menu/SummerMenu.gif';
+import AutumnMenu from '../../assets/Menu/AutumnMenu.gif';
+import './SingleplayerModeSelection.css'
 const SingleplayerModeSelection = () => {
   const navigate = useNavigate();
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [selectedMode, setSelectedMode] = useState('');
+
+  const backgroundImages = [SpringMenu, SummerMenu, AutumnMenu];
+  const [backgroundIndex, setBackgroundIndex] = useState(0);
+
+  
+  useEffect(() => {
+    console.log("Initial Background Image URL:", backgroundImages[backgroundIndex]);
+
+    const interval = setInterval(() => {
+      setBackgroundIndex((prevIndex) => {
+        const newIndex = (prevIndex + 1) % backgroundImages.length;
+        console.log("Switching to Background Image URL:", backgroundImages[newIndex]);
+        return newIndex;
+      });
+    }, 3500);
+
+    return () => clearInterval(interval);
+  }, [backgroundImages.length]);
 
   const handleModeSelection = (mode) => {
     if (mode === 'bot') {
@@ -24,11 +45,14 @@ const SingleplayerModeSelection = () => {
   };
 
   return (
-    <div className="singleplayer-mode-container">
+    <div className="singleplayer-mode-container"
+    style={{ backgroundImage: `url(${backgroundImages[backgroundIndex]})` }}
+    >
       <h2>Select Mode</h2>
+      <div className='content-wrapper'>
       <button id="bot-mode-button" onClick={() => handleModeSelection('bot')}>Play with Bot</button>
       <button id="friends-mode-button" onClick={() => handleModeSelection('friends')}>Play with Friends</button>
-
+      </div>
       {showRoleModal && (
         <div className="role-modal">
           <h3>Select Your Role</h3>
