@@ -170,12 +170,12 @@ const Game = () => {
         }, 2000);
       };
 
-    const handleKeyPress = (e) => {
+      const handleKeyPress = (e) => {
         if (turn !== role) {
-            showPopup("this is not your turn!")
+            showPopup("This is not your turn!");
             return;
-          }
-
+        }
+    
         let direction = "";
         switch (e.key) {
             case "ArrowUp": direction = "up"; break;
@@ -184,7 +184,8 @@ const Game = () => {
             case "ArrowRight": direction = "right"; break;
             default: return;
         }
-
+    
+        // Emit move event
         socket.emit("move", { role, direction });
         playSound(role === "farmer" ? sounds.current.farmerMove : sounds.current.thiefMove);
     };

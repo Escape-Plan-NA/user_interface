@@ -109,14 +109,12 @@ html, body {
 /* components/MoveLogs/MoveLogs.css */
 
 .bottom-controls {
-  background-color: #f9f9f9; /* Light background for move logs */
-  border: 1px solid #ccc;
+  background-color: transparent; /* Light background for move logs */
   border-radius: 8px;
   padding: 10px;
   max-height: 300px; /* Max height for scrollable area */
   overflow-y: auto; /* Enable scrolling */
   width: 300px; /* Set width for move logs */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   position: fixed; /* Fixed positioning to keep in view */
   bottom: 20px; /* Distance from bottom of the viewport */
   right: 20px; /* Distance from right of the viewport */
@@ -129,6 +127,16 @@ html, body {
   border-bottom: 1px solid #ddd;
   font-size: 1.1em;
   color: #2f993d; /* Title color */
+  font-weight: bold;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 .move-logs {
@@ -141,10 +149,15 @@ html, body {
   margin: 5px 0;
   padding: 5px;
   border-radius: 4px;
-  background-color: #fff;
-  color: #333;
+  background-color: transparent;
+  color: whitesmoke;
   font-size: 0.9em;
   line-height: 1.4;
+  transition: opacity 0.5s ease-out;
+}
+
+.move-logs li.fade-out {
+  animation: fadeOut 0.5s forwards;
 }
 
 
