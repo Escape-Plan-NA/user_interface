@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import Scoreboard from '../../components/Scoreboard/SingleScoreboard.jsx';
 import WinModal from '../../components/Modal/WinModal.jsx'; // Import the modal component
-import './GamePlay.css';
+import { mapThemes } from '../../utils/mapThemes.js';
+import { imageMap } from '../../utils/imageMap.js';
+
+import './BotGameplay.css';
+
 
 const BotGameplay = () => {
   const location = useLocation();
@@ -19,6 +23,12 @@ const BotGameplay = () => {
   const [message, setMessage] = useState("");
   const [showModal, setShowModal] = useState(false); // State to toggle modal visibility
   const navigate = useNavigate();
+  const [currentTheme, setCurrentTheme] = useState(mapThemes.autumn); // Set your default theme here
+
+  //Back button
+  const handleBackClick = () => {
+    navigate('/')  // Goes back to the previous page
+  };
 
   // Initialize the game grid and place characters
   const initializeGame = (startingPlayer) => {
@@ -288,49 +298,70 @@ const getWinner = () => {
     );
   }
   
-  return (
-    <div className="gameplay-container">
-      <h1>Gameplay Page</h1>
-      <h2>Your role is: {role === "farmer" ? "👨‍🌾 Farmer (Warder)" : "🕵️‍♂️ Thief (Prisoner)"}</h2>
-      
-      {/* Overall timer with conditional styling */}
-      <p className={`overall-timer ${timeLeft <= 10 ? 'timer-warning' : ''}`}>
-        Time left: {Math.floor(timeLeft / 60).toString().padStart(2, '0')}:{(timeLeft % 60).toString().padStart(2, '0')}
-      </p>
-      
-      <p>Turn: {turn === "farmer" ? "👨‍🌾 Farmer (Warder)" : "🕵️‍♂️ Thief (Prisoner)"}</p>
-      <p>Turn time left: {turnTimeLeft} seconds</p>
-  
-      {showModal && (
-        <WinModal
-          message={message}
-          role={turn}
-          scores={scores}
-        />
-      )}
-  
+  return (<div
+    className="container bg-autumn" // Dynamically change this to bg-autumn or another theme
+    style={{
+      backgroundImage: `url(${currentTheme.background})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed',
+    }}
+  >
+    {/* Front Background Layer */}
+    <div className="background-front bg-autumn"></div>
+
+    <div className="gameboard-container">
+
+    <div className="back-button-container">
+        <button className="back-button" onClick={handleBackClick}>
+          <img src="src/assets/buttons/quit.png"></img>
+        </button>
+      </div>
+
+      {/* Game Header (keeping unchanged) */}
+      <div className="game-header">
+        <h2>Your role is: {role === "farmer" ? "👨‍🌾 Farmer" : "🕵️‍♂️ Thief "}</h2>
+        <p className={`overall-timer ${timeLeft <= 10 ? 'timer-warning' : ''}`}>
+          Time left: {Math.floor(timeLeft / 60).toString().padStart(2, '0')}:{(timeLeft % 60).toString().padStart(2, '0')}
+        </p>
+        <p>Turn: {turn === "farmer" ? "👨‍🌾 Farmer (Warder)" : "🕵️‍♂️ Thief (Prisoner)"}</p>
+        <p>Turn time left: {turnTimeLeft} seconds</p>
+      </div>
+
+      {/* Game Grid/Table */}
       <table className="game-table">
-        <tbody>
+        <tbody className="gameplay-body">
           {grid.map((row, rowIndex) => (
             <tr key={rowIndex}>
               {row.map((block, colIndex) => (
-                <td key={colIndex} className={`table-cell ${block}`}>
-                  {block === 'obstacle' && 'x'}
-                  {block === 'tunnel' && 't'}
-                  {farmerPosition?.row === rowIndex && farmerPosition?.col === colIndex &&
-                    thiefPosition?.row === rowIndex && thiefPosition?.col === colIndex && (
-                      <>
-                        <span role="img" aria-label="farmer">👨‍🌾</span>
-                        <span role="img" aria-label="thief">🕵️‍♂️</span>
-                      </>
+                <td key={colIndex} className="gameplay-cell" 
+                style={{ backgroundImage: `url(${currentTheme[block]})`}}>
+                  {block === 'obstacle' && <img src={currentTheme.obstacle} alt="Obstacle" />}
+                  {block === 'tunnel' && <img src={currentTheme.tunnel} alt="Tunnel" />}
+                  {block === 'free' && <img src={currentTheme.free1} alt="Free Space" />}
+
+                  {/* Farmer Character with Name */}
+                  {farmerPosition?.row === rowIndex && farmerPosition?.col === colIndex && (
+                    <>
+                      <div className="character-label">Farmer</div>
+                      <img
+                        src={imageMap.white.farmer}
+                        alt="farmer"
+                        className="character-image"
+                      />
+                    </>
                   )}
-                  {farmerPosition?.row === rowIndex && farmerPosition?.col === colIndex &&
-                    !(thiefPosition?.row === rowIndex && thiefPosition?.col === colIndex) && (
-                      <span role="img" aria-label="farmer">👨‍🌾</span>
-                  )}
-                  {thiefPosition?.row === rowIndex && thiefPosition?.col === colIndex &&
-                    !(farmerPosition?.row === rowIndex && farmerPosition?.col === colIndex) && (
-                      <span role="img" aria-label="thief">🕵️‍♂️</span>
+
+                  {/* Thief Character with Name */}
+                  {thiefPosition?.row === rowIndex && thiefPosition?.col === colIndex && (
+                    <>
+                      <div className="character-label">Thief</div>
+                      <img
+                        src={imageMap.white.thief}
+                        alt="thief"
+                        className="character-image"
+                      />
+                    </>
                   )}
                 </td>
               ))}
@@ -338,13 +369,31 @@ const getWinner = () => {
           ))}
         </tbody>
       </table>
-  
-      <div className="scores">
+
+      {/* Scoreboard (keeping unchanged) */}
+      <div className="scoreboard-normal">
         <h3>Scores</h3>
-        <p>Farmer (Warder): {scores.farmer}</p>
-        <p>Thief (Prisoner): {scores.thief}</p>
+        <div className="scoreboard-item">
+          <span> Farmer: </span>
+          <span className="score-value"> {scores.farmer} </span>
+        </div>
+
+        <div className="scoreboard-item">
+          <span> Thief:</span>
+          <span className="score-value">{scores.thief}</span>
+        </div>
       </div>
     </div>
+
+    {/* Win Modal (if any) */}
+    {showModal && (
+        <WinModal
+          message={message}
+          role={turn}
+          scores={scores}
+        />
+      )}
+  </div>
   );
   
 };
