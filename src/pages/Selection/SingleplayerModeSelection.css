@@ -23,6 +23,13 @@
     margin-top: -200px;
     font-size: 3em;
 }
+.content-wrapper button{
+    width: 200px;
+    margin: 10px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
 
 .menu-container h2 {
     color: aqua;
@@ -33,10 +40,19 @@
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
-    width: 300px; /* Adjust as needed */
+    width: 280px; /* Adjust as needed */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     position: relative;
     text-align: center;
+}
+.role-modal-content button{
+    width: 120px;
+    margin: 10px;
+    padding: 10px;
+    cursor: pointer;
+}
+.role-modal-content h3{
+    font-size: 1.4em;
 }
 
 .role-modal{
