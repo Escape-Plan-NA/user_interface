@@ -4,7 +4,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-image: url('../../assets/Main Menu BG.gif');
+  
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -14,6 +14,20 @@
   top: 0;
   left: 0;
 }
+
+.lobby-container-autumn{
+  background-image: url('map_components/autumn/Autumn BG.gif') ;
+}
+
+
+.lobby-container-summer{
+  background-image: url('map_components/summer/Summer BG.gif') ;
+}
+
+.lobby-container-spring{
+  background-image: url('map_components/spring/Spring BG.gif') ;
+}
+
 
 /* Profile Preview */
 .profile-preview {
