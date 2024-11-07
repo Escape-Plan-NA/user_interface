@@ -42,7 +42,7 @@ const Cutscene = () => {
 
   return (
     <div className="cutscene-container">
-      <h1>Cutscene Playing...</h1>
+      
       <button onClick={handleRoleAssignment}>skip</button>
     </div>
   );
