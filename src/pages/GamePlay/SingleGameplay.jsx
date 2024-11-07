@@ -3,7 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import Scoreboard from '../../components/Scoreboard/SingleScoreboard.jsx';
 import WinModal from '../../components/Modal/WinModal.jsx'; // Import the WinModal
-import './GamePlay.css';
+import { mapThemes } from '../../utils/mapThemes.js';
+import { imageMap } from '../../utils/imageMap.js';
+
+import './SingleGamePlay.css';
 
 const SingleGameplay = () => {
   const { role } = useParams(); // 'farmer' or 'thief'
@@ -19,6 +22,13 @@ const SingleGameplay = () => {
   const [showModal, setShowModal] = useState(false); // Control modal visibility
   const [modalMessage, setModalMessage] = useState(""); // Message for the modal
   const navigate = useNavigate();
+
+  const [currentTheme, setCurrentTheme] = useState(mapThemes.autumn); // Set your default theme here
+
+  //Back button
+  const handleBackClick = () => {
+    navigate('/')  // Goes back to the previous page
+  };
 
   // Initialize the game grid and place characters
   const initializeGame = (startingPlayer) => {
@@ -167,142 +177,183 @@ const SingleGameplay = () => {
   }, [turn, farmerPosition, thiefPosition, grid]);
 
   // Check win conditions
-const checkWinConditions = (currentPosition) => {
-  if (turn === "thief") {
-    // Thief loses if they move to the same block as the farmer
-    if (currentPosition.row === farmerPosition.row && currentPosition.col === farmerPosition.col) {
-      setThiefPosition({ row: currentPosition.row, col: currentPosition.col }); // Ensure the thief is updated in the same position
-      setScores(prevScores => ({ ...prevScores, farmer: prevScores.farmer + 1 })); // Update scores for the farmer
+  const checkWinConditions = (currentPosition) => {
+    if (turn === "thief") {
+      // Thief loses if they move to the same block as the farmer
+      if (currentPosition.row === farmerPosition.row && currentPosition.col === farmerPosition.col) {
+        setThiefPosition({ row: currentPosition.row, col: currentPosition.col }); // Ensure the thief is updated in the same position
+        setScores(prevScores => ({ ...prevScores, farmer: prevScores.farmer + 1 })); // Update scores for the farmer
 
-      // Delay before showing modal and restarting the game
-      setTimeout(() => {
-        setMessageAndModal('Farmer catches the thief! Farmer wins!');
-        setLastWinner("farmer"); // Farmer wins, starts next round
-      }, 500); // 0.5s delay for modal
+        // Delay before showing modal and restarting the game
+        setTimeout(() => {
+          setMessageAndModal('Farmer catches the thief! Farmer wins!');
+          setLastWinner("farmer"); // Farmer wins, starts next round
+        }, 500); // 0.5s delay for modal
 
-      // Add a delay before restarting the game to show both characters in the same cell
-      setTimeout(() => {
-        initializeGame("farmer"); // Restart the game with farmer starting
-      }, 1000); // 1-second delay to allow rendering of both characters in the same grid
+        // Add a delay before restarting the game to show both characters in the same cell
+        setTimeout(() => {
+          initializeGame("farmer"); // Restart the game with farmer starting
+        }, 1000); // 1-second delay to allow rendering of both characters in the same grid
+      }
+      // Thief wins if they reach the tunnel block
+      else if (grid[currentPosition.row][currentPosition.col] === 'tunnel') {
+        setThiefPosition({ row: currentPosition.row, col: currentPosition.col });
+        setScores(prevScores => ({ ...prevScores, thief: prevScores.thief + 1 })); // Update scores for the thief
+
+        // Delay before showing modal and restarting the game
+        setTimeout(() => {
+          setMessageAndModal('Thief reaches the tunnel! Thief wins!');
+          setLastWinner("thief"); // Thief wins, starts next round
+        }, 500); // 0.5s delay for modal
+
+        // Short delay to update UI before restarting
+        setTimeout(() => {
+          initializeGame("thief"); // Restart the game with thief starting
+        }, 1000);
+      }
+    } else if (turn === "farmer") {
+      // Farmer wins if they catch the thief
+      if (currentPosition.row === thiefPosition.row && currentPosition.col === thiefPosition.col) {
+        setFarmerPosition({ row: currentPosition.row, col: currentPosition.col }); // Ensure the farmer is updated in the same position
+        setScores(prevScores => ({ ...prevScores, farmer: prevScores.farmer + 1 })); // Update scores for the farmer
+
+        // Delay before showing modal and restarting the game
+        setTimeout(() => {
+          setMessageAndModal('Farmer catches the thief! Farmer wins!');
+          setLastWinner("farmer"); // Farmer wins, starts next round
+        }, 500); // 0.5s delay for modal
+
+        // Add a delay before restarting the game to show both characters in the same cell
+        setTimeout(() => {
+          initializeGame("farmer"); // Restart the game with farmer starting
+        }, 1000); // 1-second delay to allow rendering of both characters in the same grid
+      }
     }
-    // Thief wins if they reach the tunnel block
-    else if (grid[currentPosition.row][currentPosition.col] === 'tunnel') {
-      setThiefPosition({ row: currentPosition.row, col: currentPosition.col });
-      setScores(prevScores => ({ ...prevScores, thief: prevScores.thief + 1 })); // Update scores for the thief
+  };
 
-      // Delay before showing modal and restarting the game
-      setTimeout(() => {
-        setMessageAndModal('Thief reaches the tunnel! Thief wins!');
-        setLastWinner("thief"); // Thief wins, starts next round
-      }, 500); // 0.5s delay for modal
 
-      // Short delay to update UI before restarting
-      setTimeout(() => {
-        initializeGame("thief"); // Restart the game with thief starting
-      }, 1000);
+  const setMessageAndModal = (message) => {
+    setModalMessage(message);
+    setShowModal(true); ///
+  };
+
+  // Function to determine the winner based on scores
+  const getWinner = () => {
+    if (scores.farmer > scores.thief) {
+      return "Farmer wins!";
+    } else if (scores.thief > scores.farmer) {
+      return "Thief wins!";
+    } else {
+      return "It's a tie!";
     }
-  } else if (turn === "farmer") {
-    // Farmer wins if they catch the thief
-    if (currentPosition.row === thiefPosition.row && currentPosition.col === thiefPosition.col) {
-      setFarmerPosition({ row: currentPosition.row, col: currentPosition.col }); // Ensure the farmer is updated in the same position
-      setScores(prevScores => ({ ...prevScores, farmer: prevScores.farmer + 1 })); // Update scores for the farmer
+  };
 
-      // Delay before showing modal and restarting the game
-      setTimeout(() => {
-        setMessageAndModal('Farmer catches the thief! Farmer wins!');
-        setLastWinner("farmer"); // Farmer wins, starts next round
-      }, 500); // 0.5s delay for modal
+  
 
-      // Add a delay before restarting the game to show both characters in the same cell
-      setTimeout(() => {
-        initializeGame("farmer"); // Restart the game with farmer starting
-      }, 1000); // 1-second delay to allow rendering of both characters in the same grid
-    }
+
+  if (gameEnded) {
+    return (
+      <div className="game-over">
+        <h2>{getWinner()}</h2>
+        <Scoreboard
+          farmerScore={scores.farmer}
+          thiefScore={scores.thief}
+          onRetry={resetGame} // Use resetGame to reset everything
+        />
+      </div>
+    );
   }
-};
+  return (<div
+    className="container bg-autumn" // Dynamically change this to bg-autumn or another theme
+    style={{
+      backgroundImage: `url(${currentTheme.background})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed',
+    }}
+  >
+    {/* Front Background Layer */}
+    <div className="background-front bg-autumn"></div>
 
+    <div className="gameboard-container">
 
-const setMessageAndModal = (message) => {
-  setModalMessage(message);
-  setShowModal(true); ///
-};
+    <div className="back-button-container">
+        <button className="back-button" onClick={handleBackClick}>
+          <img src="src/assets/buttons/quit.png"></img>
+        </button>
+      </div>
 
-// Function to determine the winner based on scores
-const getWinner = () => {
-  if (scores.farmer > scores.thief) {
-    return "Farmer wins!";
-  } else if (scores.thief > scores.farmer) {
-    return "Thief wins!";
-  } else {
-    return "It's a tie!";
-  }
-};
+      {/* Game Header (keeping unchanged) */}
+      <div className="game-header">
+        <h2>Your role is: {role === "farmer" ? "👨‍🌾 Farmer" : "🕵️‍♂️ Thief "}</h2>
+        <p className={`overall-timer ${timeLeft <= 10 ? 'timer-warning' : ''}`}>
+          Time left: {Math.floor(timeLeft / 60).toString().padStart(2, '0')}:{(timeLeft % 60).toString().padStart(2, '0')}
+        </p>
+        <p>Turn: {turn === "farmer" ? "👨‍🌾 Farmer (Warder)" : "🕵️‍♂️ Thief (Prisoner)"}</p>
+        <p>Turn time left: {turnTimeLeft} seconds</p>
+      </div>
 
+      {/* Game Grid/Table */}
+      <table className="game-table">
+        <tbody className="gameplay-body">
+          {grid.map((row, rowIndex) => (
+            <tr key={rowIndex}>
+              {row.map((block, colIndex) => (
+                <td key={colIndex} className="gameplay-cell" 
+                style={{ backgroundImage: `url(${currentTheme[block]})`}}>
+                  {block === 'obstacle' && <img src={currentTheme.obstacle} alt="Obstacle" />}
+                  {block === 'tunnel' && <img src={currentTheme.tunnel} alt="Tunnel" />}
+                  {block === 'free' && <img src={currentTheme.free1} alt="Free Space" />}
 
-if (gameEnded) {
-  return (
-    <div className="game-over">
-      <h2>{getWinner()}</h2>
-      <Scoreboard 
-        farmerScore={scores.farmer} 
-        thiefScore={scores.thief} 
-        onRetry={resetGame} // Use resetGame to reset everything
-      />
-    </div>
-  );
-}
-return (
-  <div className="gameplay-container">
-    <h1>Gameplay Page</h1>
-    <h2>Your role is: {role === "farmer" ? "👨‍🌾 Farmer (Warder)" : "🕵️‍♂️ Thief (Prisoner)"}</h2>
-    <p
-      className={`overall-timer ${timeLeft <= 10 ? 'timer-warning' : ''}`}
-    >
-      Time left: {Math.floor(timeLeft / 60).toString().padStart(2, '0')}:{(timeLeft % 60).toString().padStart(2, '0')}
-    </p>
-    <p>Turn: {turn === "farmer" ? "👨‍🌾 Farmer (Warder)" : "🕵️‍♂️ Thief (Prisoner)"}</p>
-    <p>Turn time left: {turnTimeLeft} seconds</p>
-
-    {/* Show the WinModal when a win happens */}
-    {showModal && <WinModal message={modalMessage} role={lastWinner} scores={scores} onClose={() => setShowModal(false)} />}
-
-    <table className="game-table">
-      <tbody>
-        {grid.map((row, rowIndex) => (
-          <tr key={rowIndex}>
-            {row.map((block, colIndex) => (
-              <td key={colIndex} className={`table-cell ${block}`}>
-                {block === 'obstacle' && 'x'}
-                {block === 'tunnel' && 't'}
-                {farmerPosition?.row === rowIndex && farmerPosition?.col === colIndex &&
-                  thiefPosition?.row === rowIndex && thiefPosition?.col === colIndex && (
+                  {/* Farmer Character with Name */}
+                  {farmerPosition?.row === rowIndex && farmerPosition?.col === colIndex && (
                     <>
-                      <span role="img" aria-label="farmer">👨‍🌾</span>
-                      <span role="img" aria-label="thief">🕵️‍♂️</span>
+                      <div className="character-label">Farmer</div>
+                      <img
+                        src={imageMap.white.farmer}
+                        alt="farmer"
+                        className="character-image"
+                      />
                     </>
-                )}
-                {farmerPosition?.row === rowIndex && farmerPosition?.col === colIndex &&
-                  !(thiefPosition?.row === rowIndex && thiefPosition?.col === colIndex) && (
-                    <span role="img" aria-label="farmer">👨‍🌾</span>
-                )}
-                {thiefPosition?.row === rowIndex && thiefPosition?.col === colIndex &&
-                  !(farmerPosition?.row === rowIndex && farmerPosition?.col === colIndex) && (
-                    <span role="img" aria-label="thief">🕵️‍♂️</span>
-                )}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+                  )}
 
-    <div className="scores">
-      <h3>Scores</h3>
-      <p>Farmer (Warder): {scores.farmer}</p>
-      <p>Thief (Prisoner): {scores.thief}</p>
+                  {/* Thief Character with Name */}
+                  {thiefPosition?.row === rowIndex && thiefPosition?.col === colIndex && (
+                    <>
+                      <div className="character-label">Thief</div>
+                      <img
+                        src={imageMap.white.thief}
+                        alt="thief"
+                        className="character-image"
+                      />
+                    </>
+                  )}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Scoreboard (keeping unchanged) */}
+      <div className="scoreboard-normal">
+        <h3>Scores</h3>
+        <div className="scoreboard-item">
+          <span> Farmer: </span>
+          <span className="score-value"> {scores.farmer} </span>
+        </div>
+
+        <div className="scoreboard-item">
+          <span> Thief:</span>
+          <span className="score-value">{scores.thief}</span>
+        </div>
+      </div>
     </div>
+
+    {/* Win Modal (if any) */}
+    {showModal && <WinModal message={modalMessage} role={lastWinner} scores={scores} onClose={() => setShowModal(false)} />}
   </div>
-);
+  );
 
 };
 

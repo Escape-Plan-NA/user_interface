@@ -1,0 +1,175 @@
+/* Prevent scrolling on the entire page */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;  /* Prevent scrolling */
+  }
+  
+  /* Full viewport container */
+  .container {
+    width: 100vw;  /* Full viewport width */
+    height: 100vh; /* Full viewport height */
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Front Background Layer - Always on top */
+  .background-front {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    z-index: 1; /* Behind the game content */
+    pointer-events: none; /* Allow interactions to pass through */
+  }
+  
+  /* Gameboard Container */
+  .gameboard-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    z-index: 10;  /* Ensure gameboard is on top */
+  }
+  
+  /* Game Table Styles */
+  .game-table {
+    width: 480px;
+    height: 480px;
+    margin: 0;
+    padding: 0;
+
+    border-spacing: 0;
+    border-collapse: collapse;
+  }
+  /* Ensure images take full width/height of the table cells */
+.game-table td img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  /* Ensures images cover the cell without stretching */
+    margin: 0;
+    padding: 0;
+    display: block; 
+
+  }
+
+  .gameplay-cell {
+    width: 96px;
+    height: 96px;
+    padding: 0;         /* Ensure no padding */
+    margin: 0;          /* Ensure no margin */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .gameplay-cell img {
+    display: block;
+    width: 100%;        /* Scale image to fill the cell */
+    height: 100%;
+    object-fit: cover;  /* Cover the cell without stretching */
+    margin: 0;          /* Remove any default margin */
+    padding: 0;         /* Remove any default padding */
+  }
+ 
+  
+  .table-cell img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit:cover;  /* Ensure images are well-contained */
+  }
+  
+  
+  
+  /* Ensure modal and other elements appear above */
+  .win-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    z-index: 1000;
+  }
+  
+
+  /* Character image styling */
+.character-image {
+    width: 50px;  /* Adjust character image size to fit the smaller 96x96 tile */
+    height: 50px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.2s ease-in-out;
+    z-index: 1;
+  }
+  
+  /* Character label styling */
+  .character-label {
+    position: absolute;
+    top: -20px;  /* Position label above the character image */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.2);  /* Semi-transparent black background */
+    color: #fff;
+    padding: 2px 5px;  /* Padding for better readability */
+    border-radius: 4px;  /* Rounded corners */
+    font-size: 0.8rem;  /* Smaller font size */
+    z-index: 10001;  /* Ensure label appears above the character */
+  }
+  
+  /* Thief hover effect */
+  .thief-image:hover {
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  
+  .gameplay-body {
+    align-items: center;
+    justify-content: center;
+    display: block;
+  }
+
+
+  
+  .back-button-container {
+      position: absolute;
+      top: 20px;  /* Position the container at the top of the screen */
+      right: 180px; /* Place it on the right side */
+      z-index: 10001; /* Ensure the button is on top of other elements */
+    }
+    
+    .back-button {
+      background-color: #4CAF50;  /* Green background */
+      color: white;
+      font-size: 16px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      z-index: 10001;
+    }
+    
+    .back-button:hover {
+      background-color: #45a049;  /* Darker green when hovered */
+    }
+
+    /* Image inside the button */
+.back-button img {
+    width: 120px;   /* Adjust image width to make it smaller */
+    height: 120px;  /* Adjust image height to make it smaller */
+    object-fit: contain;  /* Ensure image maintains its aspect ratio */
+  }
