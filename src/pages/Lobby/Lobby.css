@@ -57,7 +57,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 400px;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
@@ -185,4 +185,16 @@ button:hover {
 .theme-selector select:focus {
   outline: none;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.image-button {
+  border: none; /* Remove default button border */
+  background: none; /* Remove default button background */
+  padding: 0; /* Remove padding around the image */
+  cursor: pointer; /* Change cursor on hover */
+}
+
+.image-button img {
+  width: 150px; /* Adjust to your desired width */
+  height: auto; /* Maintain aspect ratio */
 }

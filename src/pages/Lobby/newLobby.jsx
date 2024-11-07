@@ -180,14 +180,17 @@ const Lobby = () => {
             onClick={handleStartGame} 
             disabled={buttonPressed || connectedPlayerCount < 2} 
             className={buttonPressed ? 'button-pressed' : ''}
+            class="image-button"
           >
-            Start Game
+            <img src="src/assets/buttons/Start.png" alt="Start Game Button" />
           </button>
         ) : (
           <p>Connecting...</p>
         )}
   
-        <button type="button" onClick={handleCustomize}>Customize</button>
+        <button type="button" onClick={handleCustomize} class="image-button">
+          <img src="src/assets/buttons/customize.png" alt="Customize Button" />
+        </button>
       </div>
 
       {/* Theme selection */}
