@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../App.css';
 import '../../index.css';
-import SpringMenu from '../../assets/Menu/SpringMenu.gif';
-import SummerMenu from '../../assets/Menu/SummerMenu.gif';
-import AutumnMenu from '../../assets/Menu/AutumnMenu.gif';
+import SpringMenu from '/map_components/spring/Spring BG.gif';
+
+import SummerMenu from '/map_components/summer/Summer BG.gif';
+import AutumnMenu from '/map_components/autumn/Autumn BG.gif';
 import './SingleplayerModeSelection.css'
 const SingleplayerModeSelection = () => {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ const SingleplayerModeSelection = () => {
         console.log("Switching to Background Image URL:", backgroundImages[newIndex]);
         return newIndex;
       });
-    }, 3500);
+    }, 1500);
 
     return () => clearInterval(interval);
   }, [backgroundImages.length]);
