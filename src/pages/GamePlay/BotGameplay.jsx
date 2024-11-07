@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import Scoreboard from '../../components/Scoreboard/SingleScoreboard.jsx';
-import WinModal from '../../components/WinModal/WinModal.jsx'; // Import the modal component
+import WinModal from '../../components/Modal/WinModal.jsx'; // Import the modal component
 import './GamePlay.css';
 
 const BotGameplay = () => {

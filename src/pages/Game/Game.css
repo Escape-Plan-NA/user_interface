@@ -145,7 +145,58 @@ html, body {
 .bottom-controls::-webkit-scrollbar-thumb:hover {
   background-color: #a0a0a0; /* Darker color on hover */
 }
-  
+
+/* Centered win-message styling */
+.win-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Centers horizontally and vertically */
+  background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+  color: white;
+  padding: 20px 40px; /* Adjust padding for more space around text */
+  border-radius: 10px;
+  text-align: center;
+  font-size: 1.5em;
+  z-index: 1000; /* Ensure it appears above other elements */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  box-sizing: border-box; /* Include padding and border in element's dimensions */
+  max-width: 90vw; /* Ensure it fits within the viewport */
+  width: fit-content; /* Automatically adjust width based on content */
+  word-wrap: break-word; /* Wrap text within the box */
+}
+
+/* Additional styling for win-message text */
+.win-message h2 {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+.win-message p {
+  margin: 10px 0 0;
+  font-size: 1.2em;
+}
+
+.tutorial-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tutorial-button:hover {
+  background-color: #e0e0e0;
+}
+
   
 /* Dark Mode Overlay */
 .dark-mode-overlay {
