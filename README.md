@@ -1,15 +1,8 @@
-Random game
 
-Random game
-
-Game start
 
 # 🏃💨 Escape Plan
 
 **Welcome to Escape Plan** – a thrilling two-player game of wits and strategy! One player takes on the role of the **Warder**, while the other becomes the **Prisoner**. Can you escape to freedom or capture the fugitive? Only time (and strategy) will tell.
-
-🌍 **Hello!** 
-We're love Salad and We're Salad group
 
 ---
 
