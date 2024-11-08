@@ -95,6 +95,7 @@ html, body {
   width: 100%;
   text-align: center;
   z-index: 10; /* Ensure it's on top of the gameboard */
+  background-color: #e0e0e0;
 }
 
 /* Styling for the move logs */
@@ -104,12 +105,14 @@ html, body {
   max-height: 100px; /* Set max height and overflow for scrolling if logs are long */
   overflow-y: auto;
   margin-bottom: 10px;
+  
 }
 
 /* components/MoveLogs/MoveLogs.css */
 
 .bottom-controls {
   background-color: transparent; /* Light background for move logs */
+  background-color: #e0e0e0;
   border-radius: 8px;
   padding: 10px;
   max-height: 300px; /* Max height for scrollable area */
@@ -150,7 +153,7 @@ html, body {
   padding: 5px;
   border-radius: 4px;
   background-color: transparent;
-  color: whitesmoke;
+  color: rgb(15, 15, 15);
   font-size: 0.9em;
   line-height: 1.4;
   transition: opacity 0.5s ease-out;
