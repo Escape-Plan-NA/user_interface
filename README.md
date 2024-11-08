@@ -21,6 +21,21 @@ Escape Plan is a client-server game that lets two players connect, strategize, a
 - **Map Randomization**: The server shuffles the map and assigns characters for each game to keep it exciting.
 
 ---
+✨ Extra Features
+Our game is packed with awesome extras to enhance your gameplay experience! Here’s are some interesting ⭐
+
+🎮 Tutorial Mode: players can learn the game with an easy-to-follow guide explaination.
+🔊 Sound Effects & 🎶 Background Music: Every move and action is complemented by immersive sound effects.
+🏳️ Surrender Option: play again! and try harder
+📜 Move Logs: Keep track of every move and strategy used during the game, so you can review and learn from each play.
+🤖 Bot Mode: Practice and hone your skills by playing for solo play!
+🖥️ Single-Device Mode: Play with a friend on the same device for quick and easy gameplay without multiple devices.
+🏆 Scoreboard: Track score(s) each player.
+🧑‍🎨 Avatar Customization: Personalize your in-game character by yourselve.
+🌗 Dark & Light Modes: change between dark and light screen settings for comfortable gameplay.
+💬 In-Game Chat: Communicate with your friends in real-time to trick, strategize, or discuss the game as you play.
+
+---
 
 ## 🕹️ Game Mechanics
 
