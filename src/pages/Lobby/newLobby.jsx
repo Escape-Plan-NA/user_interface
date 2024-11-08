@@ -30,7 +30,7 @@ const Lobby = () => {
     const fetchRole = async () => {
       if (socket?.id && !hasJoinedLobby.current) {
         try {
-          const response = await axios.get(`http://127.0.0.1:3000/api/get-role/${socket.id}`);
+          const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/get-role/${socket.id}`);
           const assignedRole = response.data.role;
           setRole(assignedRole);
           console.log(`Assigned role: ${assignedRole}`);

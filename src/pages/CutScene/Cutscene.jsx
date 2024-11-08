@@ -14,7 +14,7 @@ const Cutscene = () => {
   useEffect(() => {
     const fetchGameData = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:3000/api/gameData');
+        const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/gameData`);
         const data = await response.json();
         setGameData(data); // Store the fetched game data
         console.log("Fetched gameData:", data); // For debugging purposes

@@ -81,7 +81,7 @@ const Game = () => {
 
     const fetchFinalScores = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/final-scores');
+            const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/final-scores`);
             const scores = response.data.scores;
             setFinalScores(scores);
             

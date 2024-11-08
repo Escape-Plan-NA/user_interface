@@ -12,7 +12,7 @@ export const WebSocketProvider = ({ children }) => {
     console.log("Initializing WebSocket...");
 
     // Initialize socket if not already created
-    socket = io("http://127.0.0.1:3000", {
+    socket = io(`${import.meta.env.VITE_SERVER_URL}`, {
       reconnectionAttempts: 5,
       timeout: 10000,
     });

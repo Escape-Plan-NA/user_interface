@@ -1,7 +1,7 @@
 // socket.js
 import io from 'socket.io-client';
 
-const socket = io("http://127.0.0.1:3000", {
+const socket = io(`${import.meta.env.VITE_SERVER_URL}`, {
   reconnectionAttempts: 5,
   timeout: 10000,
 });
