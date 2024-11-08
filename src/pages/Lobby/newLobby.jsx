@@ -8,7 +8,7 @@ import './Lobby.css';
 const Lobby = () => {
   const { socket, isConnected } = useWebSocket();
   const navigate = useNavigate();
-  
+
   const [username, setUsername] = useState('Guest');
   const [profilePictureId, setProfilePictureId] = useState('white');
   const [selectedUsername, setSelectedUsername] = useState('Guest');
@@ -21,11 +21,11 @@ const Lobby = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [buttonPressed, setButtonPressed] = useState(false);
   const [startingMessage, setStartingMessage] = useState(''); // New state for "starting ..." message
-  const [theme,setTheme]= useState('autumn');
+  const [theme, setTheme] = useState('autumn');
 
   const profilePicture = imageMap[profilePictureId].base;
 
-  
+
   useEffect(() => {
     const fetchRole = async () => {
       if (socket?.id && !hasJoinedLobby.current) {
@@ -95,7 +95,7 @@ const Lobby = () => {
   useEffect(() => {
     if (gameStarted && role) {
       setStartingMessage("Starting ..."); // Show the "starting ..." message
-      setTimeout(() => navigate('/cutscene', { state: { role, username, theme} }), 1800); // Delay navigation by
+      setTimeout(() => navigate('/cutscene', { state: { role, username, theme } }), 1800); // Delay navigation by
     }
   }, [gameStarted, role, navigate, theme]);
 
@@ -111,7 +111,7 @@ const Lobby = () => {
       const newIndex = direction === 'left'
         ? (prevIndex === 0 ? ids.length - 1 : prevIndex - 1)
         : (prevIndex === ids.length - 1 ? 0 : prevIndex + 1);
-      
+
       setProfilePictureId(ids[newIndex]);
       return newIndex;
     });
@@ -130,11 +130,11 @@ const Lobby = () => {
       console.error("No role assigned yet. Cannot start the game.");
       return;
     }
-  
-    socket.emit('playerReady', { 
+
+    socket.emit('playerReady', {
       userId: socket.id,
-      username, 
-      profilePictureId 
+      username,
+      profilePictureId
     });
 
     console.log(`Emitted 'playerReady' event for ${username}`);
@@ -154,54 +154,63 @@ const Lobby = () => {
 
   return (
     <div
-    className={`lobby-container lobby-container-${theme}`}>
-    
-    <h2 className='lobby-heading'>
-      <img src='src/assets/Lobby lobby.png' alt="Lobby Logo"></img>
+      className={`lobby-container lobby-container-${theme}`}>
+
+      <h2 className='lobby-heading'>
+        <img src='src/assets/Lobby lobby.png' alt="Lobby Logo"></img>
       </h2>
-      
-  
-      <div className="player-avatar">
-        <img src={profilePicture} alt="Your Character" className="current-profile-pic" />
-        <p className="enter-info">{username}</p>
+
+      <div className="lobby-content">
+        <div className="player-avatar">
+          <img src={profilePicture} alt="Your Character" className="current-profile-pic" />
+        </div>
+
+        <div className="profile-content">
+          <p className="enter-info">{username}</p>
+
+          {/* Theme selection */}
+          <div className="theme-selector">
+            <label>Select Theme:</label>
+            <select value={theme} onChange={handleThemeChange}>
+              <option value="autumn">Autumn</option>
+              <option value="summer">Summer</option>
+              <option value="spring">Spring</option>
+            </select>
+          </div> 
+
+          <div className="status-actions">
+            {inProgressMessage && <p>{inProgressMessage}</p>}
+
+
+            {startingMessage ? (
+              <p>{startingMessage}</p>
+            ) : isConnected ? (
+              <button
+                onClick={handleStartGame}
+                disabled={buttonPressed || connectedPlayerCount < 2}
+                className={buttonPressed ? 'button-pressed' : ''}
+              >
+                Start Game
+              </button>
+            ) : (
+              <p>Connecting...</p>
+            )}
+
+            <button type="button" onClick={handleCustomize} >
+              Customize
+            </button>
+
+          </div>
+
+        </div>
       </div>
-  
-      <div className="status-actions">
-        {inProgressMessage && <p>{inProgressMessage}</p>}
-        
-        <div className="player-status">
+
+      <div className="player-status">
         <p className={connectedPlayerCount === 2 ? 'connected-green' : ''}>
           {connectedPlayerCount}/2 players have joined the lobby
         </p>
-        </div>
-  
-        {startingMessage ? (
-          <p>{startingMessage}</p>
-        ) : isConnected ? (
-          <button 
-            onClick={handleStartGame} 
-            disabled={buttonPressed || connectedPlayerCount < 2} 
-            className={buttonPressed ? 'button-pressed' : ''}
-          >
-            Start Game
-          </button>
-        ) : (
-          <p>Connecting...</p>
-        )}
-  
-        <button type="button" onClick={handleCustomize}>Customize</button>
       </div>
 
-      {/* Theme selection */}
-      <div className="theme-selector">
-        <label>Select Theme:</label>
-        <select value={theme} onChange={handleThemeChange}>
-          <option value="autumn">Autumn</option>
-          <option value="summer">Summer</option>
-          <option value="spring">Spring</option>
-        </select>
-      </div>
-  
       {isModalOpen && (
         <div className="modal">
           <div className="modal-content">
@@ -213,13 +222,13 @@ const Lobby = () => {
               onChange={(e) => setSelectedUsername(e.target.value)}
               className="enter-info"
             />
-  
+
             <div className="arrow-container">
               <button className="arrow left-arrow" onClick={() => handleArrowClick('left')}>&lt;</button>
               <img src={imageMap[profilePictureId].base} alt={`Option ${profilePictureId}`} className="option-img" />
               <button className="arrow right-arrow" onClick={() => handleArrowClick('right')}>&gt;</button>
             </div>
-  
+
             <div className="modal-actions">
               <button onClick={handleSaveGameState}>Save</button>
               <button onClick={() => setIsModalOpen(false)}>Close</button>

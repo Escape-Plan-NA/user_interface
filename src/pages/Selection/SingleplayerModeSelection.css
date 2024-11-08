@@ -11,17 +11,57 @@
     top: 0;
     left: 0;
     transition: background-image 1s ease-in-out;
-
 }
 
 .content-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 400px; /* Adjust this value to move content down */
+    margin-top: 300px; /* Adjust this value to move content down */
+}
+.select-mode{
+    margin-top: -200px;
+    font-size: 3em;
+}
+.content-wrapper button{
+    width: 200px;
+    margin: 10px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
 }
 
 .menu-container h2 {
     color: aqua;
     margin-bottom: 20px; /* Adjust spacing between title and buttons if needed */
+}
+
+.role-modal-content{
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 280px; /* Adjust as needed */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    text-align: center;
+}
+.role-modal-content button{
+    width: 120px;
+    margin: 10px;
+    padding: 10px;
+    cursor: pointer;
+}
+.role-modal-content h3{
+    font-size: 1.4em;
+}
+
+.role-modal{
+    position: fixed;
+    top: 50%;
+    right: 190px;
+    z-index: 1000; /* Makes sure it stays on top */
+    width: 300px; /* Width of modal */
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
 }
