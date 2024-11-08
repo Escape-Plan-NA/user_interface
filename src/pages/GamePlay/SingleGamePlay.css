@@ -12,6 +12,7 @@ html, body {
     height: 100vh; /* Full viewport height */
     position: relative;
     overflow: hidden;
+    z-index:0;
   }
   
   /* Front Background Layer - Always on top */
@@ -24,7 +25,7 @@ html, body {
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    z-index: 1; /* Behind the game content */
+    z-index: 2; /* Behind the game content */
     pointer-events: none; /* Allow interactions to pass through */
   }
   
@@ -33,10 +34,12 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 30px;
+    margin-right: 15px;
     height: 100%;
     width: 100%;
     position: relative;
-    z-index: 10;  /* Ensure gameboard is on top */
+    z-index: 1;  /* Ensure gameboard is on top */
   }
   
   /* Game Table Styles */
