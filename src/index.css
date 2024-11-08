@@ -1,7 +1,7 @@
 :root {
   /* Font settings */
   --font-family: 'HeadFont';
-  --font-size: 1em;
+  --font-size: 1.3em;
   --font-weight: 500;
   --line-height: 1.5;
 
@@ -11,7 +11,7 @@
   --link-color: #56d13d;
   --link-hover-color: #53f288;
   --button-bg: #758E4F;
-  --button-bg-hover: #6b834200;
+  --button-bg-hover: #6b8342;
   --button-bg-active: #556832;
   --button-text-color: black;
   --button-border-color-hover: rgba(0, 0, 0, 0.404);

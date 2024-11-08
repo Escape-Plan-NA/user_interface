@@ -33,6 +33,23 @@
   transition: background-image 0.5s ease-in-out, opacity 0.5s ease-in-out;
 }
 
+/* New wrapper for the main lobby content */
+.profile-content {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Center align */
+}
+
+/* New wrapper for the main lobby content */
+.lobby-content {
+  display: flex;
+  flex-direction: row; /* Stack items vertically */
+  align-items: center; /* Center align */
+  justify-content: center; /* Align to the top */
+  margin-top: 0px; /* Space from the header */
+  width: 100%; /* Full width */
+  max-width: 1000px; /* Set a maximum width if desired */
+}
 
 /* Profile Preview */
 .profile-preview {
@@ -41,14 +58,14 @@
 
 /* Current Profile Picture */
 .current-profile-pic {
-  width: 100px;
-  height: 100px;
+  width: 300px;
+  height: 300px;
   border-radius: 30%;
 }
 
 /* Username Text */
 .enter-info {
-  font-size: 1.2rem;
+  font-size: x-large;
   font-weight: bold;
   margin-top: 10px;
   text-align: center;
@@ -61,7 +78,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 400px;
+  width: 700px !important;
+  height: auto;
   background-color: rgba(255, 255, 255, 0);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -70,6 +88,7 @@
 
 .modal-content {
   padding: 20px;
+  font-size: 1.5rem;
 }
 
 /* Image Selector Arrows */
@@ -88,8 +107,8 @@
 
 /* Image Options */
 .option-img {
-  width: 150px;
-  height: 150px;
+  width: 200px !important;
+  height: 200px !important;
   cursor: pointer;
   transition: transform 0.3s ease;
 }
@@ -124,7 +143,7 @@ button:hover {
 /* Centered Player Avatar */
 .player-avatar {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   margin-top: 20px;
 }
@@ -132,18 +151,16 @@ button:hover {
 /* Status Actions */
 .status-actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  position: absolute;
-  bottom: 20px;
-  width: 100%;
+
 }
 
 
 
 /* Green text color for connected player count */
 .connected-green {
-  color: rgb(159, 238, 159);
+  color: rgb(103, 195, 75);
   font-weight: bold;
   font-size: x-large;
 }
@@ -197,11 +214,23 @@ button:hover {
 .image-button {
   border: none; /* Remove default button border */
   background: none; /* Remove default button background */
-  padding: 0; /* Remove padding around the image */
+  padding: 10; /* Remove padding around the image */
   cursor: pointer; /* Change cursor on hover */
 }
 
 .image-button img {
-  width: 150px; /* Adjust to your desired width */
+  width: 250px; /* Adjust to your desired width */
+  height: auto; /* Maintain aspect ratio */
+}
+
+.circle-button {
+  border: none; /* Remove default button border */
+  background: none; /* Remove default button background */
+  padding: 10; /* Remove padding around the image */
+  cursor: pointer; /* Change cursor on hover */
+}
+
+.circle-button img {
+  width: 100px; /* Adjust to your desired width */
   height: auto; /* Maintain aspect ratio */
 }
