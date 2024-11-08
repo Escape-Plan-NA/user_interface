@@ -11,7 +11,7 @@
 /* Game board styling */
 .game-table {
   border-collapse: collapse;  /* Remove grid lines */
-  margin: 0 auto ;
+  
   width: 450px;  /* New board size of 480x480 */
   height: 450px;
   border-radius: 0px;  /* Sharp 90-degree corners */
@@ -19,7 +19,9 @@
   align-items: center;
   display: flexbox;
   scale: 1;
-  padding: 50px;
+  padding: 20px;
+  margin-bottom: 40px;
+ padding-bottom: 30px;
   
 }
 
@@ -81,4 +83,5 @@
   align-items: center;
   justify-content: center;
   display: block;
+  margin-bottom: 200px;
 }
